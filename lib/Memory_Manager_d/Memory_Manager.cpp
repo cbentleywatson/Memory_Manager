@@ -1,9 +1,10 @@
-//#include <Arduino.h>
+#include <Arduino.h>
+#include <string.h>
 //#include "SPIFFS.h"
 //#include "FreeRTOS.h"
-#include "Memory_Manager.h"
+//#include "Memory_Manager.h"
 #include <esp_heap_caps.h>
-
+#include "c_header.h"
 //File file = SPIFFS.open("/test.txt", FILE_WRITE);
 //file.close();
 
@@ -19,8 +20,8 @@ void* mv_func_ptr(void* initial_function_ptr, void* function_ptr_to_copy, int le
   memcpy(temp_ptr, function_ptr_to_copy , length_of_new_function);
   void* temp2 =  heap_caps_malloc(300,MALLOC_CAP_EXEC);
   initial_function_ptr =temp_ptr;
-  heap_caps_free(temp_ptr);
-  return prior_func_position;
+  //heap_caps_free(temp_ptr);
+  return temp_ptr;
   // void * to memory = address 
 }  
 
@@ -32,9 +33,7 @@ void* mv_to_address(void* initial_function_ptr, unsigned long address, int lengt
   void* a =  add_dummy;
 
   void **b = &a;
-  void *c = (void*) dummy; // no warning on this one
-  
-
+  void *c = (void*) address; // no warning on this one
   void* temp_ptr =  heap_caps_malloc(length_of_new_function,MALLOC_CAP_EXEC);
   void* prior_func_position =initial_function_ptr;
   //void* original_ptr_location = initial_function_ptr;
@@ -42,8 +41,8 @@ void* mv_to_address(void* initial_function_ptr, unsigned long address, int lengt
   memcpy(temp_ptr, c, length_of_new_function);
   //void* temp2 =  heap_caps_malloc(300,MALLOC_CAP_EXEC);
   //initial_function_ptr =temp_ptr;
-  heap_caps_free(temp_ptr);
-  return prior_func_position;
+  //heap_caps_free(temp_ptr);
+  return temp_ptr;
   // void * to memory = address 
 } 
 
