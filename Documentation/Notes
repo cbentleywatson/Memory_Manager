@@ -1,0 +1,119 @@
+A data folder is needed for this to work, ELF is included in there
+https://stackoverflow.com/questions/34960383/how-read-elf-header-in-c
+http://www.skyfree.org/linux/references/ELF_Format.pdf
+
+
+mmcpy
+https://www.techonthenet.com/c_language/standard_library_functions/string_h/memcpy.php#:~:text=In%20the%20C%20Programming%20Language%2C%20the%20memcpy%20function,s1.%20It%20returns%20a%20pointer%20to%20the%20destination.
+https://stackoverflow.com/questions/44944965/filling-of-a-structure-using-memcpy
+
+mmcpy with offsets
+https://cboard.cprogramming.com/c-programming/134799-memcpy-part-array-specific-position-different-array.html
+
+It seems like fpic runs fine
+
+Compile a shared library:
+gcc -shared -o libhello.so -fPIC hello.c
+
+Default Compiler Flags:
+These are stored in idedate.json at the very bottom of the file.
+
+Contents of lib_memory_Manager.ar
+Even with a shared object file, ar can effectively store a shared object
+
+Building an executable packer (CRUCIAL?):
+https://fasterthanli.me/series/making-our-own-executable-packer/part-17
+
+How a dynamic Linker works:
+https://cseweb.ucsd.edu/~gbournou/CSE131/the_inside_story_on_shared_libraries_and_dynamic_loading.pdf
+
+Making Tiny asm stuff
+
+https://www.muppetlabs.com/~breadbox/software/tiny/teensy.html
+ELF Header Dissection:
+https://0x00sec.org/t/dissecting-and-exploiting-elf-files/7267
+
+
+Gcc tools for this platform directory:
+C:\Users\cbent\.platformio\packages\toolchain-xtensa32\bin
+
+gcc -c can make an object file with a single text section
+
+Using pointers to functions:
+https://www.cprogramming.com/tutorial/function-pointers.html
+
+This is where my pointer to pointer code came from:
+https://www.reddit.com/r/C_Programming/comments/63wyd7/converting_void_pointers_to_function_pointers/
+
+IDK how the code works.
+
+Explains typedef and how to make function pointers work:
+http://www.cs.cmu.edu/~ab/15-123N09/lectures/Lecture%2008%20-%20Function%20Pointers.pdf
+
+
+Information on using glibc to fill up an elf header data structure:
+https://eklitzke.org/position-independent-executables
+
+Update firmware from binaries on a spiffs image:
+https://techtutorialsx.com/2019/07/21/esp32-arduino-updating-firmware-from-the-spiffs-file-system/
+
+Tiny ELF:
+https://static.lwn.net/images/conf/rtlws-2011/proc/Yong.pdf
+
+Linker Scripting. May contain the final command for centralizing text, data etc. in order:
+https://ftp.gnu.org/old-gnu/Manuals/ld-2.9.1/html_chapter/ld_3.html
+
+PlatformIO's more detailed linker info
+https://docs.platformio.org/en/latest/projectconf/advanced_scripting.html
+
+Dead code strip without LTO:
+
+https://gcc.gnu.org/legacy-ml/gcc-help/2003-08/msg00128.html
+-Wl,-static -fvtable-gc -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,-s
+DEFAULT FLAGS:
+
+
+ "-fno-rtti -fno-exceptions -std=gnu++11 -fpic -fpermissive -Os -Wall -nostdlib -Wpointer-arith -Wno-error=unused-but-set-variable -Wno-error=unused-variable -mlongcalls -ffunction-sections -fdata-sections -fstrict-volatile-bitfields -Wno-error=deprecated-declarations -Wno-error=unused-function -Wno-unused-parameter -Wno-sign-compare -fstack-protector -fexceptions -Werror=reorder"}
+
+DEADCODESTRIP := -Wl,-static -fvtable-gc -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,-s
+
+ -Wl,-static
+Link against static libraries.  Required for dead-code elimination.
+
+-fvtable-gc
+C++ virtual method table instrumented with garbage collection information for the linker.
+
+-fdata-sections
+Keeps data in separate data sections, so they can be discarded if unused.
+
+-ffunction-sections
+Keeps funcitons in separate data sections, so they can be discarded if unused.
+
+-Wl,--gc-sections
+Tell the linker to garbage collect and discard unused sections.
+
+-s
+Strip the debug information, so as to make the code as small as possible.  (I presume that you'd want to do this in a dead-code removal build.)
+
+The requirement to link against the static libraries was surprising to me.  But there you go.
+
+HTH,
+--Eljay
+
+C:\Users\cbent\.platformio\platforms\espressif32\builder\fvtable-gc'
+
+https://stackoverflow.com/questions/200292/process-for-reducing-the-size-of-an-executable
+
+GCC 4.2.1 manual
+
+LTO ar, nm etc
+
+https://bugzilla.redhat.com/show_bug.cgi?id=1678826
+
+
+
+
+11/9
+added flto to the linker and to the 
+
+

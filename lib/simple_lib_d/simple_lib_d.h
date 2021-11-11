@@ -1,0 +1,1 @@
+int simple_funct(int a);
