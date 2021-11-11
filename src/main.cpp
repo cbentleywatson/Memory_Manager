@@ -42,15 +42,22 @@ void setup() {
    Serial.begin(9600);
   SPIFFS.begin();
 }
-int a =0;
- unsigned long a_address;
- unsigned long* ptr_from_address;
+unsigned long a = 0;
+ unsigned long* a_address;
+ unsigned long** ptr_from_address;
+ unsigned long location_of_a_address;
+ void* adress_address_void;
+ unsigned long* a_address_as_long_ptr;
 void loop() {
-  a_address = (unsigned long) &a;
-  ptr_from_address = (void *) 
-  Serial.print(a_address);
-  Serial.print(" :a address: \n\n\n");
+  a_address =  &a;
+  ptr_from_address = &a_address;
+  adress_address_void = (void*) ptr_from_address;
+  a_address_as_long_ptr = (unsigned long*) adress_address_void;
+
   
+  Serial.print("a adress as long: ");
+  Serial.println(*a_address_as_long_ptr);
+  Serial.println("\n\n");
   int p_header_size;
   int s_header_size;
   int start_of_section_header;
@@ -66,20 +73,24 @@ int (*void_6)(){&int_void_6};
 int (*void_88)(){&int_void_88};
   //int (*mem_func)(){&int_void_6};
  int (*void_21)(){&int_void_21};
- int a = &simple_funct;
+// int a = &simple_funct;
  Serial.print(" Initial value of void 6: ");
 Serial.println(void_6());
 //boo = &my_int_func;
 Serial.print("\n\n");
 delay(2000);
 Serial.print(" Void 6 after mv_func_ptr attempts to copy over void 21: ");
-void_6 = mv_func_ptr(void_6, void_21, 100);
+void *f6;
+
+//*f6 =(void *) void_6; 
+//void *funct_6_as_void = (void *) void_6;
+void_6 = (int (*)()) mv_func_ptr( (void *) void_6, (void *) void_21, 100);
 Serial.println(void_6());
 //Serial.print(void_6());
 delay(2000);
 
 Serial.print("\n\n\nAttempting to use mv_to address to move pointer to void_88 ");
-void_6 =  mv_to_address(void_6, (unsigned long) void_88 ,100);
+void_6 = (int (*)()) mv_to_address((void *) void_6, (unsigned long) void_88 ,100);
 Serial.print("void_6 ptr after mv_to_address: ");
 Serial.println(void_6());
 delay(3000);

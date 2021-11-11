@@ -45,6 +45,14 @@ void* mv_to_address(void* initial_function_ptr, unsigned long address, int lengt
   return temp_ptr;
   // void * to memory = address 
 } 
+void* long_to_void(unsigned long input_long){
+  unsigned long *a; // make a pointer pointing at a, using the correct pointer type
+  a = &input_long;  // assign the pointer to the correct value
+  void *b;          // create a void* to return
+  b = (void *) a;   // type cast the unsigned long ptr to a void*
+  return b;         // return the  
+}
+
 
 
 

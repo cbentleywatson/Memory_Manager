@@ -14,7 +14,8 @@
             "-shared",
             "-ffunction-sections",
             "-Wl,--gc-sections",
-            "-Wl,-flto"
+            "-Wl,-flto",
+            "-fpermissive"
 
         ],
         "unflags":[
