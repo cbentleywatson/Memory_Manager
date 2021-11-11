@@ -45,7 +45,7 @@ void* mv_to_address(void* initial_function_ptr, unsigned long address, int lengt
   return temp_ptr;
   // void * to memory = address 
 } 
-void* long_to_void(unsigned long input_long){
+void* long_to_void_ptr(unsigned long input_long){
   unsigned long *a; // make a pointer pointing at a, using the correct pointer type
   a = &input_long;  // assign the pointer to the correct value
   void *b;          // create a void* to return
@@ -53,8 +53,26 @@ void* long_to_void(unsigned long input_long){
   return b;         // return the  
 }
 
+unsigned long void_ptr_to_long(void* input){
+  //unsigned long return;
+  return (unsigned long) input; // the  
 
+} 
 
+ // take an unsigned long that denotes a pointer
+ // convert it into a pointer
+ // allocate memory and copy data from the memory position specified by the long
+void* func_load_with_long(unsigned long source, int length){
+  void* temp_ptr =  heap_caps_malloc(length_of_new_function,MALLOC_CAP_EXEC);  
+  mmcpy(temp_ptr, long_to_void_ptr(source), length);
+  return temp_ptr;
+}
+
+void* func_load_with_void_ptr(void* source, int length){
+  void* temp_ptr =  heap_caps_malloc(length_of_new_function,MALLOC_CAP_EXEC);  
+  mmcpy(temp_ptr, source, length);
+  return temp_ptr;
+}
 
 // call function after the move as normal 
 // void force_move_without ()

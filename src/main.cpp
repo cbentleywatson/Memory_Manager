@@ -80,7 +80,18 @@ Serial.println(void_6());
 Serial.print("\n\n");
 delay(2000);
 Serial.print(" Void 6 after mv_func_ptr attempts to copy over void 21: ");
-void *f6;
+void *fz;
+fz =&a;
+unsigned long ul =0;
+unsigned long out =0;
+ul = void_ptr_to_long(fz);
+
+unsigned long dummy =200;
+unsigned long dummy2 = 300;
+void *dummy_ptr = &dummy;
+dummy_ptr =  long_to_void_ptr (dummy2);
+
+
 
 //*f6 =(void *) void_6; 
 //void *funct_6_as_void = (void *) void_6;
