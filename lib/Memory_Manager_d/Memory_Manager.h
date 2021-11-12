@@ -7,3 +7,5 @@ void* func_load_with_long(unsigned long source, int length);
 
 //void* func_load_with_long(unsigned long source, int length);
 void* func_load_with_void_ptr(void* source, int length);
+unsigned long swap (unsigned long a, unsigned long b);
+void* exec_ptr();

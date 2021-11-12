@@ -116,4 +116,14 @@ https://bugzilla.redhat.com/show_bug.cgi?id=1678826
 11/9
 added flto to the linker and to the 
 
+board_build.ldscript = /path/to/ldscript.ld
+Replaces the board scrip
 
+All PIO variables available:
+https://github.com/platformio/platformio-core/blob/develop/platformio/builder/main.py
+
+CRUCIAL!!!!!!
+You can link a script if you specify the library path first. Or at least you can make this compile
+
+            "-Wl,-C:\Users\cbent\Dropbox",
+            "-Wl,-T a.txt"

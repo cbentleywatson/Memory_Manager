@@ -8,7 +8,7 @@ import glob
 import sys, string, os
 from pathlib import Path, PurePath
  #arcgisscripting
-#os.('./bash.SH)
+
 
  # This is an example of how to copy a compiled file into the data elf directory for automatic upload. Later it can be put in a loop so it can find the files targeted by .
 current_windows_directory= os.getcwd
@@ -29,7 +29,12 @@ data_elf_file_dir="ELF_Files" # no slashes needed here just the name of the subd
 absolute_library_path = path_to_project+"/"+project_name +"/" +path_to_lib_folder+"/"+library_numeric_name+"/"+library_name+"/"+library_name+ dynamic_lib_extension+extension
 
 copy_lib_elf_to_this_location = path_to_project+"/"+project_name +"/data"+"/"+data_elf_file_dir +"/" + library_name + dynamic_lib_extension
+
 path_to_compiled_lib_directory = path_to_project+"/"+project_name +"/" + path_to_lib_folder
+
+
+
+
 path_to_this_script_file = path_to_project + "/" + name_of_this_file
 
 # use this to reduce recompiles if need be
@@ -155,9 +160,5 @@ def after_upload(source, target, env):
     
     os.system("cp absolute_library_path copy_lib_elf_to_this_location")
     os.system("pio run --target uploadfs --environment firebeetle32")
-# g++ path
-#print(env.compatlib )
-# SConsenvironment variable 
-# "C:\Users\cbent\.platformio\packages\tool-scons\scons-local-4.2.0\SCons\Script\SConscript.py", line 597:     
-#    return _SConscript(self.fs, *files, **subst_kw)
-#"C:\\Users\\cbent\\.platformio\\packages\\toolchain-xtensa32\\bin\\xtensa-esp32-elf-g++.exe"
+
+

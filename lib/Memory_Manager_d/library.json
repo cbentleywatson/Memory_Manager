@@ -9,14 +9,14 @@
     },
     "build" : {
         "flags": [
-            
             "-fpic",
             "-shared",
             "-ffunction-sections",
             "-Wl,--gc-sections",
             "-Wl,-flto",
-            "-fpermissive"
-
+            "-fpermissive",
+            "-Wl,-C:\Users\cbent\Dropbox",
+            "-Wl,-T a.txt"
         ],
         "unflags":[
             "-g",
