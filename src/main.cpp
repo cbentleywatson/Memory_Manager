@@ -41,7 +41,12 @@ void int_void_6(int x){
 int (*mem_func)();
 void setup() {
    Serial.begin(9600);
-  SPIFFS.begin();
+ // SPIFFS.begin();
+  if(!SPIFFS.begin(true)){
+      Serial.println("An Error has occurred while mounting SPIFFS");
+      return;
+}
+
 }
 unsigned long a = 0;
  unsigned long* a_address;
@@ -49,6 +54,9 @@ unsigned long a = 0;
  unsigned long location_of_a_address;
  void* adress_address_void;
  unsigned long* a_address_as_long_ptr;
+
+int loop_count =0;
+
 void loop() {
   //simple_funct(101);
   simple_int_aa =11;
@@ -68,11 +76,49 @@ unsigned long ll =239;
 unsigned long* zs =&ll; 
 //Serial.print((unsigned long ) &zs);
 
+if (loop_count==0){
+  //memcpy(temp_ptr, function_ptr_to_copy , length_of_new_function);
+  File file = SPIFFS.open("/saved_funct", FILE_WRITE);
+  //200 is a place holder for length values
+  if (!file){
+    Serial.println("Failed to open file for reading.");
+  }
+  int (*void_6_file)(){&int_void_6};
+  void* temp_ptr =  heap_caps_malloc(200, MALLOC_CAP_DMA);
+  memcpy(temp_ptr, void_6_file, 200);
+  file.write((const uint8_t *) temp_ptr ,200);
+  free(temp_ptr);
+  file.close();
+  //write(const uint8_t *buf, size_t size)
+  loop_count++;
+}else{
+  File file = SPIFFS.open("/saved_funct", FILE_READ);
+  char* buff = (char *)heap_caps_malloc( 200, MALLOC_CAP_DMA);
+  file.readBytes(buff, 200);
+  void* temp_ptr =  heap_caps_malloc(200,MALLOC_CAP_EXEC);
+  memcpy(temp_ptr, (void *) buff , 200);
+  int(*ptr_to_new)() =  (int (*)()) temp_ptr; 
+  Serial.print("Void ptr_to_new's output after being read from file /saved_funct: ");
+  Serial.println( ptr_to_new());
+  free(buff);
+  free(temp_ptr);
+  file.close();
+
+
+
+
+
+}
 *zs = 13;
 //swap(void_ptr_to_long(   (void *) *void_6)    ,  void_ptr_to_long((void *) *void_88 )  );
 Serial.print("Void_6 after swap: ");
 //Serial.print((unsigned long) &zs);
 //Serial.println("\n\n");
+
+
+
+
+
 
 //void* z = &
 delay(3000);
@@ -154,7 +200,6 @@ Serial.println(void_6());
 delay(3000);
 
 */
-
 
 
 

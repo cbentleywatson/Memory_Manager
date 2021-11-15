@@ -124,6 +124,7 @@ https://github.com/platformio/platformio-core/blob/develop/platformio/builder/ma
 
 CRUCIAL!!!!!!
 You can link a script if you specify the library path first. Or at least you can make this compile
-
-            "-Wl,-C:\Users\cbent\Dropbox",
-            "-Wl,-T a.txt"
+            "-Wl,--script="C:\\Users\\cbent\\a.txt""
+            //"-Wl,-C:\Users\cbent\Dropbox",
+            //"-Wl,-T a.txt"
+            It doesn't like the one above this.

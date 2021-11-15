@@ -1,6 +1,6 @@
 #include <Arduino.h>
 #include <string.h>
-//#include "SPIFFS.h"
+#include "SPIFFS.h"
 //#include "FreeRTOS.h"
 //#include "Memory_Manager.h"
 #include <esp_heap_caps.h>
@@ -24,6 +24,81 @@ void* mv_func_ptr(void* initial_function_ptr, void* function_ptr_to_copy, int le
   return temp_ptr;
   // void * to memory = address 
 }  
+
+
+
+
+
+
+
+ // BROKEN:
+ /*
+DMA_ATTR uint8_t buffer[]="I want to send something";
+
+void app_main()
+{
+    // initialization code...
+    spi_transaction_t temp = {
+        .tx_buffer = buffer,
+        .length = 8 * sizeof(buffer),
+    };
+    spi_device_transmit(spi, &temp);
+    // other stuff
+}
+void app_main()
+{
+    DMA_ATTR static uint8_t buffer[] = "I want to send something";
+    // initialization code...
+    spi_transaction_t temp = {
+        .tx_buffer = buffer,
+        .length = 8 * sizeof(buffer),
+    };
+    spi_device_transmit(spi, &temp);
+    // other stuff
+}
+
+
+
+
+*/
+/*
+ //SPIFFS.exists("file_name"); returns true if file exists
+int func_to_file(void* funct_ptr, File file  , size_t length ){
+  ///File file = SPIFFS.open(filename, FILE_WRITE);
+  //size_t write(const uint8_t *buf, size_t size) override;
+  file.write(funct_ptr, length);
+}
+//
+    //size_t readBytes(char *buffer, size_t length)
+    //{
+    //    return read((uint8_t*)buffer, length);
+    //} 
+
+    SeekSet // position offset x bytes from the start of the file
+    //SeekCur // the current position is  moved by x bytes
+    // SeekEnd the // the position is moved n bytes from the end of the file
+  if (!SPIFFS.exists(filename)){ then call the  }
+void * file_to_funct(  size_t length, String filename){
+
+  
+  //void* return_buf = new
+  char* buff = (char *)malloc(length*sizeof(char));
+  file.readBytes(buff, length);
+  
+  return (void *) buff;
+}
+
+
+*/
+
+
+
+
+
+
+
+
+
 
 void* mv_to_address(void* initial_function_ptr, unsigned long address, int length_of_new_function){
   unsigned long add_dummy = 0;

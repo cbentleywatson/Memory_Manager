@@ -15,8 +15,7 @@
             "-Wl,--gc-sections",
             "-Wl,-flto",
             "-fpermissive",
-            "-Wl,-C:\Users\cbent\Dropbox",
-            "-Wl,-T a.txt"
+            "-Wl,--script="C:\\Users\\cbent\\a.txt""
         ],
         "unflags":[
             "-g",

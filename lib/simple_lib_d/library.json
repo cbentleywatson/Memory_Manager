@@ -17,9 +17,7 @@
             "-ffunction-sections",
             "-Wl,--gc-sections",
             "-Wl,-flto",
-            "-fpermissive",
-            "-Wl,-C:\Users\cbent\Dropbox",
-            "-Wl,-T a.txt"
+            "-fpermissive"
         ],
         "unflags": [
             "-g3",
