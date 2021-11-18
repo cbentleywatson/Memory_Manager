@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <string.h>
 #include "SPIFFS.h"
+#include "esp-elf.h"
 //#include "FreeRTOS.h"
 
 #include <esp_heap_caps.h>
@@ -16,5 +17,21 @@ void* func_load_with_long(unsigned long source, int length);
 
 //void* func_load_with_long(unsigned long source, int length);
 void* func_load_with_void_ptr(void* source, int length);
+
+// these weren't finished
 unsigned long swap (unsigned long a, unsigned long b);
 void* exec_ptr();
+
+// Not tested:
+// Moves a string (i.e. the function) in a file given by file name
+// If the file exists, it's destroyed and the new string is put there
+int funct_to_file(void* funct_ptr, String file_name, size_t length);
+
+
+// Not Tested:
+// This would move something from file into a void * in main ram. 
+void* file_to_heap(String file_name, size_t offset, size_t length);
+
+//void* file_to_exec(String file_name, size_t offset, size_t length);
+// exec from file would then be:
+// file_to_heap, func_load_with_void_ptr, then free memory from file to heap, then exec new code
