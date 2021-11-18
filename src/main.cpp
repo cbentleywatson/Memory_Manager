@@ -79,6 +79,8 @@ unsigned long* zs =&ll;
 if (loop_count==0){
   //memcpy(temp_ptr, function_ptr_to_copy , length_of_new_function);
   File file = SPIFFS.open("/saved_funct", FILE_WRITE);
+
+  //
   //200 is a place holder for length values
   if (!file){
     Serial.println("Failed to open file for reading.");
@@ -86,23 +88,76 @@ if (loop_count==0){
   int (*void_6_file)(){&int_void_6};
   void* temp_ptr =  heap_caps_malloc(200, MALLOC_CAP_DMA);
   memcpy(temp_ptr, void_6_file, 200);
+  //Serial.println("temp ptr :", (uint32_t) temp_ptr );
   file.write((const uint8_t *) temp_ptr ,200);
   free(temp_ptr);
   file.close();
   //write(const uint8_t *buf, size_t size)
   loop_count++;
 }else{
-  File file = SPIFFS.open("/saved_funct", FILE_READ);
-  char* buff = (char *)heap_caps_malloc( 200, MALLOC_CAP_DMA);
-  file.readBytes(buff, 200);
-  void* temp_ptr =  heap_caps_malloc(200,MALLOC_CAP_EXEC);
-  memcpy(temp_ptr, (void *) buff , 200);
-  int(*ptr_to_new)() =  (int (*)()) temp_ptr; 
-  Serial.print("Void ptr_to_new's output after being read from file /saved_funct: ");
-  Serial.println( ptr_to_new());
-  free(buff);
-  free(temp_ptr);
-  file.close();
+  //int (*void_6_file)(){&int_void_6};
+  //File file = SPIFFS.open("/ELF_Files/simple_lib_d", "r");
+  // file = SPIFFS.open("/saved_funct", FILE_READ);
+  //char* buff = (char *)heap_caps_malloc( 200, MALLOC_CAP_DMA);
+  //char* buff2 = (char *)heap_caps_malloc( 200, MALLOC_CAP_DMA);
+  
+  
+  //file.seek(34,SeekSet);
+  //Serial.print("\n Void 6 * : ");
+  //Serial.print((unsigned long) void_6_file); 
+  // works
+  //file.readBytes(buff, 200);
+  //void* temp_ptr = heap_caps_malloc(200,MALLOC_CAP_EXEC);
+  // char* entrance = buff+
+  
+  //void* mv_func_ptr(void* initial funct ptr, void* ptr to copy, int length);
+  
+  
+  // need to move the 
+  //memcpy(buff2, buff[64] , (200-0x40 -4));
+  
+  //int start = 0x40;
+  //int end =0x60;
+  //char* to_loc = buff+ funct_offset;
+  //Serial.println();
+
+  //for (int i =0; (i + start)<end; i++){
+  //  buff2[i] = buff[i+start];
+  //}
+  
+  //unsigned long funct_offset = 0x34;
+  //char* offset_3 = buff + 0x40;
+  // With funct offset =0x40, load store error reported instead of illegal instruction
+  // with the memcopy offset the error is labele "load prohibited"
+  //void* target = buff + funct_offset;
+  
+  //load prohibited or load store
+  //memcpy( (void*) temp_ptr, (void*) buff[funct_offset] , 200);
+  //memcpy( (void*) temp_ptr, buff , 200);
+
+
+  
+  //memcpy( (void*) temp_ptr, (void*) buff2 , 30);
+  /*
+  char* agg =temp_ptr + funct_offset;
+  Serial.println("\n");
+  Serial.println(*agg);
+  Serial.println("\n");
+  void* temp2 = (void*) agg;
+  int(*ptr_to_new)() =  (int (*)()) ( (void*) agg); 
+  */
+  //char* temp_ptr_char = (char *) temp_ptr;
+  //for (int i = offset)
+
+
+  //void* temp2;
+  //temp2  =(void *) temp_ptr;
+  //int(*ptr_to_new)() =  (int (*)()) ( temp_ptr); 
+  //Serial.print("Void ptr_to_new's output after being read from file /saved_funct: ");
+  //Serial.println( ptr_to_new());
+  //free(buff);
+  //free(temp_ptr);
+  //file.close();
 
 
 

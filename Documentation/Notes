@@ -128,3 +128,25 @@ You can link a script if you specify the library path first. Or at least you can
             //"-Wl,-C:\Users\cbent\Dropbox",
             //"-Wl,-T a.txt"
             It doesn't like the one above this.
+
+
+Contains actual code for loading an elf file to run:
+
+http://thomasloven.com/blog/2013/08/Loading-Elf/
+
+Recommended docs Elf File format
+http://www.skyfree.org/linux/references/ELF_Format.pdf
+
+    ...
+    elf_phead *phead = (elf_phead)&data[elf->ph_offset];
+    uint32_t i;
+    for(i = 0; i < elf->ph_num; i++)
+    {
+        if(phead[i].type == ELF_PT_LOAD)
+        {
+            load_elf_segment(data, &phead[i]);
+        }
+    }
+    return 0;
+}
+This would also

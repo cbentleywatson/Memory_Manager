@@ -1,30 +1,8 @@
-#include <Arduino.h>
-#include <string.h>
-#include "SPIFFS.h"
-//#include "FreeRTOS.h"
-//#include "Memory_Manager.h"
-#include <esp_heap_caps.h>
-#include "c_header.h"
+
+#include "Memory_Manager.h"
+
 //File file = SPIFFS.open("/test.txt", FILE_WRITE);
 //file.close();
-
-//copy
-// takes a pointer and moves it to any address
-// in main the pointer type hasn't changed;
-// void* a = function pointer
-void* mv_func_ptr(void* initial_function_ptr, void* function_ptr_to_copy, int length_of_new_function){
-  void* temp_ptr =  heap_caps_malloc(length_of_new_function,MALLOC_CAP_EXEC);
-  void* prior_func_position =initial_function_ptr;
-  //void* original_ptr_location = initial_function_ptr;
-  // temp ptr 1 of type ?? 
-  memcpy(temp_ptr, function_ptr_to_copy , length_of_new_function);
-  void* temp2 =  heap_caps_malloc(300,MALLOC_CAP_EXEC);
-  initial_function_ptr =temp_ptr;
-  //heap_caps_free(temp_ptr);
-  return temp_ptr;
-  // void * to memory = address 
-}  
-
 
 
 
@@ -56,11 +34,26 @@ void app_main()
     spi_device_transmit(spi, &temp);
     // other stuff
 }
-
-
-
-
 */
+           typedef struct {
+               // Magic section need to fill
+               uint16_t      e_type;
+               uint16_t      e_machine;
+               uint32_t      e_version;
+               uint32_t      e_entry;
+               uint32_t      e_phoff;
+               uint32_t      e_shoff;
+               uint32_t      e_flags;
+               uint16_t      e_ehsize;
+               uint16_t      e_phentsize;
+               uint16_t      e_phnum;
+               uint16_t      e_shentsize;
+               uint16_t      e_shnum;
+               uint16_t      e_shstrndx;
+           } ElfN_Ehdr;
+
+
+
 /*
  //SPIFFS.exists("file_name"); returns true if file exists
 int func_to_file(void* funct_ptr, File file  , size_t length ){
