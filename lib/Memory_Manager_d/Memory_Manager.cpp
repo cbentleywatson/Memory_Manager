@@ -77,10 +77,6 @@ void * file_to_funct(  size_t length, String filename){
 
 
 
-unsigned long void_ptr_to_long(void* input){
-  //unsigned long return;
-  return (unsigned long) input; // the  
-} 
 // Make exec null ptr function
 
 void* exec_ptr(){
