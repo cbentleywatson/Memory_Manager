@@ -150,3 +150,111 @@ http://www.skyfree.org/linux/references/ELF_Format.pdf
     return 0;
 }
 This would also
+
+Esp 32 Loader  Tutorial
+https://docs.espressif.com/projects/esp-idf/en/latest/esp32s2/api-guides/linker-script-generation.html
+
+Esp32 Default linker script:
+https://github.com/espressif/esp-idf/blob/451ce8a/components/esp_system/ld/esp32s2/sections.ld.in
+
+INSTRUCTION ADDRESSING:
+
+Internal execution RAM is located between       0x4008_0000 and    0x400A_0000
+However, the executable address space runs from 0x4008_0000 to     0x407F_FFFF.
+Note that the "7" is one place over from the "A" in 
+That entire area is accessible by the cache and memory management unit.
+
+Information on storing stack data out side of ROM:
+
+CONFIG_SPIRAM_ALLOW_STACK_EXTERNAL_MEMORY
+Allow external memory as an argument to xTaskCreateStatic
+
+Found in: Component config > ESP32-specific > CONFIG_ESP32_SPIRAM_SUPPORT > SPI RAM config
+
+https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/kconfig.html#config-spiram-allow-stack-external-memory
+
+
+Because some bits of the ESP32 code environment cannot be recompiled with the cache workaround, normally tasks cannot be safely run with their stack residing in external memory; for this reason xTaskCreate (and related task creaton functions) always allocate stack in internal memory and xTaskCreateStatic will check if the memory passed to it is in internal memory. If you have a task that needs a large amount of stack and does not call on ROM code in any way (no direct calls, but also no Bluetooth/WiFi), you can try enable this to cause xTaskCreateStatic to allow tasks stack in external memory.
+
+Default value:
+No (disabled) if SPIRAM_USE_MALLOC && CONFIG_ESP32_SPIRAM_SUPPORT
+
+CONFIG_SPIRAM_USE
+SPI RAM access method
+
+Found in: Component config > ESP32-specific > CONFIG_ESP32_SPIRAM_SUPPORT > SPI RAM config
+
+The SPI RAM can be accessed in multiple methods: by just having it available as an unmanaged memory region in the CPU’s memory map, by integrating it in the heap as ‘special’ memory needing heap_caps_malloc to allocate, or by fully integrating it making malloc() also able to return SPI RAM pointers.
+
+Available options:
+Integrate RAM into memory map (SPIRAM_USE_MEMMAP)
+
+Make RAM allocatable using heap_caps_malloc(…, MALLOC_CAP_SPIRAM) (SPIRAM_USE_CAPS_ALLOC)
+
+Make RAM allocatable using malloc() as well (SPIRAM_USE_MALLOC)
+
+
+#### This option has to do with avoiding the issue where using the flash cache blocks access to external ram.
+
+https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/kconfig.html#config-spiram-cache-workaround
+
+Put libc’s jump related functions in IRAM
+
+Found in: Component config > ESP32-specific > CONFIG_ESP32_SPIRAM_SUPPORT > SPI RAM config > SPIRAM workaround libraries placement
+
+The functions affected by this option are: longjmp and setjmp. Putting these function in IRAM will allow them to be called when flash cache is disabled but it will also reduce the available size of free IRAM for the user application.
+
+Default value:
+Yes (enabled) if CONFIG_SPIRAM_CACHE_WORKAROUND && CONFIG_ESP32_SPIRAM_SUPPORT
+
+
+
+11/20 - 5 additional hours
+
+FATAL ERRORS:
+
+### Load_Store_Alignment:
+32 bit load from 4 byte aligned address only, 16 from two etc. This probably means any load from 
+
+
+### Load Prohibited or Store Prohibited:
+
+If ExecV is zero a null ptr was probably used. If the address is ouside of 0x3fxx_xxxx and 0x6xxx_xxxx, the value is garbage
+
+
+### Instr_Fetch_Prohibited:
+
+CPU could not load this instruction because the instruction address is not in a valid region of instruction ram or ROM. Usually this is caused by attempting to call a function pointer which does not point to valid code. Program counter register register can usually be used as an indicator. It will either be zero ( from a null ptr or around zero due to a null ptr used with an offset addition), or a garbage value (not 0x4xxx_xxxx).
+
+
+
+Setting memcopy etc. in IRAM so it can be run while flash cahe is disabled.
+
+https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/kconfig.html#config-spiram-cache-libmem-in-iram
+
+
+### How to Use External RAM for External Memory: (Actually this just mapped to internal flash ram)
+
+
+You have to use a bitwise or ( "||" ) with the two types of memory you want, IRAM and external ram. 
+
+
+heap_caps_malloc(1000, MALLOC_CAP_EXEC || MALLOC_CAP_SPIRAM);
+
+https://gitea.edwinclement08.com/espressif/esp-idf/commit/a3a1cc080e225e3208c210076386152002b625fc
+
+### How To configure ram for use in  a platform IO Project
+
+You use build pla Configuring External RAM: N
+
+-D CONFIG_SPIRAM_ALLOW_BSS_SEG_EXTERNAL_MEMORY
+
+
+-D MALLOC_CAP_SPIRAM
+
+### Configuring FLASH for 
+
+https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/storage/spi_flash.html
+
+Arduino Based library:
+https://github.com/Marzogh/SPIMemory/blob/master/README.md
