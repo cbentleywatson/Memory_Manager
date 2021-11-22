@@ -1,0 +1,8 @@
+SECTIONS { 
+   .text : { 
+	  . = ALIGN(4);
+	   *(.text)  } 
+  .data : { *(.data) } 
+  .bss :  { *(.bss)  *(COMMON) } 
+
+} 

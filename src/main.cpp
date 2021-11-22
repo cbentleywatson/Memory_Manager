@@ -9,9 +9,7 @@
 
 // esp_spi_flash.h explains how
 #include "esp_spi_flash.h"
-//#include "esp_flash_spi_init.h"
-//#include "esp_flash.h"
-//#include "Spi_Flash.h"
+
 // extern "C" void* mv_func_ptr(void* initial_function_ptr, void* function_ptr_to_copy, int length_of_new_function);
 // extern "C" void* mv_to_address(void* initial_function_ptr, unsigned long address, int length_of_new_function);
 //#include <Serial.h>
@@ -72,15 +70,24 @@ void *adress_address_void;
 unsigned long *a_address_as_long_ptr;
 
 int loop_count = 0;
-
+int (*f_allocated)();
 void loop()
 {
   // config_SPI_RAM
+
   int (*void_88_flash)(){&int_void_88};
 
   // esp_err_t spi_flash_write(size_t dest_addr, const void *src, size_t size);
-  void *external = heap_caps_malloc(1000, EXTERNAL || MALLOC_CAP_EXEC);
-  memcpy(external, void_88_flash, 300);
+  void *external = heap_caps_malloc(1000, MALLOC_CAP_EXEC);
+  void *dma_buffer = heap_caps_malloc(1000, MALLOC_CAP_DMA);
+  // MALLOC_CAP_EXEC
+  //
+  memcpy(external, (const void *)void_88_flash, 300);
+  memcpy(dma_buffer, (const void *)void_88_flash, 300);
+
+  delay(10000);
+  Serial.print("Free Exec Heap Size a: ");
+  Serial.println(heap_caps_get_free_size(MALLOC_CAP_EXEC));
   int (*void_21_flash)(){&int_void_21};
   void_21_flash = (int (*)())external;
   Serial.print("void_21_flash after ld from flash: ");
@@ -88,11 +95,13 @@ void loop()
 
   int (*f_external)() = (int (*)())external;
   // spi_flash_write(x400C_2000, (const void *)void_88_flash, 300);
+  Serial.print("external Address: ");
+  Serial.println(void_ptr_to_long(external), HEX);
+  // simple_funct(101);
+
   Serial.print("Printing directly from external: ");
   Serial.println(f_external());
-  Serial.print("external Address: ");
-  Serial.println(void_ptr_to_long(external));
-  // simple_funct(101);
+
   simple_int_aa = 11;
   a_address = &a;
   ptr_from_address = &a_address;
@@ -101,6 +110,7 @@ void loop()
   unsigned long test = 1000;
   unsigned long *my_long = &test;
   unsigned long z = void_ptr_to_long((void *)my_long);
+  Serial.println("\n");
   Serial.print(String((long)z, HEX));
   Serial.print("Double pointer zs before swap: ");
   // Serial.print(*v());
@@ -109,18 +119,62 @@ void loop()
   unsigned long ll = 239;
   unsigned long *zs = &ll;
   // Serial.print((unsigned long ) &zs);
+  delay(10000);
 
   if (loop_count == 0)
   {
 
     // esp_err_t spi_flash_mmap(size_t src_addr, size_t size, spi_flash_mmap_memory_t memory,
     //   const void **out_ptr, spi_flash_mmap_handle_t *out_handle);
-    size_t src_address;
-    size_t size;
-    spi_flash_mmap_memory_t memory_type;
+
+    // The enum spi_flash_mmap_memory_t has these two fields defined:
+    // SPI_FLASH_MMAP_DATA, /**< map to data memory (Vaddr0), allows byte-aligned access, 4 MB total */
+    // SPI_FLASH_MMAP_INST,
+    // 0x400A 0000
+    // Should Be working, but it's been commented out for a test
+
+    int one_kb = 1024;
+
     const void **out_ptr;
+    size_t size = 65536;
+    spi_flash_mmap_memory_t memory_type = SPI_FLASH_MMAP_DATA;
+    // points to the mapped memory region
     spi_flash_mmap_handle_t handle;
-    //spi_flash_mmap(src_address, size, memory_type, out_ptr, handle);
+    spi_flash_mmap_handle_t *handle_t_ptr;
+    handle_t_ptr = &handle;
+    size_t src_address = 0x40080000;
+    spi_flash_mmap(src_address, size, memory_type, out_ptr, handle_t_ptr);
+    heap_caps_malloc_extmem_enable(25);
+    //  while (true)
+    //  {
+    //    delay(1000);
+    //  }
+    Serial.println("/n/n Attempting mem copy");
+
+    Serial.print("Free Exec Heap Size a: ");
+    Serial.println(heap_caps_get_free_size(MALLOC_CAP_EXEC));
+    while (true)
+    {
+      delay(250);
+    }
+
+    delay(1000);
+    // SPI_FAS
+    // int (*void_89_flash)(){&int_void_88};
+    // memcpy(out_ptr, (const void *)void_89_flash, 1024);
+    //   int (*void_21_flash)(){&int_void_21};
+    //   void_21_flash = (int (*)())external;
+    //   Serial.print("void_21_flash after ld from flash: ");
+    //   Serial.println(void_21_flash());
+
+    // f_allocated = (int (*)()) * out_ptr;
+
+    delay(1000);
+
+    loop_count++;
+    // spi_flash_write(x400C_2000, (const void *)void_88_flash, 300);
+
+    // simple_funct(101);
 
     /**
         // memcpy(temp_ptr, function_ptr_to_copy , length_of_new_function);
@@ -203,11 +257,23 @@ void loop()
     // free(temp_ptr);
     // file.close();
   }
+  /// void *external = heap_caps_malloc(1000, EXTERNAL || MALLOC_CAP_EXEC);
+  //
+  Serial.print("Flash out_ptr address: ");
+  delay(1000);
+  // Serial.println(void_ptr_to_long(*out_ptr), HEX);
+  //  Serial.print("Printing from External flash region ");
+  //  Serial.println(f_external());
+
   *zs = 13;
   // swap(void_ptr_to_long(   (void *) *void_6)    ,  void_ptr_to_long((void *) *void_88 )  );
   Serial.print("Void_6 after swap: ");
-  // Serial.print((unsigned long) &zs);
-  // Serial.println("\n\n");
+
+  Serial.print("f_allocated return val : ");
+
+  // Serial.println(f_allocated());
+  //  Serial.print((unsigned long) &zs);
+  //  Serial.println("\n\n");
 
   // void* z = &
   delay(3000);

@@ -66,7 +66,16 @@ https://ftp.gnu.org/old-gnu/Manuals/ld-2.9.1/html_chapter/ld_3.html
 PlatformIO's more detailed linker info
 https://docs.platformio.org/en/latest/projectconf/advanced_scripting.html
 
-Dead code strip without LTO:
+
+### Successfully Attaching a linker script to a library manifest:
+
+This was placed at the end of Memory_manager_d's library build flags. The linker saw it but it messed every thing else up.
+
+
+"-Wl,--script='C:\\Users\\cbent\\a.txt'"
+
+
+### Dead code strip without LTO:
 
 https://gcc.gnu.org/legacy-ml/gcc-help/2003-08/msg00128.html
 -Wl,-static -fvtable-gc -fdata-sections -ffunction-sections -Wl,--gc-sections -Wl,-s
@@ -258,3 +267,41 @@ https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/storag
 
 Arduino Based library:
 https://github.com/Marzogh/SPIMemory/blob/master/README.md
+
+### Mapping External Flash to Address Space:
+
+#include "esp_spi_flash.h"
+
+  #Current Code (Located in Main):
+      size_t src_address;
+    size_t size;
+    spi_flash_mmap_memory_t memory_type;
+    const void **out_ptr; // points to the mapped memory region
+    spi_flash_mmap_handle_t handle;
+    // spi_flash_mmap(src_address, size, SPI_FLASH_MMAP_DATA, out_ptr, handle);
+### C++ syntax for fp conversions:
+
+https://en.cppreference.com/w/cpp/language/reinterpret_cast
+See item #7's note on function pointer  conversions
+
+    ### Good Example Code:
+
+https://stackoverflow.com/questions/1096341/function-pointers-casting-in-c/1096349
+
+### Casting Pointers to Numeric Values:
+
+There's a data type defined to do this, uint_ptr.
+It's special property is that if you turn a ptr into this type then convert it back it 
+will always have the same value afterwards. This is portable. 
+
+### Function Pointer Dtructs:
+
+Fuse includes structs made solely of function pointers, with the struct holding 
+the type of each function ptr; type def each relevant function and store it in one of these.
+
+### Failure to send exec code to FLASH:
+ Turns out the mmap function is one way only. You can't write to a mapped address, you can only read.
+
+###  Calling Assembly functions:
+
+The calls are always 132_r to a spot 4 bytes above the start of the address
