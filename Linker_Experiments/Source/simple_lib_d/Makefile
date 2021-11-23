@@ -11,7 +11,8 @@
 
 # This deals with the extra includes fine as long as there aren't any 
 #  -mlongcalls -mtext-section-literals 
-
+# the long call flags converted ld function into a single lsi 
+#  -Wl,-T linker_simple.txt
 output_name=simple_lib.o
 input_files=simple_lib.cpp
 std_pio_flags=-fno-rtti -fno-exceptions -std=gnu++11 -fpic -Os -Wall -nostdlib -Wpointer-arith -Wno-error=unused-but-set-variable -Wno-error=unused-variable -mlongcalls -ffunction-sections -fdata-sections -fstrict-volatile-bitfields -Wno-error=deprecated-declarations -Wno-error=unused-function -Wno-unused-parameter -Wno-sign-compare -fstack-protector -fexceptions -Werror=reorder  

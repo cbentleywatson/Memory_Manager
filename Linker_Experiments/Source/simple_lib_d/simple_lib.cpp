@@ -22,17 +22,23 @@ extern "C"
 	int extern_and_name_space(void);
 	void *get_func_loc(void);
 	void *get_call_loc(void);
+	void *load_funcs(void *);
+}
+
+extern void *load_funcs(void *args)
+{
+	return NULL;
 }
 
 void *get_func_loc()
 {
-	int (*a)(){&get_func_loc};
-	return (void *)a;
+
+	return &get_func_loc;
 }
 void *get_call_loc(void)
 {
-	int (*a)(){&call};
-	return (void *)a;
+
+	return &call;
 }
 
 int ns_not_ext();
@@ -54,7 +60,8 @@ extern int call()
 
 	int (*void_ptr)(){&int_void_LOOK_FOR_ME};
 	int a = void_ptr();
-	int z = 11;
+	z = int_void_LOOK_FOR_ME;
+	int z = 11 + z;
 	int y = 9;
 	int e = 8;
 	z = z + y;
