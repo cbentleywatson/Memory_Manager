@@ -304,4 +304,19 @@ the type of each function ptr; type def each relevant function and store it in o
 
 ###  Calling Assembly functions:
 
-The calls are always 132_r to a spot 4 bytes above the start of the address
+The calls are always 132_r to a spot 4 bytes above the start of the address; the stuff in parens evaluates to a constant to it's lefr
+
+### Setting Entry Symbols:
+
+ENTRY(symbol)  added to the beginning of the script sets the header entry location to equal the symbol. The value put in the header in the offset of that symbol relative to the start of 
+the text header.
+
+### Locating the addresses of functions via functions and relative loads:
+
+Its possible to create a function that returns it's own address regardless of it's current location in memory using relative loads and the program counter.
+
+#### KEY:
+	Using the L32r relative location system above, it's possible to calculate the correct address of any function if you can call it. You can fill a table of function locations by calling a
+	single function thats in the same text segment. Filling in the locations means you can call the subfunctions using the function table returned.
+
+

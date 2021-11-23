@@ -1,5 +1,5 @@
 #include "junk_funcs.h"
-//#include "simple_lib_d.h"
+#include "simple_lib.h"
 /*
 
 int simple_funct(int a){
@@ -15,17 +15,21 @@ int main(){
 
 // KEY: Stick the declerations in here and they'll show up in thec
 
-extern "C"
+extern int load_funcs(void)
 {
-	int int_void_LOOK_FOR_ME();
-	int call();
-	int extern_and_name_space(void);
-	void *get_func_loc(void);
-	void *get_call_loc(void);
-	int load_funcs();
+	return 777;
 }
 
-extern int load_funcs(void)
+int load_func_struct(simple_lib_funcs *fill_table_ptr)
+{
+	fill_table_ptr->is_filled = 0;
+	fill_table_ptr->int_void_LOOK_FOR_ME = &int_void_LOOK_FOR_ME;
+	fill_table_ptr->load_777 = &load_777;
+	fill_table_ptr->call = &call;
+	return 0;
+}
+
+extern int load_777(void)
 {
 	return 777;
 }

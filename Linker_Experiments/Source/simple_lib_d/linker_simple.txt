@@ -1,5 +1,5 @@
 SECTIONS { 
-	ENTRY(load_funcs)
+	ENTRY(load_funcs_struct)
    .text : { 
 	  . = ALIGN(4);
 	   *(.text)  } 
