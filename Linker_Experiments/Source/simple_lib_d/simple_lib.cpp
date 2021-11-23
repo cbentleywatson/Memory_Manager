@@ -22,12 +22,12 @@ extern "C"
 	int extern_and_name_space(void);
 	void *get_func_loc(void);
 	void *get_call_loc(void);
-	void *load_funcs(void *);
+	int load_funcs();
 }
 
-extern void *load_funcs(void *args)
+extern int load_funcs(void)
 {
-	return NULL;
+	return 777;
 }
 
 void *get_func_loc()
@@ -60,8 +60,8 @@ extern int call()
 
 	int (*void_ptr)(){&int_void_LOOK_FOR_ME};
 	int a = void_ptr();
-	z = int_void_LOOK_FOR_ME;
-	int z = 11 + z;
+	int z = int_void_LOOK_FOR_ME;
+	z = 11 + z;
 	int y = 9;
 	int e = 8;
 	z = z + y;
