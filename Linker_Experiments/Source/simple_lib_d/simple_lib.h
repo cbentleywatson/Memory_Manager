@@ -6,6 +6,8 @@
 // 5. Put the function table in as the loader's arguments
 // 6. Call the loader
 // 7. Call the functions inside of the table as needed.
+int other_elf_include(int x);
+
 struct simple_lib_funcs
 {
 	int is_filled;

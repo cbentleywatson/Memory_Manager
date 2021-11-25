@@ -66,7 +66,7 @@ extern int call()
 	int a = void_ptr();
 	int z = int_void_LOOK_FOR_ME;
 	z = 11 + z;
-	int y = 9;
+	int y = 10;
 	int e = 8;
 	z = z + y;
 	// z = junk_funct(z);

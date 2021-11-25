@@ -52,6 +52,19 @@ typedef struct
 	uint16_t e_shnum;
 	uint16_t e_shstrndx;
 } Elf32_Ehdr;
+typedef struct
+{
+	uint32_t entry_point;
+	uint32_t program_ht;
+	uint32_t section_ht;
+	uint32_t elf_header_size;
+	uint32_t ph_entry_size;
+	uint32_t num_prog_head_entries;
+	uint32_t sec_head_entry_size;
+	uin32_t num_sec_head_entries;
+	uin32_t sec_names_entry;
+
+} relevant_elf_header;
 
 typedef struct elf32_phdr
 {
@@ -106,15 +119,14 @@ uint32_t	r_info;
 #define elf_header_length 64
 // section header defines
 
-#define e_type 0x10 // 2 bytes, type of the eld file being examined
-#define e_phoff 0x1C // 4 bytes, program header offset
-#define e_shoff 0x20 // 4 bytes section header offset
+#define e_type 0x10		 // 2 bytes, type of the eld file being examined
+#define e_phoff 0x1C	 // 4 bytes, program header offset
+#define e_shoff 0x20	 // 4 bytes section header offset
 #define e_phentsize 0x2A // 2b size of a program header entry
-#define e_phnum 0x2C // 2b number of entries in the program header table
+#define e_phnum 0x2C	 // 2b number of entries in the program header table
 #define e_shentsize 0x2E // 2b size of a section header entry
-#define e_shnum 0x30 // 2b number of section header entries
-#define e_shstrndx 0x32 // 2b index of the section header with the section names
-
+#define e_shnum 0x30	 // 2b number of section header entries
+#define e_shstrndx 0x32	 // 2b index of the section header with the section names
 
 /* These constants define the different elf file types */
 #define ET_NONE 0
@@ -213,11 +225,11 @@ uint32_t	r_info;
 // go to sect headers, program headers
 // get offsets of .rela, .data, .bss, .txt
 // get offset of key functions
-uint32_t half_to_int(unsigned char *){
-
+uint32_t half_to_int(unsigned char *)
+{
 }
-uint32_t byte_to_int(unsigned char *){
-	
+uint32_t byte_to_int(unsigned char *)
+{
 }
 
 int main()
@@ -245,7 +257,7 @@ int main()
 			std::cout << myArray[i];
 		}
 		elf
-		memcpy((void *) )
+			memcpy((void *))
 		// myArray contains the full contents of the file
 		// memcpy header into elf header
 		// save data
