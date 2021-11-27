@@ -29,4 +29,4 @@ test_inclusion: test_inclusion Makefile simple_lib.h
 	$(g++_version) -o include_lib.o $(inclusion_flags) $(manager_specific_flags) -Wl,-no-pie test_inclusion.cpp  -L junk_lib.a
 
 simple_lib: simple_lib.cpp junk_func.cpp junk_funcs.h Makefile simple_lib.h
-	$(g++_version) -o $(output_name) $(std_pio_flags) $(manager_specific_flags) -Wl,-T linker_simple.txt -Wl,--just-symbols=include_lib.o $(input_files) -L junk_lib.a
+	$(g++_version) -o $(output_name) $(std_pio_flags) $(manager_specific_flags) -Wl,-T linker_simple.ld -Wl,--just-symbols=include_lib.o $(input_files) -L junk_lib.a

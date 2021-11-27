@@ -14,6 +14,12 @@ int main(){
 */
 
 // KEY: Stick the declerations in here and they'll show up in thec
+unsigned long text_offset;
+unsigned long text_length;
+unsigned long data_offset;
+unsigned long data_length;
+unsigned long bss_offset;
+unsigned long bss_length;
 
 extern int load_funcs(void)
 {

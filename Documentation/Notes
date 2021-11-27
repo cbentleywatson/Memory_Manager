@@ -315,8 +315,17 @@ the text header.
 
 Its possible to create a function that returns it's own address regardless of it's current location in memory using relative loads and the program counter.
 
-#### KEY:
+#### KEY: Function Loading to struct:
 	Using the L32r relative location system above, it's possible to calculate the correct address of any function if you can call it. You can fill a table of function locations by calling a
 	single function thats in the same text segment. Filling in the locations means you can call the subfunctions using the function table returned.
+
+#### KEY: Adding Custom Header Info:
+Adding a series of bytes to the .txt section so they can be found by referenceing offsets from entry.
+
+### Linker Script Info:
+ I'm looking for the information on creating byte sections
+ http://web.mit.edu/rhel-doc/3/rhel-ld-en-3/scripts.html	
+
+https://ftp.gnu.org/old-gnu/Manuals/ld-2.9.1/html_chapter/ld_3.html
 
 

@@ -1,9 +1,0 @@
-SECTIONS { 
-	ENTRY(load_func_struct)
-   .text : { 
-	  . = ALIGN(4);
-	   *(.text)  } 
-  .data : { *(.data) } 
-  .bss :  { *(.bss)  *(COMMON) } 
-
-} 
