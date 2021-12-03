@@ -7,6 +7,6 @@ int other_elf_include(int x)
 
 int main()
 {
-
+	
 	return 0;
 }

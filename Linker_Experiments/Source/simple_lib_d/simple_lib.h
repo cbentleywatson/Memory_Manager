@@ -14,12 +14,14 @@ struct simple_lib_funcs
 	int (*int_void_LOOK_FOR_ME)();
 	int (*load_777)();
 	int (*call)();
+	int (* get_cur_offsets)()
 };
 
 typedef int (*loader_ptr)(simple_lib_funcs *);
 
 extern "C"
 {
+	// type of loader function
 	int int_void_LOOK_FOR_ME();
 	int call();
 	int extern_and_name_space(void);

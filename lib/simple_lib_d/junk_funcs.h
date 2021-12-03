@@ -1,0 +1,1 @@
+int junk_funct(int a);
