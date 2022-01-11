@@ -329,3 +329,8 @@ Adding a series of bytes to the .txt section so they can be found by referencein
 https://ftp.gnu.org/old-gnu/Manuals/ld-2.9.1/html_chapter/ld_3.html
 
 
+### Program Header Info:
+ By adjusting the program header commands, the sections can be split up into logical blocks. With PHDRS specified, there will be two segments corresponding to the data/bss and text segments, in order
+
+### IBM C elf interpreter
+https://www.ibm.com/docs/en/zos/2.2.0?topic=file-example-relocating-addresses-within-elf
