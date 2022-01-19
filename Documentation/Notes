@@ -334,3 +334,7 @@ https://ftp.gnu.org/old-gnu/Manuals/ld-2.9.1/html_chapter/ld_3.html
 
 ### IBM C elf interpreter
 https://www.ibm.com/docs/en/zos/2.2.0?topic=file-example-relocating-addresses-within-elf
+
+##E Finding the Location of a function ###
+ Given a function found at 44 in in the right side symbol table in objdump which represents the first function in the text segment, the text segment itself will be located at that value 
+ + 52 (the size of the elf header) -1

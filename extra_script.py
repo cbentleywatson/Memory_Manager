@@ -314,7 +314,98 @@ def get_str(contents, offset):
 
     return contents[offset:].partition('\n')[0]
 
-def get_text(contents):
+
+
+
+def get_segments(lib_path):
+    try:
+        ELF_File = open(lib_path, "rb")
+    except FileNotFoundError:
+        print("Elf file "+ lib_path + "Not FOUND!")
+        return -1 
+    
+    contents =  ELF_File.read()
+    str_contents = bytes(contents)
+    ELF_File.close()
+    #print ("magic 2: " +str(read2(contents, 0)) )
+    pheader_loc = read4(contents, p_header_start)
+    number_of_p_headers = read2(contents, pheader_num_offset)
+    #print("Number of p_headers: "+ str(number_of_p_headers))
+    size_of_sec_headers = read2(contents, size_sheader_entry_offset )
+    
+    #print("size of Sec header "+ hex(size_of_sec_headers) )
+
+    num_sec_headers_for_loop = read2(contents, num_sec_headers_offset)
+    #
+    #s_header_offset_offset  = 0x20 #0x28
+    loc_sec_header_table = read4(contents, 32)
+    size_pheader_entry = read2(contents, size_pheader_entry_offset)
+    elf_type = read2(contents, elf_type_offset)
+    #print("elf type is: " + str(elf_type))
+    elf_flags = read4(contents, elf_header_flags_offset)
+    #print("elf flags are: " + str(elf_flags))
+    # only segments will be returned
+    """
+    print ("Number of Sections: " + str(num_sec_headers_for_loop))
+    print("S Header Offset: "+ str(read4(contents, 32)) )
+    sections =[]
+    
+    for i in range (0, num_sec_headers_for_loop):
+        print("i in loop: " + str(i))
+        entry_start = loc_sec_header_table + i*size_of_sec_headers
+        sflags = 0x10
+        section_flags = read4(contents,entry_start + sflags)
+        #print ("Section Table Start "+str(loc_sec_header_table ) + " Hex: " + hex(loc_sec_header_table)+  " Entry start: " + str(entry_start))
+        # 16 is the offset of the location from the beginning of the section entry
+        section_offset = read4(contents, entry_start + section_offset_offset)
+        #entry_start = loc_sec_header_table + i*size_of_sec_headers
+        section_size =  read4(contents, entry_start +   section_size_offset )
+
+        section_contents = contents[section_offset: section_offset+section_size]
+        cur_section = {"section_size" : section_size, "section_offset": section_offset, "section_contents" : section_contents}
+        sections.append(cur_section)
+        #print("section offset: " + str(section_offset), "Hex: " + hex(section_offset))
+        #print( "Section Flags: " + str(section_flags))
+        #Section Name is the firt entry so it doesn't need an additional offset
+        section_name_offset = read4(contents, entry_start)
+        print ("Section Name: " + get_str(contents, section_name_offset ))
+        
+        executable_instr = 4
+        if(section_offset == 52):
+            print("First Section Found!!!!!")
+        if(section_flags == executable_instr):
+            print("Section Contents Found")
+            return section_contents
+    print("Finished Section Loop")
+    """
+    segments = []
+    for i in range (0, number_of_p_headers):
+        print("In Segmentation Search loop with index = " +str(i) )
+        entry_start = pheader_loc + i * size_pheader_entry
+        segment_type = read4(contents, entry_start + 0)
+        segment_offset = read4(contents, entry_start + p_offset_offset )
+        segment_size_in_file = read4(contents, entry_start +segment_size_in_file_offset)
+        this_segment = contents[segment_offset: segment_offset +segment_size_in_file]
+        
+        a = {"contents": this_segment, "segment type": segment_type, "segment offset" : segment_offset }
+        segments.append(a)
+        #if(segment_type == LOADABLE_SEGMENT):
+        #   print("Found a Loadable Segment")
+            #
+            #return this_segment
+    # if we're here, nothing was returned. 
+    
+    return segments
+
+
+def get_text(lib_path):
+    try:
+        ELF_File = open(lib_path, "rb")
+    except FileNotFoundError:
+        print("Elf file "+ lib_path + "Not FOUND!")
+        return -1 
+    
+    contents =  ELF_File.read()
     str_contents = bytes(contents)
     print ("magic 2: " +str(read2(contents, 0)) )
     pheader_loc = read4(contents, p_header_start)
@@ -342,7 +433,7 @@ def get_text(contents):
         entry_start = loc_sec_header_table + i*size_of_sec_headers
         sflags = 0x10
         section_flags = read4(contents,entry_start + sflags)
-        print ("Section Table Start "+str(loc_sec_header_table ) + " Hex: " + hex(loc_sec_header_table)+  " Entry start: " + str(entry_start))
+        #print ("Section Table Start "+str(loc_sec_header_table ) + " Hex: " + hex(loc_sec_header_table)+  " Entry start: " + str(entry_start))
         # 16 is the offset of the location from the beginning of the section entry
         section_offset = read4(contents, entry_start + section_offset_offset)
         #entry_start = loc_sec_header_table + i*size_of_sec_headers
@@ -351,7 +442,7 @@ def get_text(contents):
         section_contents = contents[section_offset: section_offset+section_size]
         cur_section = {"section_size" : section_size, "section_offset": section_offset, "section_contents" : section_contents}
         sections.append(cur_section)
-        print("section offset: " + str(section_offset), "Hex: " + hex(section_offset))
+        #print("section offset: " + str(section_offset), "Hex: " + hex(section_offset))
         #print( "Section Flags: " + str(section_flags))
         #Section Name is the firt entry so it doesn't need an additional offset
         section_name_offset = read4(contents, entry_start)
@@ -364,17 +455,23 @@ def get_text(contents):
             print("Section Contents Found")
             return section_contents
     print("Finished Section Loop")
-
+    segments = []
     for i in range (0, number_of_p_headers):
         print("In Segmentation Search loop with index = " +str(i) )
         entry_start = pheader_loc + i * size_pheader_entry
         segment_type = read4(contents, entry_start + 0)
         segment_offset = read4(contents, entry_start + p_offset_offset )
         segment_size_in_file = read4(contents, entry_start +segment_size_in_file_offset)
-        if(segment_type == LOADABLE_SEGMENT):
-            print("Found a Loadable Segment")
-            this_segment = contents[segment_offset, segment_offset +segment_size_in_file, 1]
+        this_segment = contents[segment_offset: segment_offset +segment_size_in_file]
+        
+        a = {"contents": this_segment, "segment type": segment_type, "segment offset": segment_offset }
+        # all segments ending in one are executable.
+        if(segment_type%2== 1 ):
+            print("Found an executable segment!")
             return this_segment
+            #
+            #return this_segment
+             
     # if we're here, nothing was returned. 
     default_return = ""
     return default_return
@@ -393,11 +490,13 @@ def process_lib(lib_path):
     ld_path = "c:/users/cbent/.platformio/packages/toolchain-xtensa32/bin/../lib/gcc/xtensa-esp32-elf/5.2.0/../../../../xtensa-esp32-elf/bin/ld.exe"
     ld_script = "linker_simple.ld"
     ld_options = ""
-    # since the cleaned library replaces the 
-    total_command = ld_path + " -o "  + lib_path + " " + lib_path + " " + ld_options + " " + ld_script
+    # since the cleaned library replaces the
+    temp_lib_path =  lib_path+ "_f"
+    total_command = ld_path + " -o "  + temp_lib_path + " " + lib_path + " " + ld_options + " -T " + ld_script
     print("Total Command: " + total_command ) 
     os.system(total_command)
-    return
+    #os.system("mv " + temp_lib_path+ " " + lib )
+    return temp_lib_path
 
 
 def basic_move(rootdir1, libfolder, file_name, extension_of_compiled_file, path_to_data_folder, loc_files_on_device, onboard_file_name):
@@ -435,18 +534,16 @@ def basic_move(rootdir1, libfolder, file_name, extension_of_compiled_file, path_
     #n = new_elf.write(all_contents) 
     #new_elf.close()
     print("Before get_text and get_segment")
-    
     # Final Location actually gives the name file as it will be seen on the device
-     
     # Modify final location to remove .cpp
     
     complete_lib_path = place_all(content=all_contents, final_location=onboard_lib_name )
-    process_lib(complete_lib_path) 
+    finished_lib_path =  process_lib(complete_lib_path) 
     # You can now run all linking operations and so on in place.
     ld_path = "c:/users/cbent/.platformio/packages/toolchain-xtensa32/bin/../lib/gcc/xtensa-esp32-elf/5.2.0/../../../../xtensa-esp32-elf/bin/ld.exe"
     #os.system("c:/users/cbent/.platformio/packages/toolchain-xtensa32/bin/../lib/gcc/xtensa-esp32-elf/5.2.0/../../../../xtensa-esp32-elf/bin/ld.exe C:/Users/cbent/a.txt")
 
-    executable_segment = get_text(all_contents)
+    executable_segment = get_text(finished_lib_path)
     #if (executable_segment ="" )
     if (executable_segment == ""):
         print("No Text Segment Found")

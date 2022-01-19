@@ -7,6 +7,10 @@ void *file_to_heap(String file_name, size_t offset, size_t length)
     Serial.println("Failed to open file for reading.");
     return NULL;
   }
+  if (length == 0)
+  {
+    length = file.size();
+  }
   char *temp_ptr = (char *)heap_caps_malloc(length, MALLOC_CAP_DMA);
   file.seek(offset, SeekSet);
 
