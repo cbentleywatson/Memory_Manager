@@ -36,6 +36,10 @@ extern int load_funcs(void)
 {
 	return 777;
 }
+int start()
+{
+	return 1;
+}
 // This can be made relocatable if a pointer to the function itself is included; That way you can find the location of these function relative to load_func_struct, which you know everywhere.
 // I think this may work without any of that though
 int load_func_struct(simple_lib_funcs *fill_table_ptr)
@@ -47,13 +51,21 @@ int load_func_struct(simple_lib_funcs *fill_table_ptr)
 	fill_table_ptr->call = &call;
 	return 0;
 }
+//address/64k =page 
+// Setting the left hand (inbrackets) value maps to the virtual address, and the right goes to the physical. So the table is used to look up the real memory addresses by dividing to find the correct box.
 
-// Create a function that reads the values of the segment data and puts them in an array for relocation
-// Load that structure when you need to run the program. Don't directly access values the main c++ code can't see
-// Replace the load data function with stuff from the elf file later if you want
+// Other Version (or maybe sanity checks??):
 
-// Return the value of the starting function?
-int load_offset_array(unsigned long my_section_header[])
+// rc from spi_flash_cache2phys(0x40800000) = 0x300000
+//rc from spi_flash_phys2cache(0x300000, inst) = 0x40800000
+
+	// DPORT_PRO_FLASH_MMUTABLE[192] =48
+	//  Create a function that reads the values of the segment data and puts them in an array for relocation
+	//  Load that structure when you need to run the program. Don't directly access values the main c++ code can't see
+	//  Replace the load data function with stuff from the elf file later if you want
+
+	// Return the value of the starting function?
+	int load_offset_array(unsigned long my_section_header[])
 {
 	my_section_header[NUM_HEADER_ELEMENTS] = num_elements;
 	my_section_header[TEXT_OFF] = text_offset;

@@ -33,6 +33,18 @@ extern int call()
     return a + z;
     // int (*void_ptr)(){&int_void_LOOK_FOR_ME};
 }
+/*
+int hope_not();
+int hope_not()
+{
+
+    int a = 1;
+    a = a + 1;
+    a++;
+    a++;
+    return a;
+}
+*/
 int (*call_ptr)(){&call};
 namespace
 {

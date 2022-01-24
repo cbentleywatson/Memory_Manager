@@ -98,11 +98,13 @@ void *get_func_loc()
 
 	return (void *)&get_func_loc;
 }
+/*
 void *get_call_loc(void)
 {
 
 	return &call;
 }
+*/
 
 int ns_not_ext();
 
@@ -116,7 +118,10 @@ extern int int_void_LOOK_FOR_ME()
 {
 	return 21;
 }
-
+int start()
+{
+	return 3;
+}
 extern int call()
 {
 	// int a = int_void_LOOK_FOR_ME();
@@ -139,17 +144,27 @@ extern int call()
 int (*call_ptr)(){&call};
 namespace
 {
-
-	int extern_and_name_space(void)
-	{
-		return 1 + 1;
-	}
-	int ns_not_ext()
-	{
-		return 22;
-	}
-
+	/*
+		int extern_and_name_space(void)
+		{
+			return 1 + 1;
+		}
+		int ns_not_ext()
+		{
+			return 22;
+		}
+	*/
 }
+int double_check();
+int double_check()
+{
+	int a = 1;
+	a = a * 2;
+	a++;
+	a++;
+	return a;
+}
+
 // Not in namespace but not in external
 int normal_decleration(void);
 int normal_decleration()

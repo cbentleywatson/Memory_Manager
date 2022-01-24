@@ -5,7 +5,8 @@ PHDRS
 	mine PT_LOAD ;
 	
 }
-
+start = load_func_struct 
+/*ENTRY(load_func_struct);*/
 SECTIONS { 
 	/*_dummy =*/ 
 /*	. = SIZEOF_HEADERS;*/
@@ -31,9 +32,9 @@ SECTIONS {
 	*/
 	_text_length = SIZEOF(.text);
 	 } :mine
-
+/*
   /DISCARD/ : { *(.xt.prop) *(.comment) *(.eh_frame) *(.xt.lit) *(.dynstr) }
-
+*/
   	/*
 	_ele[0] = ADDR(.text);
 	_ele[1] = SIZEOF(.text);

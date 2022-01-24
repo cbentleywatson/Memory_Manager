@@ -13,18 +13,33 @@
 #  -mlongcalls -mtext-section-literals 
 # the long call flags converted ld function into a single lsi 
 #  -Wl,-T linker_simple.txt
-# 
+# -ffunction-sections was deleted from both pio flags and includsion -ffunction-sections -fdata-sections
+# If You unmerge Include the flags above again, The sections will pull back apart.
+
+# attempted to recompile this into a 
+## $(g++_version) -o exec_simple.o simple_exec.cpp  libsimple.a
 output_name=simple_lib.o
 input_files=simple_lib.cpp
-std_pio_flags=-fno-rtti -fno-exceptions -std=gnu++11 -fpic -Os -Wall -nostdlib -Wpointer-arith -Wno-error=unused-but-set-variable -Wno-error=unused-variable -mlongcalls -ffunction-sections -fdata-sections -fstrict-volatile-bitfields -Wno-error=deprecated-declarations -Wno-error=unused-function -Wno-unused-parameter -Wno-sign-compare -fstack-protector -fexceptions -Werror=reorder  
-inclusion_flags=-fno-rtti -fno-exceptions -std=gnu++11 -Os -Wall -nostdlib -Wpointer-arith -Wno-error=unused-but-set-variable -Wno-error=unused-variable -mlongcalls -ffunction-sections -fdata-sections -fstrict-volatile-bitfields -Wno-error=deprecated-declarations -Wno-error=unused-function -Wno-unused-parameter -Wno-sign-compare -fstack-protector -fexceptions -Werror=reorder  
+std_pio_flags=-fno-rtti -fno-exceptions -std=gnu++11 -fpic -Os -Wall -nostdlib -Wpointer-arith -Wno-error=unused-but-set-variable -Wno-error=unused-variable -mlongcalls  -fstrict-volatile-bitfields -Wno-error=deprecated-declarations -Wno-error=unused-function -Wno-unused-parameter -Wno-sign-compare -fstack-protector -fexceptions -Werror=reorder  -ffunction-sections -fdata-sections
 
-manager_specific_flags=-fpermissive  -Wl,-static,  -Wl,-flto  -mlongcalls -mtext-section-literals
+std_pio_no_secs=-fno-rtti -fno-exceptions -std=gnu++11 -fpic -Os -Wall -nostdlib -Wpointer-arith -Wno-error=unused-but-set-variable -Wno-error=unused-variable -mlongcalls  -fstrict-volatile-bitfields -Wno-error=deprecated-declarations -Wno-error=unused-function -Wno-unused-parameter -Wno-sign-compare -fstack-protector -fexceptions -Werror=reorder 
+
+inclusion_flags=-fno-rtti -fno-exceptions -std=gnu++11 -Os -Wall -nostdlib -Wpointer-arith -Wno-error=unused-but-set-variable -Wno-error=unused-variable -mlongcalls  -fstrict-volatile-bitfields -Wno-error=deprecated-declarations -Wno-error=unused-function -Wno-unused-parameter -Wno-sign-compare -fstack-protector -fexceptions -Werror=reorder  
+
+manager_specific_flags=-fpermissive  -Wl,-static,  -Wl,-flto  -mlongcalls -mtext-section-literals -fpie # removing fpie adds more relocation records
 g++_version=xtensa-esp32-elf-g++.exe
 # Just symbols includes the
-simple_lib: simple_lib.cpp junk_func.cpp junk_funcs.h Makefile simple_lib.h
-	$(g++_version) -o $(output_name) $(std_pio_flags) $(manager_specific_flags) -Wl,-T linker_simple.ld -Wl,--just-symbols=include_lib.o $(input_files) -L junk_lib.a
 
+# Have confirmed that this works with -Wl,--gcc-sections runnig
+# it does require -e to be added manually with the name of the starting function and 
+simple_lib: simple_lib.cpp junk_func.cpp junk_funcs.h Makefile simple_lib.h 
+	$(g++_version) -r -o  $(output_name) $(std_pio_flags) $(manager_specific_flags)   -Wl,-T linker_simple.ld  -e load_func_struct  -Wl,--gc-sections  -Wl, $(input_files) -L junk_lib.a
+# removed --just-symbols=include_lib.o Moves the symbol table entry for other_elf_include from  *ABS* to *UND* in the symbol table
+# The previous address was 0x400054 but now its 0x000000
+
+# Linker Script 2 continues to work for simplifying;
+# In fact, linker script 1 may have been optimized enough to run on it's own. 
+	
  
 junk_funcs: junk_func.cpp junk_funcs.h
 	$(g++_version) -o junk_lib.o $(std_pio_flags) junk_func.cpp junk_funcs.h

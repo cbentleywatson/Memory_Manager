@@ -338,3 +338,31 @@ https://www.ibm.com/docs/en/zos/2.2.0?topic=file-example-relocating-addresses-wi
 ##E Finding the Location of a function ###
  Given a function found at 44 in in the right side symbol table in objdump which represents the first function in the text segment, the text segment itself will be located at that value 
  + 52 (the size of the elf header) -1
+
+ ### Slides on Relocating stuff:
+ http://web.cse.ohio-state.edu/~reeves.92/CSE2421au12/SlidesDay52.pdf
+
+ ### Readable Section Descriptions
+
+ https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/storage/spi_flash.
+ 
+ ### Mapping from SPI flash
+ 
+ html#_CPPv417esp_partition_get24esp_partition_iterator_t
+
+ ### ESP IDF MMAP SOurce Code:
+ https://github.com/espressif/esp-idf/blob/master/components/spi_flash/test/test_mmap.c
+
+
+### The real thing:
+ https://github.com/espressif/esp-idf/blob/master/components/spi_flash/flash_mmap.c
+
+ ### Direct Manipulation of MMU Tables:
+
+ https://www.esp32.com/viewtopic.php?f=12&t=4832
+
+ ### Potential Complete Version Of the Project:
+ https://github.com/embedded2014/elf-loader
+
+ ### Forum with Examples; Someone asked about building  very similar system and these are the answers
+ https://esp32.com/viewtopic.php?t=4769 
