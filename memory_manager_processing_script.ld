@@ -1,7 +1,6 @@
 	/*Start -32 gives the LMA of the segment.  The first function starts at zero in the segment Now. Do Not Modify this Script. *?
 	/*VMA Variable -LMA segment = offset to modify the variable */
 	/*  load func struct is the starting  function. Replace both references with the new variable to specify a new start*/
-
 ENTRY(load_func_struct);
 PHDRS
 {
@@ -21,7 +20,7 @@ SECTIONS {
 	. = ALIGN(4);
 	  
 
-
+/* In the original file, start is an actual function; users probably shouldn't need to define a start function to make this work though*/
    .text : {
 	   
 	   load_func_struct = . ;
