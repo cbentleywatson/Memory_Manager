@@ -10,6 +10,10 @@ int main(){
     return 2;
 }
 */
+
+/* These Ddon't end up in the bss section listed, because the  */
+int bss_unintialized;
+int bss_zero = 0;
 extern int int_void_LOOK_FOR_ME();
 int start(int a);
 int start(int a)
@@ -41,7 +45,7 @@ extern int call()
     z = z + y;
     z = z + e;
     z = z + z;
-
+    bss_unintialized = z;
     return a + z;
     // int (*void_ptr)(){&int_void_LOOK_FOR_ME};
 }

@@ -19,7 +19,7 @@ def process_lib():
     """
     ld_path  = "../../Linker_Experiments/ld.exe"
     ld_script = "memory_manager_processing_script.ld"
-    ld_options = " -r "
+    ld_options = " -r -d "
     entry_name = "call"
     # since the cleaned library replaces the
     lib_path = "simple_lib_d_all"

@@ -2,6 +2,8 @@
 	/*VMA Variable -LMA segment = offset to modify the variable */
 	/*  load func struct is the starting  function. Replace both references with the new variable to specify a new start*/
 ENTRY(call);
+/* This is equivalent to the -d command, which is already in the python flags section */
+FORCE_COMMON_ALLOCATION;
 PHDRS
 {
 	exec PT_LOAD ;
@@ -21,6 +23,7 @@ SECTIONS {
 	  
 
 /* In the original file, start is an actual function; users probably shouldn't need to define a start function to make this work though*/
+/* Stick absoe */	
 	.text : {
 	   call = . ;
 	   /*
@@ -41,9 +44,9 @@ SECTIONS {
 
 	/* SNip From Physical offset. R */
 	
-	
+ 	*(.literal*)
 	*(.text*) 
-
+	*(.rodata*)
 	/*LONG(ADDR(.data));*/
 
 	/* Either the function ends up at 11c (on start address) and 10C VMA/LMW and 114 in offset
@@ -58,8 +61,11 @@ SECTIONS {
 	_data_length = SIZEOF(.data);
 	*/
 	 } :exec
-
-  .data : { 	*(.data*) } :data_ram
+/* Everything  that needs to go in the data ram goes in here */
+  .data : { 	*(.data*)
+	
+	/*(.bss*)  *(COMMON)*/ 
+	   } :data_ram
     .bss :  { *(.bss*)  *(COMMON) } :data_ram
 
 	   

@@ -32,6 +32,7 @@ unsigned long data_length;
 unsigned long bss_offset;
 unsigned long bss_length;
 unsigned long header_array[7];
+
 extern int load_funcs(void)
 {
 	return 777;

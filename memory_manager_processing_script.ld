@@ -45,6 +45,7 @@ SECTIONS {
 	*(.text*) 
 
 	/*LONG(ADDR(.data));*/
+	/* May need */
 
 	/* Either the function ends up at 11c (on start address) and 10C VMA/LMW and 114 in offset
 		PHeader lists offset P4 and LMA/VM 8c and c4 for the offset 8c for LMA and VMA

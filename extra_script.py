@@ -690,9 +690,6 @@ def get_exec(all_contents):
     a= get_section_by_type(all_contents, sh_progbits)
     return a[0]
 
-
-
-
 def process_lib(lib_path):
     # Take a path to a library file and then process it until it's read to be sliced up for loading.
     ld_path = "c:/users/cbent/.platformio/packages/toolchain-xtensa32/bin/../lib/gcc/xtensa-esp32-elf/5.2.0/../../../../xtensa-esp32-elf/bin/ld.exe"
