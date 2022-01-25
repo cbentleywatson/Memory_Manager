@@ -22,7 +22,7 @@ int e = 20;
 extern int load_func_struct(int a);
 extern int load_func_struct(int a)
 {
-    return a + 1
+    return a + 1;
 }
 
 extern int int_void_LOOK_FOR_ME()

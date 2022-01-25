@@ -697,7 +697,7 @@ def process_lib(lib_path):
     # Take a path to a library file and then process it until it's read to be sliced up for loading.
     ld_path = "c:/users/cbent/.platformio/packages/toolchain-xtensa32/bin/../lib/gcc/xtensa-esp32-elf/5.2.0/../../../../xtensa-esp32-elf/bin/ld.exe"
     ld_script = "memory_manager_processing_script.ld"
-    ld_options = ""
+    ld_options = " -r " 
     entry_name = "load_func_struct"
     # since the cleaned library replaces the
     temp_lib_path =  lib_path+ "_f"
@@ -748,7 +748,7 @@ def basic_move(rootdir1, libfolder, file_name, extension_of_compiled_file, path_
     complete_lib_path = place_full_elf(content=all_contents, final_location=onboard_lib_name )
     # there is now a second file containing the version of the file that hase been manipulated by ld 
     finished_lib_path =  process_lib(complete_lib_path) 
-    return
+
     # You can now run all linking operations and so on in place.
     ld_path = "c:/users/cbent/.platformio/packages/toolchain-xtensa32/bin/../lib/gcc/xtensa-esp32-elf/5.2.0/../../../../xtensa-esp32-elf/bin/ld.exe"
     #os.system("c:/users/cbent/.platformio/packages/toolchain-xtensa32/bin/../lib/gcc/xtensa-esp32-elf/5.2.0/../../../../xtensa-esp32-elf/bin/ld.exe C:/Users/cbent/a.txt")

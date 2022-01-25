@@ -366,3 +366,7 @@ https://www.ibm.com/docs/en/zos/2.2.0?topic=file-example-relocating-addresses-wi
 
  ### Forum with Examples; Someone asked about building  very similar system and these are the answers
  https://esp32.com/viewtopic.php?t=4769 
+
+ ### -r On Linker script required to prevent l32r error:
+Without including -r in the linker script command, ld will refuse to create a new file.
+The error will be l32r which has to do with unknown relocations
