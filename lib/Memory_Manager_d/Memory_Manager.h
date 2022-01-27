@@ -3,13 +3,13 @@
 #include "SPIFFS.h"
 // Probably need an additional header for common function type defs. i.e. int foo(void), int bar(int a, int b) and so on
 //
-#include "esp-elf.h"
+//#include "esp-elf.h"
 //#include "FreeRTOS.h"
 
 #include <esp_heap_caps.h>
-#include "c_header.h"
+//#include "c_header.h"
 
-#include "elf.h" // this one needs to be deleted
+//#include "elf.h" // this one needs to be deleted
 
 // The exact type of the offsets is 16 bit but the
 
@@ -58,7 +58,7 @@ void *file_to_exec(String file_name, size_t sec_offset, size_t offset_from_sec_s
 void *file_sec_to_heap(String file_name, size_t sec_offset, size_t offset_from_sec_start, size_t length);
 
 // This function grabs the elf header from an elf file.
-elf_header *ld_elf_header(String file_name);
+// elf_header *ld_elf_header(String file_name);
 
 // find and load the file/function then take the function pointer given and swap it in
 // execution would require making a pointer to the correct type of function, then swapping,
@@ -84,6 +84,5 @@ elf_header *ld_elf_header(String file_name);
 // bool check_for_legal_address_exec(void* address)
 
 // KEY: This one is designed to move things to external flash/ ram and execute from there
-
 
 // mv_ptr_external()

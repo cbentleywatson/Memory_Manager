@@ -46,7 +46,7 @@ SECTIONS {
 	
  	*(.literal*)
 	*(.text*) 
-	*(.rodata*)
+	*(.rodata*) /* This may need to move if esp32 architecture means these can't be accessed */
 	/*LONG(ADDR(.data));*/
 
 	/* Either the function ends up at 11c (on start address) and 10C VMA/LMW and 114 in offset
@@ -64,9 +64,10 @@ SECTIONS {
 /* Everything  that needs to go in the data ram goes in here */
   .data : { 	*(.data*)
 	
-	/*(.bss*)  *(COMMON)*/ 
+	*(.bss*) 
+	 *(COMMON) 
 	   } :data_ram
-    .bss :  { *(.bss*)  *(COMMON) } :data_ram
+    /*.bss :  { *(.bss*)  *(COMMON) } :data_ram*/
 
 	   
   /DISCARD/ : { *(.xt.prop) *(.comment) *(.eh_frame) *(.xt.lit) *(.dynstr) }

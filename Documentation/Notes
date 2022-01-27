@@ -370,3 +370,8 @@ https://www.ibm.com/docs/en/zos/2.2.0?topic=file-example-relocating-addresses-wi
  ### -r On Linker script required to prevent l32r error:
 Without including -r in the linker script command, ld will refuse to create a new file.
 The error will be l32r which has to do with unknown relocations
+
+#### Repo with a Load Module:
+https://github.com/niicoooo/esp32-elfloader
+Contains defines for all 45 of the xtensa elf relocation possibilities
+loader.c has defintions for some of the relocations, starting at line 172 of loader.c
