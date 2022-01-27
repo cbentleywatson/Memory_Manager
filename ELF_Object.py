@@ -888,84 +888,16 @@ os.system("c:/users/cbent/.platformio/packages/toolchain-xtensa32/bin/../lib/gcc
 #    return _SConscript(self.fs, *files, **subst_kw)
 #"C:\\Users\\cbent\\.platformio\\packages\\toolchain-xtensa32\\bin\\xtensa-esp32-elf-g++.exe"
 class ELF_Object:
-        
-    def place_exec(content, final_location):
-        onboard_extension_for_executable = "_e"
-        place(content, final_location, onboard_extension_for_executable)
-        print("IN PLACE EXEC")
-        return
-    def place_relocation_table(content, final_location):
-        onboard_extension_for_rtable = "_r"
-        place(content, final_location, onboard_extension_for_rtable)
-        print("IN PLACE EXEC")
-        return
-    def place_data(content, final_location):
-        onboard_extension_for_data = "_d"
-        place(content, final_location, onboard_extension_for_data)
-        print("IN PLACE DATA")
-        return
-    def place_symbol_table(content, final_location):
-        onboard_extension_for_symbol_table = "_s"
-        place(content, final_location, onboard_extension_for_symbol_table)
-        print("IN PLACE SYM")
-        return
-    def place_full_elf(content, final_location):
-        onboard_extension = "_all"
-        
-        print("IN PLACE ALL")
-        return place(content, final_location, onboard_extension)
-    def place(content, final_location, extension):
-        # if this is modified so that 
-        # Shouldn't this not place an empty file?
-
-        new_elf= open(final_location + extension, "wb")
-        n = new_elf.write(content) 
-        new_elf.close()
-        return final_location +extension
-    def get_exec(contents):
-        size =0
-        offset =0
-        return contents[offset, offset+size] 
-    def read2(content, offset):
-        rb = 256
-        a =  1 *content[offset+ 0]
-        #print("a = " + hex(a))
-        b = rb * content[offset +1]
-        #print("b byte value = " + hex(content[offset+1]) )
-        #print("b total  value: " + hex(b) )
-        final = a +b 
-        #print("Sum final hex: " + hex(final) + " Sum final Dec: " + str(final) )
-        return final
-    def read4 (content, offset):
-
-
-        rb = 256
-        a =  rb^1 * content[offset+ 0]
-        e = content [offset : offset+4]
-        retval2 = int.from_bytes(e, "little")
-        
-        a1 = b'x\21'
-        a1 =content[offset +0]
-        #int_val_a  = int.from_bytes(content[
-    
-        b = rb^1 * content[offset +1]
-        c = rb^2 * content[offset +2]
-        d = rb^3 * content[offset +3]
-        #print("a: " +hex (content[offset[0]]) + " b: "+ hex(b) + " c: " + hex(c) + " d: " + hex(d))
-        final = a + b + c + d
-        return retval2
-    
-
+    # Consists of funcs to load the elf file itself
+    #
     entry_point_offset = 0x18
     p_header_start = 0x1C
     s_header_offset_offset  = 0x20 #0x28
     size_pheader_entry_offset = 48 #0x30
-
     pheader_num_offset = 0x2C
     size_sheader_entry_offset = 0x2E
     num_sec_headers_offset = 0x30
     elf_header_flags_offset = 0x20
-
     # Pheader data
     # all of these are 4 bytes
     seg_type =0x00
@@ -978,12 +910,8 @@ class ELF_Object:
     # program headers have a type, with options for loadable segments, but also for null segments, for the header itself etc.
     # We want to get the loadable segments, which have value PT_LOAD
     LOADABLE_SEGMENT = 1
-
-
     # Section Header Info
     sflags = 0x08
-
-
     entry_offset = 0x18
     # Section Attributes.  What can this thing do? May be a bit wise comparison
     exec_sec = 4
@@ -1016,29 +944,38 @@ class ELF_Object:
     sht_symtab_shndx = 0x12 # extended section indices
     sht_num = 0x13 # number of defined types
     # sht_loos = 6 0000000
-
-
     section_offset_offset = 0x10 #sh_offset
     section_size_offset = 0x14 #sh_size
     elf_type_offset = 0x10
-    def get_elf_header (contents):
-        print ("magic 2: " +str(read2(contents, 0)) )
-        pheader_loc = read4(contents, p_header_start)
-        number_of_p_headers = read2(contents, pheader_num_offset)
-        print("Number of p_headers: "+ str(number_of_p_headers))
+    # Utility Functions Needed to Work with Bytes in the File itself
+    def read2(content, offset):
+        rb = 256
+        a =  1 *content[offset+ 0]
+        #print("a = " + hex(a))
+        b = rb * content[offset +1]
+        #print("b byte value = " + hex(content[offset+1]) )
+        #print("b total  value: " + hex(b) )
+        final = a +b 
+        #print("Sum final hex: " + hex(final) + " Sum final Dec: " + str(final) )
+        return final
+    def read4 (content, offset):
+
+
+        rb = 256
+        a =  rb^1 * content[offset+ 0]
+        e = content [offset : offset+4]
+        retval2 = int.from_bytes(e, "little")
         
-        size_of_sec_headers = read2(contents, size_sheader_entry_offset )
-
-        num_sec_headers_for_loop = read2(contents, num_sec_headers_offset)
-        #
-        loc_sec_header_table = read4(contents, s_header_offset_offset)
-        size_pheader_entry = read4(contents, size_pheader_entry_offset)
-        elf_type = read2(contents, elf_type_offset)
-        print("elf type is: " + str(elf_type))
-        elf_flags = read4(contents, elf_header_flags_offset)
-        header={"number_program_headers": number_of_p_headers, "p_header_offset" : pheader_loc, "number_section_headers" : num_sec_headers_for_loop, "section_header_offset" : loc_sec_header_table, "size_sec_headers": size_of_sec_headers, "ELF_Flags": elf_flags}
-        return header
-
+        a1 = b'x\21'
+        a1 =content[offset +0]
+        #int_val_a  = int.from_bytes(content[
+    
+        b = rb^1 * content[offset +1]
+        c = rb^2 * content[offset +2]
+        d = rb^3 * content[offset +3]
+        #print("a: " +hex (content[offset[0]]) + " b: "+ hex(b) + " c: " + hex(c) + " d: " + hex(d))
+        final = a + b + c + d
+        return retval2
     # this Hasn't been included yet
     def get_str(contents, offset):
         return ""
@@ -1080,7 +1017,84 @@ class ELF_Object:
             return ""
 
         return contents[offset:].partition('\n')[0]
+    # Helper functions to for sorting out section types
+     #  These functions get return the sections of the the file that satsify an attribute or type; the options can be see above
+    def get_section_by_type(section_dict, sec_type):
+        # returns all section of the specified type as a list
+        cur =[]
+        for i in range(len(section_dict) ) :    
+            if (section_dict[i].get("section_type") == sec_type):
+                r = section_dict[i]
+                cur.append(r)
+        return cur
+    def get_section_by_attributes(section_dict, sec_flags):
+        # returns all section of the specified type as a list
+        cur =[]
+        for i in range(len(section_dict) ) :    
+            if (section_dict[i].get("section_flags") == sec_flags):
+                r = section_dict[i]
+                cur.append(r)
+        return cur
 
+ 
+    # Place in File and then Wrapper Functions to place content of different types into files of the right name  
+    def place(content, final_location, extension):
+        # if this is modified so that 
+        # Shouldn't this not place an empty file?
+
+        new_elf= open(final_location + extension, "wb")
+        n = new_elf.write(content) 
+        new_elf.close()
+        return final_location +extension
+
+    def place_exec(content, final_location):
+        onboard_extension_for_executable = "_e"
+        place(content, final_location, onboard_extension_for_executable)
+        print("IN PLACE EXEC")
+        return
+    def place_relocation_table(content, final_location):
+        onboard_extension_for_rtable = "_r"
+        place(content, final_location, onboard_extension_for_rtable)
+        print("IN PLACE EXEC")
+        return
+    def place_data(content, final_location):
+        onboard_extension_for_data = "_d"
+        place(content, final_location, onboard_extension_for_data)
+        print("IN PLACE DATA")
+        return
+    def place_symbol_table(content, final_location):
+        onboard_extension_for_symbol_table = "_s"
+        place(content, final_location, onboard_extension_for_symbol_table)
+        print("IN PLACE SYM")
+        return
+    def place_full_elf(content, final_location):
+        onboard_extension = "_all"
+        
+        print("IN PLACE ALL")
+        return place(content, final_location, onboard_extension)
+    """
+    def get_exec(contents):
+        size =0
+        offset =0
+        return contents[offset, offset+size]
+    """
+    def get_elf_header (contents):
+        print ("magic 2: " +str(read2(contents, 0)) )
+        pheader_loc = read4(contents, p_header_start)
+        number_of_p_headers = read2(contents, pheader_num_offset)
+        print("Number of p_headers: "+ str(number_of_p_headers))
+        
+        size_of_sec_headers = read2(contents, size_sheader_entry_offset )
+
+        num_sec_headers_for_loop = read2(contents, num_sec_headers_offset)
+        #
+        loc_sec_header_table = read4(contents, s_header_offset_offset)
+        size_pheader_entry = read4(contents, size_pheader_entry_offset)
+        elf_type = read2(contents, elf_type_offset)
+        print("elf type is: " + str(elf_type))
+        elf_flags = read4(contents, elf_header_flags_offset)
+        header={"number_program_headers": number_of_p_headers, "p_header_offset" : pheader_loc, "number_section_headers" : num_sec_headers_for_loop, "section_header_offset" : loc_sec_header_table, "size_sec_headers": size_of_sec_headers, "ELF_Flags": elf_flags}
+        return header
     def get_sections(lib_path):
         
         
@@ -1150,71 +1164,72 @@ class ELF_Object:
 
     def get_sections_content(contents):
     
-    """
-    try:
-        ELF_File = open(lib_path, "rb")
-    except FileNotFoundError:
-        print("Elf file "+ lib_path + "Not FOUND!")
-        return -1 
-    
-    contents =  ELF_File.read()
-    str_contents = bytes(contents)
-    ELF_File.close()
-    """
-    #print ("magic 2: " +str(read2(contents, 0)) )
-    pheader_loc = read4(contents, p_header_start)
-    number_of_p_headers = read2(contents, pheader_num_offset)
-    #print("Number of p_headers: "+ str(number_of_p_headers))
-    size_of_sec_headers = read2(contents, size_sheader_entry_offset )
-    
-    #print("size of Sec header "+ hex(size_of_sec_headers) )
-
-    num_sec_headers_for_loop = read2(contents, num_sec_headers_offset)
-    #
-    #s_header_offset_offset  = 0x20 #0x28
-    loc_sec_header_table = read4(contents, 32)
-    size_pheader_entry = read2(contents, size_pheader_entry_offset)
-    elf_type = read2(contents, elf_type_offset)
-    #print("elf type is: " + str(elf_type))
-    elf_flags = read4(contents, elf_header_flags_offset)
-    #print("elf flags are: " + str(elf_flags))
-    # only segments will be returned
-    
-    print ("Number of Sections: " + str(num_sec_headers_for_loop))
-    print("S Header Offset: "+ str(read4(contents, 32)) )
-    sections =[]
-    
-    for i in range (0, num_sec_headers_for_loop):
-        print("i in loop: " + str(i))
-        entry_start = loc_sec_header_table + i*size_of_sec_headers
-        sflags = 0x10
-        section_type_offset =0x04
-        section_type =read4(contents, entry_start + section_type_offset)
-        section_flags = read4(contents,entry_start + sflags)
-        #print ("Section Table Start "+str(loc_sec_header_table ) + " Hex: " + hex(loc_sec_header_table)+  " Entry start: " + str(entry_start))
-        # 16 is the offset of the location from the beginning of the section entry
-        section_offset = read4(contents, entry_start + section_offset_offset)
-        #entry_start = loc_sec_header_table + i*size_of_sec_headers
-        section_size =  read4(contents, entry_start +   section_size_offset )
-
-        section_contents = contents[section_offset: section_offset+section_size]
-        cur_section = {"section_size" : section_size, "section_offset": section_offset, "section_contents" : section_contents, "section_flags" : section_flags, "section_type" : section_type }
-        sections.append(cur_section)
-        #print("section offset: " + str(section_offset), "Hex: " + hex(section_offset))
-        #print( "Section Flags: " + str(section_flags))
-        #Section Name is the firt entry so it doesn't need an additional offset
-        section_name_offset = read4(contents, entry_start)
-        print ("Section Name: " + get_str(contents, section_name_offset ))
+        """
+        try:
+            ELF_File = open(lib_path, "rb")
+        except FileNotFoundError:
+            print("Elf file "+ lib_path + "Not FOUND!")
+            return -1 
         
-        executable_instr = 4
-        if(section_offset == 52):
-            print("First Section Found!!!!!")
-        if(section_flags == executable_instr):
-            print("Section Contents Found")
-            return section_contents
-    print("Finished Section Loop")
+        contents =  ELF_File.read()
+        str_contents = bytes(contents)
+        ELF_File.close()
+        """
+            
+        #print ("magic 2: " +str(read2(contents, 0)) )
+        pheader_loc = read4(contents, p_header_start)
+        number_of_p_headers = read2(contents, pheader_num_offset)
+        #print("Number of p_headers: "+ str(number_of_p_headers))
+        size_of_sec_headers = read2(contents, size_sheader_entry_offset )
+        
+        #print("size of Sec header "+ hex(size_of_sec_headers) )
 
-    return sections
+        num_sec_headers_for_loop = read2(contents, num_sec_headers_offset)
+        #
+        #s_header_offset_offset  = 0x20 #0x28
+        loc_sec_header_table = read4(contents, 32)
+        size_pheader_entry = read2(contents, size_pheader_entry_offset)
+        elf_type = read2(contents, elf_type_offset)
+        #print("elf type is: " + str(elf_type))
+        elf_flags = read4(contents, elf_header_flags_offset)
+        #print("elf flags are: " + str(elf_flags))
+        # only segments will be returned
+        
+        print ("Number of Sections: " + str(num_sec_headers_for_loop))
+        print("S Header Offset: "+ str(read4(contents, 32)) )
+        sections =[]
+        
+        for i in range (0, num_sec_headers_for_loop):
+            print("i in loop: " + str(i))
+            entry_start = loc_sec_header_table + i*size_of_sec_headers
+            sflags = 0x10
+            section_type_offset =0x04
+            section_type =read4(contents, entry_start + section_type_offset)
+            section_flags = read4(contents,entry_start + sflags)
+            #print ("Section Table Start "+str(loc_sec_header_table ) + " Hex: " + hex(loc_sec_header_table)+  " Entry start: " + str(entry_start))
+            # 16 is the offset of the location from the beginning of the section entry
+            section_offset = read4(contents, entry_start + section_offset_offset)
+            #entry_start = loc_sec_header_table + i*size_of_sec_headers
+            section_size =  read4(contents, entry_start +   section_size_offset )
+
+            section_contents = contents[section_offset: section_offset+section_size]
+            cur_section = {"section_size" : section_size, "section_offset": section_offset, "section_contents" : section_contents, "section_flags" : section_flags, "section_type" : section_type }
+            sections.append(cur_section)
+            #print("section offset: " + str(section_offset), "Hex: " + hex(section_offset))
+            #print( "Section Flags: " + str(section_flags))
+            #Section Name is the firt entry so it doesn't need an additional offset
+            section_name_offset = read4(contents, entry_start)
+            print ("Section Name: " + get_str(contents, section_name_offset ))
+            
+            executable_instr = 4
+            if(section_offset == 52):
+                print("First Section Found!!!!!")
+            if(section_flags == executable_instr):
+                print("Section Contents Found")
+                return section_contents
+        print("Finished Section Loop")
+
+        return sections
 
     def get_segments(lib_path):
         try:
@@ -1384,26 +1399,9 @@ class ELF_Object:
             #print( section_flags)
         return default_return
 
-    #  These functions get return the sections of the the file that satsify an attribute or type; the options can be see above
-    def get_section_by_type(section_dict, sec_type):
-        # returns all section of the specified type as a list
-        cur =[]
-        for i in range(len(section_dict) ) :    
-            if (section_dict[i].get("section_type") == sec_type):
-                r = section_dict[i]
-                cur.append(r)
-        return cur
 
-    def get_section_by_attributes(section_dict, sec_flags):
-        # returns all section of the specified type as a list
-        cur =[]
-        for i in range(len(section_dict) ) :    
-            if (section_dict[i].get("section_flags") == sec_flags):
-                r = section_dict[i]
-                cur.append(r)
-        return cur
-
-    # These should return exactly what needs to go into the onboard files
+    # These functions pull out the contents of the section to which they refer;
+    # if processing is needed before upload or if checks are needed they can be done here
     def get_sym(all_contents):
         a= get_section_by_type(all_contents, sht_symtab)
         return a[0]
@@ -1418,6 +1416,89 @@ class ELF_Object:
         return a[0]
     
  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    def load_lib_to_upload_folder(rootdir1, libfolder, file_name, extension_of_compiled_file, path_to_data_folder, loc_files_on_device, onboard_file_name):
+        # This can be eliminated once the init function makes this a global thing
+        all_sections = get_sections(finished_lib_path)
+
+        # These 
+        # get the section that needs to be uploaded, checking flags and types etc.
+        # These are still in dictionary form
+        exec_section = get_exec(all_sections)
+        data_section = get_data(all_sections)
+        relocation_table_addend = get_relocation_addends(all_sections)
+        sym_table = get_sym(all_sections)
+        # Once the symtable functions are run any additional checks are performed here or  
+        # Putting these in here before doing the actual moves means that either all of files are added or none of them are
+
+        exec_section_contents = exec_section.get("section_contents")
+        data_section_contents = data_section.get("section_contents")
+        relocation_table_addend_content = relocation_table_addend.get("section_contents")
+        sym_table_content =sym_table.get("section_contents")
+        #
+        place_exec(exec_section_contents,onboard_lib_name )
+        place_data(data_section_contents,  onboard_lib_name)
+        place_relocation_table(relocation_table_addend_content,  onboard_lib_name )
+        place_symbol_table(sym_table_content, onboard_lib_name)
+        # trigger delete file on finished_lib_path
+        # trigger delete file on complete_lib_path because neither of these will actually be on the device
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
  # ELF Header Data
     def __init__(self, ELF_Path) -> None:
         # ELF_Path is the full path to the ELF file in question
