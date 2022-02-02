@@ -2,7 +2,7 @@
 void* mv_to_address(void* initial_function_ptr, unsigned long address, int length_of_new_function){
   unsigned long add_dummy = 0;
   unsigned long dummy =0;
-  void* direct = add_dummy;
+  void* direct = (void *) add_dummy;
   void* direct_2 = add_dummy;
   void* a =  add_dummy;
 
