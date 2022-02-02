@@ -360,6 +360,10 @@ https://www.ibm.com/docs/en/zos/2.2.0?topic=file-example-relocating-addresses-wi
  ### Direct Manipulation of MMU Tables:
 
  https://www.esp32.com/viewtopic.php?f=12&t=4832
+Note the spi_flash
+rc from spi_flash_cache2phys(0x40800000) = 0x300000
+rc from spi_flash_phys2cache(0x300000, inst) = 0x40800000
+
 
  ### Potential Complete Version Of the Project:
  https://github.com/embedded2014/elf-loader
@@ -375,3 +379,182 @@ The error will be l32r which has to do with unknown relocations
 https://github.com/niicoooo/esp32-elfloader
 Contains defines for all 45 of the xtensa elf relocation possibilities
 loader.c has defintions for some of the relocations, starting at line 172 of loader.c
+
+
+### Mentions c Code Running From a File Stored Onboard (ESP32 Alexa Demo):
+
+https://www.youtube.com/watch?v=re-dSV_a0tM
+This may be useful because it show some helper functions around 3:50 that,
+
+### This is The Video Where he shows the Model from C being implemented:
+https://www.youtube.com/watch?v=kZdIO82059E
+tensor flow light xxd command will create the c program
+# Seems likely that I may Need to Eventually Connect the heap to the dynamically loaded lib; If the  
+
+### Writing Custom Malloc and Free Functions:
+http://tharikasblogs.blogspot.com/p/how-to-write-your-own-malloc-and-free.html
+
+#### Map Files?
+-Wl,-Map,output.map
+https://community.platformio.org/t/generate-a-map-file/1130/6
+
+### More Linker Script Stuff (Might Be repeated above):
+board_build.ldscript = /path/to/ldscript.ld
+ https://github.com/espressif/esp-idf/blob/master/components/spi_flash/flash_mmap.c
+
+
+
+# More On Memory Layouts:
+https://docs.espressif.com/projects/esp-idf/en/release-v4.2/esp32/api-reference/system/mem_alloc.html
+
+ ### Load Routine: Need Memory In the Correct physical Address space AND in the Correct  Virtual Address Space
+    1. PSRAM Space allocated for both, data, text
+     #Malloc_CAP_SPI_RAM
+     3F80
+    2. Sections mapped to data and exec busses
+    3. Sections loaded into their memory slots
+    4. Begin to Run code
+
+    # There's a possibility that the exec and MALLOC_CAP_SPIRAM
+
+# Better Forum On the PSRAM Functions:
+https://forum.arduino.cc/t/help-me-out-to-create-partition-for-esp32-wroom-32d-8mb/683257/4
+https://learn.upesy.com/en/programmation/psram.html
+ps_malloc() 
+
+# PS MAlloc:
+
+https://thingpulse.com/esp32-how-to-use-psram/
+
+#Himem API for PSRAM accesss:
+https://github.com/espressif/esp-idf/tree/master/examples/system/himem
+
+# ESP Performance:
+https://www.esp32.com/viewtopic.php?t=8492
+
+### Shortened MPU MMU Document from espressif: 
+Page 87 is the Memory Management stuff, along with page 595, which is more detailed
+https://www.espressif.com/sites/default/files/documentation/esp32_technical_reference_manual_en.pdf#mpummu
+
+### Forum of professional ARM Peopke:
+https://forum.pjrc.com/threads/67939-using-PSRAM-on-Teensy-4-1
+
+They're talking about needing to disable write access in this area (Line 266 of this repo)
+
+https://github.com/PaulStoffregen/cores/blob/9306571409b2fe3f508d1d5a9cf7cbfc9a1c0328/teensy4/startup.c#L266
+
+### ESP32 SPI RAM Auto Configures in PlatformIO
+https://community.platformio.org/t/esp32-wrover-platform-ram-size/3313/27
+
+### Write your own Malloc
+http://tharikasblogs.blogspot.com/p/how-to-write-your-own-malloc-and-free.html
+
+### Infor On Low Level Cache and Virtual Memory Explained:
+In context of accessing external ram as instruction memory
+https://esp32.com/viewtopic.php?t=16193
+
+#### Info on Virtual Filesystems in ESP32 and how they can be used
+https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/storage/vfs.html
+
+### Overlay manager advice:
+https://www.keil.com/support/man/docs/armclang_intro/armclang_intro_pge1466157476779.htm
+
+https://www.geeksforgeeks.org/overlays-in-memory-management/
+
+https://www.google.com/search?q=overlay+methods+in+c&rlz=1C1CHBF_enUS917US917&oq=overlay+methods+in+c&aqs=chrome..69i57j33i22i29i30l9.4966j1j9&sourceid=chrome&ie=UTF-8
+
+https://www.keil.com/support/man/docs/armclang_intro/armclang_intro_pge1466157476779.htm
+
+https://www.tutorialspoint.com/inter_process_communication/inter_process_communication_overlaying_process_image.htm
+
+https://forums.parallax.com/discussion/163970/overlay-code-with-gcc
+
+https://www.microchip.com/forums/m26224.aspx
+
+
+https://stackoverflow.com/questions/812717/is-there-any-reason-to-use-c-instead-of-c-for-embedded-development
+
+### Setting the VMA
+Updated .txt {
+    to
+.text  : {
+
+    And that set the VMA to 1000
+### Setting NOLOAD Option:
+
+.text  : {
+
+    This removes the relocation entries for the text section
+
+    It  Also removes the "LOAD" flag from teh corresponding section header
+
+### Relocation Options:
+    Removed -r after the LMA and VMA stuff was assigned.
+    It simply removed the relocation tables, added the program header which also moved the start of the sections farther down, so the text section no longer started at file offset 34
+### objcopy dumping sections:
+../../Linker_Experiments/esp_bin/xtensa-esp32-elf-objcopy.exe simple_lib_d_all_f --dump-section .text=test.txt
+
+The was done with 
+
+### Objcopy dumping sections and NOLOAD:
+    Objecopy is currently running WITH AND WITHOUT -r specified and working with both .data and .text.  
+    Using NOLOAD flag on .text seems to break the system however. 
+    Command
+     ../../Linker_Experiments/esp_bin/xtensa-esp32-elf-objcopy.exe simple_lib_d_all_f --dump-section .data=test.txt
+     
+     #### Remove Sections:
+     -R
+
+     ### Set Section Flags:
+
+            --set-section-flags sectionpattern=flags
+           Set the flags for any sections matching sectionpattern.  The
+           flags argument is a comma separated string of flag names.
+           The recognized names are alloc, contents, load, noload,
+           readonly, code, data, rom, exclude, share, and debug.  You
+           can set the contents flag for a section which does not have
+           contents, but it is not meaningful to clear the contents flag
+           of a section which does have contents--just remove the
+           section instead.  Not all flags are meaningful for all object
+           file formats.  In particular the share flag is only
+           meaningful for COFF format files and not for ELF format
+           files.
+#### OVERLAY :
+    Changes Section Flags again: Adds relocate for one thing
+       CONTENTS, ALLOC, LOAD, RELOC, READONLY, CODE
+       From with no load (I Think)
+        ALLOC, READONLY, CODE
+        
+        CONTENTS, ALLOC, LOAD, READONLY, CODE
+        Things can be allocatable, loadable
+        If it's allocatable, it needs memory but it doesn't need to be set up in flash
+### OLD LINKER SCRIPT COMMENT:
+	   /*
+	   load_func_struct = . ;
+	   start = load_func_struct ;
+	   */
+	   /*  the function we want to make the entry is assigned to "." and . represents the current address  The entry point is then set equal to the address of . which is now equal to the first address in the section. Since the text section is the only thing in the executable segment the starting function can be loacted by loading the header and finding the correct segment, or by calling the first bytes in the executable code file/segment */
+	
+	/* These Start and call things are the moset questionable. They're suppo*/
+	
+	/*call = . ;*/ 
+	/*start = load_func_struct +56;*/
+	/*start = call ;*/
+	/*call;*/
+
+	/* 8c +34 =10C *?
+	/*c4-34 =8c;  offset - header size = LMA; Symbol table lists offset as VMA, which means to find the address after cutting, you need to subtract the LMA on segment table from the LMA listed in the symbol table. That gives you 8c -8c, which is zero */   
+
+	/* SNip From Physical offset. R */
+	
+#### MEMORY:
+    # Memory Commands with OVERLAY lead to 
+
+MEMORY
+  {
+    rom (rx)  : ORIGIN = 0, LENGTH = 256K
+    ram (!rx) : org = 0x40000000, l = 4M
+	rom_fake (rx)  : ORIGIN = 0, LENGTH = 256K
+  }
+
+### Setting the memory to write to is extremely easy; Setting Load memory address and VMA for a ection would appear to place both in the same load address and the VMA 
