@@ -557,4 +557,4 @@ MEMORY
 	rom_fake (rx)  : ORIGIN = 0, LENGTH = 256K
   }
 
-### Setting the memory to write to is extremely easy; Setting Load memory address and VMA for a ection would appear to place both in the same load address and the VMA 
+### Setting the memory to write to is extremely easy; Setting Load memory address and VMA for a Section would appear to place both in the same load address and the VMA 
