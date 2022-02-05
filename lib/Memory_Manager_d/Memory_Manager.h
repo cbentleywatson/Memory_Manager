@@ -176,7 +176,7 @@ public:
 		void *file_contents = NULL;
 		int length = file_to_heap_pure_fstructs(file_name, file_contents);
 		// move the stuff from the heap onto the preallocated memory block area, free the heap memory
-		memcpy(exec_ram_memory_block, file_contents, length);
+		memcpy(exec_ram_memory_block, (void *)int_int_fp_plain, length);
 		free(file_contents);
 		// Move the function point to to point to the block, return success or emit an error.
 		int_int_fp_copied_from_file = exec_ram_memory_block;
