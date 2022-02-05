@@ -129,7 +129,7 @@ public:
 	{
 		void *function_contents = malloc(200);
 		memcpy(function_contents, (void *)int_int_fp_plain, 200);
-	
+
 		FILE *ptr;
 		ptr = fopen("/spiffs/t2", "wb");
 		fwrite(function_contents, 200, 1, ptr);
@@ -142,8 +142,5 @@ public:
 		memcpy(exec_ram_function, contents_from_file, 200);
 		// funct_to_file(int_int_fp_plain, "/testheap", 200);
 		int_int_fp_copied_from_file = exec_ram_function;
-
 	}
 };
-
-
