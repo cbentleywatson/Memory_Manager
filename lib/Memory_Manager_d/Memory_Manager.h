@@ -15,7 +15,8 @@
 
 // #define FILE_NOT_FOUND -1
 // # define FILE_FOUND_NO_FUNC -2
-
+// This function gives the full contents
+void *exec_from_spiffs(String file_name);
 void *mv_func_ptr(void *initial_function_ptr, void *function_ptr_to_copy, int length_of_new_function);
 void *mv_to_address(void *initial_function_ptr, unsigned long address, int length_of_new_function);
 unsigned long void_ptr_to_long(void *input);
@@ -139,8 +140,22 @@ public:
 		void *exec_ram_function = heap_caps_malloc(200, MALLOC_CAP_EXEC);
 		ptr = fopen("/spiffs/t2", "r");
 		fread(contents_from_file, 1, 200, ptr);
+		fclose(ptr);
 		memcpy(exec_ram_function, contents_from_file, 200);
 		// funct_to_file(int_int_fp_plain, "/testheap", 200);
 		int_int_fp_copied_from_file = exec_ram_function;
+	}
+	void init_fp_copied_with_spiff_func(String file_name)
+	{
+		// Filling this in and exec_from_spiffs, and then thats going to be tested
+		void *function_contents = malloc(200);
+		memcpy(function_contents, (void *)int_int_fp_plain, 200);
+
+		FILE *ptr;
+		ptr = fopen("/spiffs/t2", "wb");
+		fwrite(function_contents, 200, 1, ptr);
+		fclose(ptr);
+
+		int_int_fp_copied_from_file = exec_from_spiffs("/spiffs/t2");
 	}
 };
