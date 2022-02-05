@@ -156,6 +156,6 @@ public:
 		fwrite(function_contents, 200, 1, ptr);
 		fclose(ptr);
 
-		int_int_fp_copied_from_file = exec_from_spiffs("/spiffs/t2");
+		int_int_fp_copied_from_file = exec_from_spiffs(file_name);
 	}
 };

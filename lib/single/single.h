@@ -1,0 +1,1 @@
+int single_func(int input);
