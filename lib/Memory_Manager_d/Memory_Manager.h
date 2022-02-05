@@ -173,28 +173,38 @@ public:
 	{
 		//
 		// Get file contents onto the heap
+
+		int length = getFileSize(file_name); // This can probably go later, this is just a quck and
+		if (length <= 0)
+		{
+			// File No Found Errors
+			Serial.println("File Not Found");
+			return -1;
+		}
+		Serial.print("File Size: ");
+		Serial.println(length);
+
 		void *file_contents = NULL;
 		file_contents = file_to_heap_pure_fstructs(file_name);
-		int length = getFileSize(file_name); // This can probably go later, this is just a quck and
+
 		// move the stuff from the heap onto the preallocated memory block area, free the heap memory
 		memcpy(exec_ram_memory_block, (void *)file_contents, length);
+		int_int_fp_copied_from_file = exec_ram_memory_block;
 		free(file_contents);
 		// Move the function point to to point to the block, return success or emit an error.
-		Serial.println("File Length: ");
-		Serial.println(length);
-		if (length > 0)
-		{
-			int_int_fp_copied_from_file = exec_ram_memory_block;
-			return 0;
-		}
-		//
-		return -1; // Error
+
+		return 0;
 	}
 
 	getFileSize(String file_name)
 	{
 		FILE *ptr;
 		ptr = fopen(file_name.c_str(), "r");
+		if (ptr == NULL)
+		{
+			Serial.println("File Not Found!!!");
+			return -1;
+		}
 		fseek(ptr, 0, SEEK_END);
 		int length_file = ftell(ptr);
 		fseek(ptr, 0, SEEK_SET);

@@ -78,7 +78,7 @@ void check_fp_loaded_from_file_with_memory_block_lib_transfer_no_crash(void)
 	TEST_ASSERT_EQUAL_INT(1, output);
 }
 
-void check_fp_loaded_from_file_with_memory_block_lib_transfer_and_external_lib(void)
+void check_fp_loaded_from_file_with_memory_block_lib_transfer_doesnt_load_nonexistant_file(void)
 {
 	int output;
 	Memory_Manager mm;
@@ -87,9 +87,11 @@ void check_fp_loaded_from_file_with_memory_block_lib_transfer_and_external_lib(v
 	mm.init_memory_block();
 	// mm.init_fp_copied_with_spiff_func()
 	mm.init_fp_copied_with_spiff_func("/spiffs/t2");
-	mm.fill_memory_block("/spiffs/single_e");
-	output = mm.return_fp_copied_from_file(1);
-	TEST_ASSERT_EQUAL_INT(1, output);
+
+	mm.fill_memory_block("/spiffs/t2");
+	output = mm.fill_memory_block("/spiffs/tss2");
+	// output = mm.return_fp_copied_from_file(1);
+	TEST_ASSERT_EQUAL_INT(-1, output);
 }
 
 void setup()
@@ -105,7 +107,7 @@ void setup()
 	RUN_TEST(check_fp_loaded_from_file_with_spiff_exec_loading);
 	RUN_TEST(check_fp_loaded_from_file_with_spiff_exec_loading_and_elf);
 	RUN_TEST(check_fp_loaded_from_file_with_memory_block_lib_transfer_no_crash);
-	RUN_TEST(check_fp_loaded_from_file_with_memory_block_lib_transfer_and_external_lib);
+	RUN_TEST(check_fp_loaded_from_file_with_memory_block_lib_transfer_doesnt_load_nonexistant_file);
 
 	UNITY_END();
 }
