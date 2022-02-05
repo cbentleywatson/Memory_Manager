@@ -128,7 +128,7 @@ void loop()
 	// Serial.println(gen());
 	Serial.println("\n\n\n");
 	delay(2000);
-	
+
 	Serial.print("Void_6 after reset for testing mv_fun_ptr");
 	void_6 = &int_void_6;
 	Serial.println(void_6());

@@ -124,8 +124,35 @@ public:
 	{
 		int_int_fp_copied_to_exec = func_load_with_void_ptr((void *)int_int_fp_plain, 200);
 	}
+
 	void init_fp_copied_from_file()
 	{
-		int_int_fp_copied_from_file = file_to_exec("ELF_Files/simple_lib_d_e", 0, 200); // func_load_with_void_ptr((void *)int_int_fp_plain, 200);
+		
+		// funct_to_file(int_int_fp_plain, "/testheap", 200);
+		int_int_fp_copied_from_file = func_load_with_void_ptr((void *)int_int_fp_plain, 200); // temp_exec; // file_to_exec(file_name, 0, length); // func_load_with_void_ptr((void *)int_int_fp_plain, 200);
 	}
 };
+
+/*
+size_t length = 200;
+		String file_name = "/tf";
+		File file = SPIFFS.open(file_name, "w");
+		if (!file)
+		{
+			// Serial.println("Failed to open file for reading.");
+			//	return -1;
+		}
+
+		file.write((const uint8_t *)int_int_fp_plain, length);
+		file.close();
+
+		File file1 = SPIFFS.open(file_name, "r");
+		void *temp_ptr = heap_caps_malloc(length, MALLOC_CAP_DMA);
+
+		void *temp_exec = heap_caps_malloc(length, MALLOC_CAP_EXEC);
+		memcpy(temp_exec, (void *)int_int_fp_plain, length); // temp exec is filled from the existing file that works
+
+		file.readBytes(temp_ptr, length);
+		file.close();
+
+*/
