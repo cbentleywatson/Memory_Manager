@@ -178,9 +178,11 @@ public:
 		if (length <= 0)
 		{
 			// File No Found Errors
-			Serial.println("File Not Found");
+			Serial.println("File Not Found!!!");
 			return -1;
 		}
+		Serial.println("File Name: ");
+		Serial.print(file_name);
 		Serial.print("File Size: ");
 		Serial.println(length);
 
@@ -202,7 +204,6 @@ public:
 		ptr = fopen(file_name.c_str(), "r");
 		if (ptr == NULL)
 		{
-			Serial.println("File Not Found!!!");
 			return -1;
 		}
 		fseek(ptr, 0, SEEK_END);
