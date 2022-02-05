@@ -124,12 +124,24 @@ public:
 	{
 		int_int_fp_copied_to_exec = func_load_with_void_ptr((void *)int_int_fp_plain, 200);
 	}
+	/*
+		void init_fp_copied_from_file()
+		{
+
+			// funct_to_file(int_int_fp_plain, "/testheap", 200);
+			int_int_fp_copied_from_file = func_load_with_void_ptr((void *)int_int_fp_plain, 200); // temp_exec; // file_to_exec(file_name, 0, length); // func_load_with_void_ptr((void *)int_int_fp_plain, 200);
+		}
+	*/
 
 	void init_fp_copied_from_file()
 	{
-		
+		void *temp_ptr = heap_caps_malloc(200, MALLOC_CAP_EXEC);
+
+		memcpy(temp_ptr, (void *)int_int_fp_plain, 200);
 		// funct_to_file(int_int_fp_plain, "/testheap", 200);
-		int_int_fp_copied_from_file = func_load_with_void_ptr((void *)int_int_fp_plain, 200); // temp_exec; // file_to_exec(file_name, 0, length); // func_load_with_void_ptr((void *)int_int_fp_plain, 200);
+
+		int_int_fp_copied_from_file = temp_ptr;
+		// int_int_fp_copied_from_file = func_load_with_void_ptr((void *)int_int_fp_plain, 200); // temp_exec; // file_to_exec(file_name, 0, length); // func_load_with_void_ptr((void *)int_int_fp_plain, 200);
 	}
 };
 
