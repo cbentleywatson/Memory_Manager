@@ -132,14 +132,28 @@ public:
 			int_int_fp_copied_from_file = func_load_with_void_ptr((void *)int_int_fp_plain, 200); // temp_exec; // file_to_exec(file_name, 0, length); // func_load_with_void_ptr((void *)int_int_fp_plain, 200);
 		}
 	*/
-
+	/*
+		void init_fp_copied_from_file()
+		{
+			void *temp_ptr = heap_caps_malloc(200, MALLOC_CAP_EXEC);
+			memcpy(temp_ptr, (void *)int_int_fp_plain, 200);
+			// funct_to_file(int_int_fp_plain, "/testheap", 200);
+			int_int_fp_copied_from_file = temp_ptr;
+			// int_int_fp_copied_from_file = func_load_with_void_ptr((void *)int_int_fp_plain, 200); // temp_exec; // file_to_exec(file_name, 0, length); // func_load_with_void_ptr((void *)int_int_fp_plain, 200);
+		}
+	*/
 	void init_fp_copied_from_file()
 	{
+		void *function_contents = malloc(200);
+		memcpy(function_contents, (void *)int_int_fp_plain, 200);
+
+		String file_name = "/tf";
+		// File writer = Spiffs.open(file_name, "wb");
+		//  writer.write((const uint8_t));
+
 		void *temp_ptr = heap_caps_malloc(200, MALLOC_CAP_EXEC);
-
-		memcpy(temp_ptr, (void *)int_int_fp_plain, 200);
+		memcpy(temp_ptr, function_contents, 200);
 		// funct_to_file(int_int_fp_plain, "/testheap", 200);
-
 		int_int_fp_copied_from_file = temp_ptr;
 		// int_int_fp_copied_from_file = func_load_with_void_ptr((void *)int_int_fp_plain, 200); // temp_exec; // file_to_exec(file_name, 0, length); // func_load_with_void_ptr((void *)int_int_fp_plain, 200);
 	}
