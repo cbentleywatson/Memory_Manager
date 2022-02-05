@@ -86,3 +86,46 @@ void *file_sec_to_heap(String file_name, size_t sec_offset, size_t offset_from_s
 // KEY: This one is designed to move things to external flash/ ram and execute from there
 
 // mv_ptr_external()
+class Memory_Manager
+{
+	int default_val = 1;
+	int (*int_int_fp_plain)(int);
+	int (*int_int_fp_copied_to_exec)(int);
+	int (*int_int_fp_copied_from_file)(int);
+
+public:
+	int return_zero(int input)
+	{
+		return 0;
+	}
+	int return_one(int input)
+	{
+		return 1;
+	}
+	int return_fp_plain(int input)
+	{
+		return int_int_fp_plain(input);
+	}
+	int return_fp_copied_to_exec(int input)
+	{
+		return int_int_fp_copied_to_exec(input) + 1;
+	}
+	int return_fp_copied_from_file(int input)
+	{
+		return int_int_fp_copied_from_file(input);
+	}
+	// There need to be init functions
+	void init_fp_plain(int (*int_int_fp_plain_pass)(int))
+	{
+		int_int_fp_plain = int_int_fp_plain_pass;
+	}
+
+	void init_fp_copied_to_exec()
+	{
+		int_int_fp_copied_to_exec = func_load_with_void_ptr((void *)int_int_fp_plain, 200);
+	}
+	void init_fp_copied_from_file()
+	{
+		int_int_fp_copied_from_file = file_to_exec("ELF_Files/simple_lib_d_e", 0, 200); // func_load_with_void_ptr((void *)int_int_fp_plain, 200);
+	}
+};
