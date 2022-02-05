@@ -16,7 +16,7 @@
 // #define FILE_NOT_FOUND -1
 // # define FILE_FOUND_NO_FUNC -2
 
-int file_to_heap_pure_fstructs(String file_name, void *heap_memory_input_ptr);
+void *file_to_heap_pure_fstructs(String file_name);
 // This function gives the full contents
 
 void *exec_from_spiffs(String file_name);
@@ -174,12 +174,31 @@ public:
 		//
 		// Get file contents onto the heap
 		void *file_contents = NULL;
-		int length = file_to_heap_pure_fstructs(file_name, file_contents);
+		file_contents = file_to_heap_pure_fstructs(file_name);
+		int length = getFileSize(file_name); // This can probably go later, this is just a quck and
 		// move the stuff from the heap onto the preallocated memory block area, free the heap memory
-		memcpy(exec_ram_memory_block, (void *)int_int_fp_plain, length);
+		memcpy(exec_ram_memory_block, (void *)file_contents, length);
 		free(file_contents);
 		// Move the function point to to point to the block, return success or emit an error.
-		int_int_fp_copied_from_file = exec_ram_memory_block;
-		return 0;
+		Serial.println("File Length: ");
+		Serial.println(length);
+		if (length > 0)
+		{
+			// int_int_fp_copied_from_file = exec_ram_memory_block;
+			return 0;
+		}
+		//
+		return -1; // Error
+	}
+
+	getFileSize(String file_name)
+	{
+		FILE *ptr;
+		ptr = fopen(file_name.c_str(), "wb");
+		fseek(ptr, 0, SEEK_END);
+		int length_file = ftell(ptr);
+		fseek(ptr, 0, SEEK_SET);
+		fclose(ptr);
+		return length_file;
 	}
 };
