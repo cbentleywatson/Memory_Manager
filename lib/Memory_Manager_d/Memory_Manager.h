@@ -124,74 +124,26 @@ public:
 	{
 		int_int_fp_copied_to_exec = func_load_with_void_ptr((void *)int_int_fp_plain, 200);
 	}
-	/*
-		void init_fp_copied_from_file()
-		{
 
-			// funct_to_file(int_int_fp_plain, "/testheap", 200);
-			int_int_fp_copied_from_file = func_load_with_void_ptr((void *)int_int_fp_plain, 200); // temp_exec; // file_to_exec(file_name, 0, length); // func_load_with_void_ptr((void *)int_int_fp_plain, 200);
-		}
-	*/
-	/*
-		void init_fp_copied_from_file()
-		{
-			void *temp_ptr = heap_caps_malloc(200, MALLOC_CAP_EXEC);
-			memcpy(temp_ptr, (void *)int_int_fp_plain, 200);
-			// funct_to_file(int_int_fp_plain, "/testheap", 200);
-			int_int_fp_copied_from_file = temp_ptr;
-			// int_int_fp_copied_from_file = func_load_with_void_ptr((void *)int_int_fp_plain, 200); // temp_exec; // file_to_exec(file_name, 0, length); // func_load_with_void_ptr((void *)int_int_fp_plain, 200);
-		}
-	*/
 	void init_fp_copied_from_file()
 	{
 		void *function_contents = malloc(200);
 		memcpy(function_contents, (void *)int_int_fp_plain, 200);
-		// init_fs();
-		// spiffs_registerVFS("/data", &fs);
+	
 		FILE *ptr;
 		ptr = fopen("/spiffs/t2", "wb");
 		fwrite(function_contents, 200, 1, ptr);
 		fclose(ptr);
-		String file_name = "/tf";
-		File writer = SPIFFS.open(file_name, "w");
-		writer.write((const unsigned char *)function_contents);
-		writer.close();
 
 		void *contents_from_file = malloc(200);
-		File reader = SPIFFS.open(file_name, "r");
-		reader.read((const unsigned char *)contents_from_file, 200);
-		reader.close();
-
 		void *exec_ram_function = heap_caps_malloc(200, MALLOC_CAP_EXEC);
 		ptr = fopen("/spiffs/t2", "r");
 		fread(contents_from_file, 1, 200, ptr);
 		memcpy(exec_ram_function, contents_from_file, 200);
 		// funct_to_file(int_int_fp_plain, "/testheap", 200);
 		int_int_fp_copied_from_file = exec_ram_function;
-		// int_int_fp_copied_from_file = func_load_with_void_ptr((void *)int_int_fp_plain, 200); // temp_exec; // file_to_exec(file_name, 0, length); // func_load_with_void_ptr((void *)int_int_fp_plain, 200);
+
 	}
 };
 
-/*
-size_t length = 200;
-		String file_name = "/tf";
-		File file = SPIFFS.open(file_name, "w");
-		if (!file)
-		{
-			// Serial.println("Failed to open file for reading.");
-			//	return -1;
-		}
 
-		file.write((const uint8_t *)int_int_fp_plain, length);
-		file.close();
-
-		File file1 = SPIFFS.open(file_name, "r");
-		void *temp_ptr = heap_caps_malloc(length, MALLOC_CAP_DMA);
-
-		void *temp_exec = heap_caps_malloc(length, MALLOC_CAP_EXEC);
-		memcpy(temp_exec, (void *)int_int_fp_plain, length); // temp exec is filled from the existing file that works
-
-		file.readBytes(temp_ptr, length);
-		file.close();
-
-*/
