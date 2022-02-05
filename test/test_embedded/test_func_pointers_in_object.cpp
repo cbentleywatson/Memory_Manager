@@ -45,7 +45,7 @@ void check_fp_loaded_from_file(void)
 
 void setup()
 {
-	//Serial.begin(9600);
+	// Serial.begin(9600);
 	SPIFFS.begin();
 	delay(2000);
 	UNITY_BEGIN();

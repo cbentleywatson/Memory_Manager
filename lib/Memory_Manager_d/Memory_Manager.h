@@ -146,9 +146,14 @@ public:
 	{
 		void *function_contents = malloc(200);
 		memcpy(function_contents, (void *)int_int_fp_plain, 200);
-
+		// init_fs();
+		// spiffs_registerVFS("/data", &fs);
+		FILE *ptr;
+		ptr = fopen("/spiffs/t2", "wb");
+		fwrite(function_contents, 200, 1, ptr);
+		fclose(ptr);
 		String file_name = "/tf";
-		File writer = SPIFFS.open(file_name, "wb");
+		File writer = SPIFFS.open(file_name, "w");
 		writer.write((const unsigned char *)function_contents);
 		writer.close();
 
@@ -158,7 +163,9 @@ public:
 		reader.close();
 
 		void *exec_ram_function = heap_caps_malloc(200, MALLOC_CAP_EXEC);
-		memcpy(exec_ram_function, function_contents, 200);
+		ptr = fopen("/spiffs/t2", "r");
+		fread(contents_from_file, 1, 200, ptr);
+		memcpy(exec_ram_function, contents_from_file, 200);
 		// funct_to_file(int_int_fp_plain, "/testheap", 200);
 		int_int_fp_copied_from_file = exec_ram_function;
 		// int_int_fp_copied_from_file = func_load_with_void_ptr((void *)int_int_fp_plain, 200); // temp_exec; // file_to_exec(file_name, 0, length); // func_load_with_void_ptr((void *)int_int_fp_plain, 200);
