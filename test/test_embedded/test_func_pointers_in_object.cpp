@@ -105,12 +105,13 @@ void check_fp_loaded_from_file_with_memory_block_lib_transfer_random_files(void)
 	mm.init_fp_copied_with_spiff_func("/spiffs/t2");
 
 	mm.fill_memory_block("/spiffs/t2");
-	output = mm.fill_memory_block("/spiffs/tss2");
+	// output = mm.fill_memory_block("/spiffs/tss2");
 	output = mm.fill_memory_block("/single_e");
 	output = mm.fill_memory_block("/spiffs/single_e");
-	output = mm.fill_memory_block("/spiffs/data/single_e");
-	// output = mm.return_fp_copied_from_file(1);
-	TEST_ASSERT_EQUAL_INT(-1, output);
+	//	output = mm.fill_memory_block("/spiffs/data/single_e");
+	int checker = 11;
+	output = mm.return_fp_copied_from_file(checker);
+	TEST_ASSERT_EQUAL_INT(checker, output);
 }
 
 void setup()

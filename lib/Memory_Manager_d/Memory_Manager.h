@@ -90,6 +90,7 @@ void *file_sec_to_heap(String file_name, size_t sec_offset, size_t offset_from_s
 // KEY: This one is designed to move things to external flash/ ram and execute from there
 
 // mv_ptr_external()
+int modulo_smooth(int n);
 class Memory_Manager
 {
 	int default_val = 1;
@@ -103,6 +104,7 @@ public:
 	{
 		return 0;
 	}
+
 	int return_one(int input)
 	{
 		return 1;
@@ -175,22 +177,25 @@ public:
 		// Get file contents onto the heap
 
 		int length = getFileSize(file_name); // This can probably go later, this is just a quck and
+		int array_length = modulo_smooth(length);
 		if (length <= 0)
 		{
 			// File No Found Errors
 			Serial.println("File Not Found!!!");
 			return -1;
 		}
-		Serial.println("File Name: ");
-		Serial.print(file_name);
+		Serial.print("File Name: ");
+		Serial.println(file_name);
 		Serial.print("File Size: ");
 		Serial.println(length);
+		Serial.print("Array Length: ");
+		Serial.println(array_length);
 
 		void *file_contents = NULL;
 		file_contents = file_to_heap_pure_fstructs(file_name);
 
 		// move the stuff from the heap onto the preallocated memory block area, free the heap memory
-		memcpy(exec_ram_memory_block, (void *)file_contents, length);
+		memcpy(exec_ram_memory_block, (void *)file_contents, array_length);
 		int_int_fp_copied_from_file = exec_ram_memory_block;
 		free(file_contents);
 		// Move the function point to to point to the block, return success or emit an error.

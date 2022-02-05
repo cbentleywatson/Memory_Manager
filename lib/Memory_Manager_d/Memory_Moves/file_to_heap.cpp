@@ -59,8 +59,8 @@ void *file_to_heap_pure_fstructs(String file_name)
   length_file = ftell(ptr);
   fseek(ptr, 0, SEEK_SET);
 
-  int length_array = length_file;
-  void *heap_memory_input_ptr = malloc(length_array);
+  int length_array = modulo_smooth(length_file);
+  void *heap_memory_input_ptr = heap_caps_malloc(length_array, MALLOC_CAP_DMA);
   fread(heap_memory_input_ptr, 1, length_file, ptr);
   fclose(ptr);
   return heap_memory_input_ptr;
