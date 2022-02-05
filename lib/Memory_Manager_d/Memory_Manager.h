@@ -184,7 +184,7 @@ public:
 		Serial.println(length);
 		if (length > 0)
 		{
-			// int_int_fp_copied_from_file = exec_ram_memory_block;
+			int_int_fp_copied_from_file = exec_ram_memory_block;
 			return 0;
 		}
 		//
@@ -194,7 +194,7 @@ public:
 	getFileSize(String file_name)
 	{
 		FILE *ptr;
-		ptr = fopen(file_name.c_str(), "wb");
+		ptr = fopen(file_name.c_str(), "r");
 		fseek(ptr, 0, SEEK_END);
 		int length_file = ftell(ptr);
 		fseek(ptr, 0, SEEK_SET);
