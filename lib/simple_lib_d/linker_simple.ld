@@ -1,10 +1,10 @@
 SECTIONS { 
-	ENTRY(load_func_struct)
+	ENTRY(start)
    .text : { 
 	   /*LONGADDR and ADDR are different somehow */
 	. = ALIGN(4);
-	
-	LONG(ADDR(.text));
+	. =0x4000;
+	/*LONG(ADDR(.text));
 	LONG(SIZEOF(.text));
 	LONG(ADDR(.data));
 	LONG(SIZEOF(.data));
@@ -12,6 +12,7 @@ SECTIONS {
 	LONG(SIZEOF(.bss));
 	
 	text_offset = .  ;
+	*/
 	/*text_length = len(.text );
 	//data_offset
 	data_length = len(.data);
@@ -19,7 +20,7 @@ SECTIONS {
 	bss_length = len(.bss)
 	*/
 
-	load_func_struct = . ;
+	start = . ;
 
 	*(.text)  } 
   .data : { *(.data) } 

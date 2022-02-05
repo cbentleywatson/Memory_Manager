@@ -87,7 +87,7 @@ void loop()
 	void_6();
 	delay(2001);
 	Serial.println("Setting up LibCall: ");
-	// void_6 = exec_from_spiffs("/spiffs/single_e");
+	void_6 = exec_from_spiffs("/spiffs/ELF_Files/simple_lib_d_e");
 	Serial.print("void_6 after spiffs Load:: ");
 	File reader = SPIFFS.open("/test.txt", "r");
 	if (!reader)
