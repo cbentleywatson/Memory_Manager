@@ -64,6 +64,20 @@ void check_fp_loaded_from_file_with_spiff_exec_loading_and_elf(void)
 	TEST_ASSERT_EQUAL_INT(1, output);
 }
 
+void check_fp_loaded_from_file_with_memory_block(void)
+{
+	int output;
+	Memory_Manager mm;
+	mm.init_fp_plain(&return_one_this);
+	// "/spiffs/t2" is the name of the file that is saved in the testing set up in the init fucntion
+	mm.init_memory_block();
+
+	mm.init_fp_copied_with_spiff_func("/spiffs/t2");
+	mm.fill_memory_block("/spiffs/t2");
+	output = mm.return_fp_copied_from_file(1);
+	TEST_ASSERT_EQUAL_INT(1, output);
+}
+
 void setup()
 {
 	// Serial.begin(9600);
@@ -76,6 +90,8 @@ void setup()
 	RUN_TEST(check_fp_loaded_from_file);
 	RUN_TEST(check_fp_loaded_from_file_with_spiff_exec_loading);
 	RUN_TEST(check_fp_loaded_from_file_with_spiff_exec_loading_and_elf);
+	RUN_TEST(check_fp_loaded_from_file_with_memory_block);
+
 	UNITY_END();
 }
 

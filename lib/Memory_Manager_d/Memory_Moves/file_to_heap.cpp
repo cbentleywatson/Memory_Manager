@@ -49,3 +49,16 @@ void *file_to_heap(String file_name)
   file.close();
   return (void *)temp_ptr;
 }
+int file_to_heap_pure_fstructs(String file_name, void *heap_memory_input_ptr)
+{
+  FILE *ptr;
+  /// const char* real_file_name = "/spiffs" + file_name;
+  int length;
+  ptr = fopen(file_name.c_str(), "r");
+  fseek(ptr, 0, SEEK_END);
+  length = ftell(ptr);
+  fseek(ptr, 0, SEEK_SET);
+
+  heap_memory_input_ptr = heap_caps_malloc(length, MALLOC_CAP_DMA);
+  return length;
+}
