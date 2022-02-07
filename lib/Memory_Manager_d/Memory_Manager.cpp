@@ -1,6 +1,15 @@
 
 #include "Memory_Manager.h"
 
+
+/*
+Memory_Manager::Memory_Manager()
+{
+  int_int_fp_plain = &return_one;
+  int_int_fp_copied_to_exec = &return_one;
+  int_int_fp_copied_from_file = &return_one;
+}
+*/
 // File file = SPIFFS.open("/test.txt", FILE_WRITE);
 // file.close();
 

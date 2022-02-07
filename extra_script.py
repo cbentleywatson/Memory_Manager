@@ -22,11 +22,14 @@ test_1_lib_data = {
 simple_lib ={
     "folder_name" : "simple_lib_d"
 }
+single_func_lib = {
+    "folder_name" : "single"
+}
 
 
 
 libs_to_load = [ 
-	test_1_lib_data, simple_lib
+	test_1_lib_data, simple_lib, single_func_lib
 ]
 # Next, you would look for the corresponding compiled library in .pio/build/firebeetle32
 
@@ -39,6 +42,7 @@ libs_to_load = [
 current_windows_directory= os.getcwd
 
 name_of_this_file="extra_script.py"
+tools_path = "Linker_Experiments/"
 path_to_project="/mnt/c/Users/cbent/Dropbox/My PC (DESKTOP-BPMMLR8)/Desktop/Senior_Project/Code"
 #path_to_project_win = "c:\Users\cbent\Dropbox\My PC (DESKTOP-BPMMLR8)\Desktop\Senior_Project\Code"
 project_name ="Firebeetle_Memory_Manager"
@@ -787,7 +791,7 @@ def basic_move(rootdir1, libfolder, file_name, extension_of_compiled_file, path_
     relocation_table_addend_content = relocation_table_addend.get("section_contents")
     sym_table_content =sym_table.get("section_contents")
     #
-    place_exec(exec_section_contents,onboard_lib_name )
+    place_exec(exec_section_contents, onboard_lib_name )
     place_data(data_section_contents,  onboard_lib_name)
     place_relocation_table(relocation_table_addend_content,  onboard_lib_name )
     place_symbol_table(sym_table_content, onboard_lib_name)

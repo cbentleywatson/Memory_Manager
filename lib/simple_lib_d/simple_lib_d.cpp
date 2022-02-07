@@ -18,7 +18,7 @@ extern int int_void_LOOK_FOR_ME();
 int start(int a);
 int start(int a)
 {
-    return a + 1;
+    return 1;
 }
 
 int e = 20;

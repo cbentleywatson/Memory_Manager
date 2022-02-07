@@ -16,6 +16,10 @@
 // #define FILE_NOT_FOUND -1
 // # define FILE_FOUND_NO_FUNC -2
 
+void *file_to_heap_pure_fstructs(String file_name);
+// This function gives the full contents
+
+void *exec_from_spiffs(String file_name);
 void *mv_func_ptr(void *initial_function_ptr, void *function_ptr_to_copy, int length_of_new_function);
 void *mv_to_address(void *initial_function_ptr, unsigned long address, int length_of_new_function);
 unsigned long void_ptr_to_long(void *input);
@@ -86,3 +90,131 @@ void *file_sec_to_heap(String file_name, size_t sec_offset, size_t offset_from_s
 // KEY: This one is designed to move things to external flash/ ram and execute from there
 
 // mv_ptr_external()
+int modulo_smooth(int n);
+class Memory_Manager
+{
+	int default_val = 1;
+	int (*int_int_fp_plain)(int);
+	int (*int_int_fp_copied_to_exec)(int);
+	int (*int_int_fp_copied_from_file)(int);
+	void *exec_ram_memory_block;
+
+public:
+	int return_zero(int input)
+	{
+		return 0;
+	}
+
+	int return_one(int input)
+	{
+		return 1;
+	}
+	int return_fp_plain(int input)
+	{
+		return int_int_fp_plain(input);
+	}
+	int return_fp_copied_to_exec(int input)
+	{
+		return int_int_fp_copied_to_exec(input) + 1;
+	}
+	int return_fp_copied_from_file(int input)
+	{
+		return int_int_fp_copied_from_file(input);
+	}
+	// There need to be init functions
+	void init_fp_plain(int (*int_int_fp_plain_pass)(int))
+	{
+		int_int_fp_plain = int_int_fp_plain_pass;
+	}
+
+	void init_fp_copied_to_exec()
+	{
+		int_int_fp_copied_to_exec = func_load_with_void_ptr((void *)int_int_fp_plain, 200);
+	}
+
+	void init_fp_copied_from_file()
+	{
+		void *function_contents = malloc(200);
+		memcpy(function_contents, (void *)int_int_fp_plain, 200);
+
+		FILE *ptr;
+		ptr = fopen("/spiffs/t2", "wb");
+		fwrite(function_contents, 200, 1, ptr);
+		fclose(ptr);
+
+		void *contents_from_file = malloc(200);
+		void *exec_ram_function = heap_caps_malloc(200, MALLOC_CAP_EXEC);
+		ptr = fopen("/spiffs/t2", "r");
+		fread(contents_from_file, 1, 200, ptr);
+		fclose(ptr);
+		memcpy(exec_ram_function, contents_from_file, 200);
+		// funct_to_file(int_int_fp_plain, "/testheap", 200);
+		int_int_fp_copied_from_file = exec_ram_function;
+	}
+	void init_fp_copied_with_spiff_func(String file_name)
+	{
+		// Filling this in and exec_from_spiffs, and then thats going to be tested
+		void *function_contents = malloc(200);
+		memcpy(function_contents, (void *)int_int_fp_plain, 200);
+
+		FILE *ptr;
+		ptr = fopen("/spiffs/t2", "wb");
+		fwrite(function_contents, 200, 1, ptr);
+		fclose(ptr);
+
+		int_int_fp_copied_from_file = exec_from_spiffs(file_name);
+	}
+
+	int init_memory_block()
+	{
+		int size = 1024;
+		exec_ram_memory_block = heap_caps_malloc(size, MALLOC_CAP_EXEC);
+	}
+
+	int fill_memory_block(String file_name)
+	{
+		//
+		// Get file contents onto the heap
+
+		int length = getFileSize(file_name); // This can probably go later, this is just a quck and
+		int array_length = modulo_smooth(length);
+		if (length <= 0)
+		{
+			// File No Found Errors
+			Serial.println("File Not Found!!!");
+			return -1;
+		}
+		Serial.print("File Name: ");
+		Serial.println(file_name);
+		Serial.print("File Size: ");
+		Serial.println(length);
+		Serial.print("Array Length: ");
+		Serial.println(array_length);
+
+		void *file_contents = NULL;
+		file_contents = file_to_heap_pure_fstructs(file_name);
+
+		// move the stuff from the heap onto the preallocated memory block area, free the heap memory
+		memcpy(exec_ram_memory_block, (void *)file_contents, array_length);
+		int_int_fp_copied_from_file = exec_ram_memory_block;
+		free(file_contents);
+		// Move the function point to to point to the block, return success or emit an error.
+
+		return 0;
+	}
+
+	getFileSize(String file_name)
+	{
+		FILE *ptr;
+		ptr = fopen(file_name.c_str(), "r");
+		if (ptr == NULL)
+		{
+			return -1;
+		}
+		fseek(ptr, 0, SEEK_END);
+		int length_file = ftell(ptr);
+		fseek(ptr, 0, SEEK_SET);
+		fclose(ptr);
+		return length_file;
+	}
+};

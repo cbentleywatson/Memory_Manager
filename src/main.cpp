@@ -5,6 +5,7 @@
 #include <iostream>
 #include <stddef.h>
 #include "simple_lib_d.h"
+#include "single.h"
 //#include <Serial.h>
 typedef int (*fn_def)(void);
 int my_int_func(int x);
@@ -16,6 +17,7 @@ int my_int_func(int x)
 }
 int int_void()
 {
+	single_func(11);
 	return 5;
 }
 int int_void_6()
@@ -84,13 +86,29 @@ void loop()
 	foo();
 	void_6();
 	delay(2001);
+	Serial.println("Setting up LibCall: ");
+	void_6 = exec_from_spiffs("/spiffs/ELF_Files/simple_lib_d_e");
+	Serial.print("void_6 after spiffs Load:: ");
+	File reader = SPIFFS.open("/test.txt", "r");
+	if (!reader)
+	{
+		Serial.println("− failed to open file for reading");
+		return;
+	}
+	while (reader.available())
+	{
+		Serial.write(reader.read());
+	}
+	close(reader);
+	// Serial.println(void_6());
+
 	Serial.print("void_6 before relocation: ");
 	Serial.println(void_6());
 	// int32_t address = &int_void_21;
 	// Serial.print(address);
 	delay(2000);
-	void_6 = foo;
-	Serial.print("Void_6 after relocation: ");
+	// void_6 = exec_from_spiffs("/spiffs/single_e");
+	Serial.print("Void_6 after Load: ");
 	Serial.println(void_6());
 	int32_t temp2_address;
 
@@ -128,7 +146,7 @@ void loop()
 	// Serial.println(gen());
 	Serial.println("\n\n\n");
 	delay(2000);
-	
+
 	Serial.print("Void_6 after reset for testing mv_fun_ptr");
 	void_6 = &int_void_6;
 	Serial.println(void_6());
@@ -137,7 +155,7 @@ void loop()
 	Serial.print("Void_6 after mv_func_ptr call: ");
 	mv_func_ptr(void_6, void_21, 100);
 	Serial.println(void_6());
-	free(void_6);
+	//	free(void_6);
 	delay(2000);
 	gen = temp2;
 	Serial.print("Gen pointer: ");
@@ -161,7 +179,7 @@ void loop()
 	*/
 
 	// Serial.print(a);
-	// foo =temp2;
+	// foo = temp2;
 	// mem_func = MALLOC_CAP_32BIT;
-	free(temp2);
+	// heap_caps_free(temp2);
 }
