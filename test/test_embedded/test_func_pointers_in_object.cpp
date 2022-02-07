@@ -113,7 +113,8 @@ void check_fp_loaded_from_file_with_memory_block_lib_transfer_random_files(void)
 	output = mm.return_fp_copied_from_file(checker);
 	TEST_ASSERT_EQUAL_INT(checker, output);
 }
-
+// A global variable memory_block_array is created with an attribute placing it in an existing section sepcified in the linker script,
+// The array's address is then passed
 unsigned long memory_block_array[1024] __attribute__((section(".iram0.text")));
 void check_memory_block_based_pointer_load()
 {
@@ -125,6 +126,26 @@ void check_memory_block_based_pointer_load()
 	// "/spiffs/t2" is the name of the file that is saved in the testing set up in the init fucntion
 	output = mm.set_block_pointer_via_array(memory_block_array);
 
+	TEST_ASSERT_EQUAL_INT(checker, output);
+}
+
+void check_fp_loaded_from_file_with_memory_block_created_via_array(void)
+{
+	int output;
+	Memory_Manager mm;
+	mm.init_fp_plain(&return_one_this);
+	// "/spiffs/t2" is the name of the file that is saved in the testing set up in the init fucntion
+	mm.set_block_pointer_via_array(memory_block_array);
+	// mm.init_fp_copied_with_spiff_func()
+	mm.init_fp_copied_with_spiff_func("/spiffs/t2");
+
+	mm.fill_memory_block("/spiffs/t2");
+	// output = mm.fill_memory_block("/spiffs/tss2");
+	output = mm.fill_memory_block("/single_e");
+	output = mm.fill_memory_block("/spiffs/single_e");
+	//	output = mm.fill_memory_block("/spiffs/data/single_e");
+	int checker = 14;
+	output = mm.return_fp_copied_from_file(checker);
 	TEST_ASSERT_EQUAL_INT(checker, output);
 }
 
@@ -144,6 +165,7 @@ void setup()
 	RUN_TEST(check_fp_loaded_from_file_with_memory_block_lib_transfer_doesnt_load_nonexistant_file);
 	RUN_TEST(check_fp_loaded_from_file_with_memory_block_lib_transfer_random_files);
 	RUN_TEST(check_memory_block_based_pointer_load);
+	RUN_TEST(check_fp_loaded_from_file_with_memory_block_created_via_array);
 
 	UNITY_END();
 }
