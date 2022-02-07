@@ -109,7 +109,7 @@ void check_fp_loaded_from_file_with_memory_block_lib_transfer_random_files(void)
 	output = mm.fill_memory_block("/single_e");
 	output = mm.fill_memory_block("/spiffs/single_e");
 	//	output = mm.fill_memory_block("/spiffs/data/single_e");
-	int checker = 11;
+	int checker = 14;
 	output = mm.return_fp_copied_from_file(checker);
 	TEST_ASSERT_EQUAL_INT(checker, output);
 }
