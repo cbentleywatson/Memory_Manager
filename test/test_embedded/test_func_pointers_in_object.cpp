@@ -114,6 +114,20 @@ void check_fp_loaded_from_file_with_memory_block_lib_transfer_random_files(void)
 	TEST_ASSERT_EQUAL_INT(checker, output);
 }
 
+unsigned long memory_block_array[1024] __attribute__((section(".iram0.text")));
+void check_memory_block_based_pointer_load()
+{
+	// unsigned long memory_block_array[1024];
+	int output;
+	int checker = 0;
+	Memory_Manager mm;
+	mm.init_fp_plain(&return_one_this);
+	// "/spiffs/t2" is the name of the file that is saved in the testing set up in the init fucntion
+	output = mm.set_block_pointer_via_array(memory_block_array);
+
+	TEST_ASSERT_EQUAL_INT(checker, output);
+}
+
 void setup()
 {
 	// Serial.begin(9600);
@@ -129,6 +143,7 @@ void setup()
 	RUN_TEST(check_fp_loaded_from_file_with_memory_block_lib_transfer_no_crash);
 	RUN_TEST(check_fp_loaded_from_file_with_memory_block_lib_transfer_doesnt_load_nonexistant_file);
 	RUN_TEST(check_fp_loaded_from_file_with_memory_block_lib_transfer_random_files);
+	RUN_TEST(check_memory_block_based_pointer_load);
 
 	UNITY_END();
 }

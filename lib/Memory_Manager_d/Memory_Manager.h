@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include <string.h>
 #include "SPIFFS.h"
+
 // Probably need an additional header for common function type defs. i.e. int foo(void), int bar(int a, int b) and so on
 //
 //#include "esp-elf.h"
@@ -169,6 +170,8 @@ public:
 	{
 		int size = 1024;
 		exec_ram_memory_block = heap_caps_malloc(size, MALLOC_CAP_EXEC);
+		// If there's an error return 1, but that's not setup 
+		return 0;
 	}
 
 	int fill_memory_block(String file_name)
@@ -203,7 +206,13 @@ public:
 		return 0;
 	}
 
-	getFileSize(String file_name)
+	int set_block_pointer_via_array(unsigned long allocated_array){
+		exec_ram_memory_block = allocated_array;
+		// return zero if no error
+		return 0; 
+	}
+
+	int getFileSize(String file_name)
 	{
 		FILE *ptr;
 		ptr = fopen(file_name.c_str(), "r");
