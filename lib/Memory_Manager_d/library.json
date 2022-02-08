@@ -16,7 +16,7 @@
             "-Wl,-flto",
             "-fpermissive"
         ],
-        "CPPFLags"[
+        "CPPFLAGS": [
             "-fpermissive"
         ],
         "unflags": [
