@@ -23,7 +23,7 @@ void *file_to_heap_pure_fstructs(String file_name);
 void *exec_from_spiffs(String file_name);
 void *mv_func_ptr(void *initial_function_ptr, void *function_ptr_to_copy, int length_of_new_function);
 void *mv_to_address(void *initial_function_ptr, unsigned long address, int length_of_new_function);
-unsigned long void_ptr_to_long(void *input);
+
 void *long_to_void_ptr(unsigned long input_long);
 void *func_load_with_long(unsigned long source, int length);
 
@@ -101,10 +101,8 @@ class Memory_Manager
 	void *exec_ram_memory_block;
 
 public:
-	int return_zero(int input)
-	{
-		return 0;
-	}
+	int return_zero(int input);
+
 	unsigned long get_valid_exec_memory(size_t size, void *my_pointer)
 	{
 		/* this function is designed to get piece of exec memory with the correct size and alignment for running functions
