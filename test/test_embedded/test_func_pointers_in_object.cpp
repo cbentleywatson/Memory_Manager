@@ -125,7 +125,6 @@ void check_memory_block_based_pointer_load()
 	mm.init_fp_plain(&return_one_this);
 	// "/spiffs/t2" is the name of the file that is saved in the testing set up in the init fucntion
 	output = mm.set_block_pointer_via_array(memory_block_array);
-
 	TEST_ASSERT_EQUAL_INT(checker, output);
 }
 
@@ -166,7 +165,7 @@ void setup()
 	RUN_TEST(check_fp_loaded_from_file_with_memory_block_lib_transfer_random_files);
 	RUN_TEST(check_memory_block_based_pointer_load);
 	RUN_TEST(check_fp_loaded_from_file_with_memory_block_created_via_array);
-
+	
 	UNITY_END();
 }
 

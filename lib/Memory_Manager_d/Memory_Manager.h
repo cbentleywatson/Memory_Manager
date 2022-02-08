@@ -105,6 +105,27 @@ public:
 	{
 		return 0;
 	}
+	unsigned long get_valid_exec_memory(size_t size, void *my_pointer)
+	{
+		/* this function is designed to get piece of exec memory with the correct size and alignment for running functions
+		 * These pieces of memory need to have 4 byte alignment, and sizes need to be a multiple of four. If they're not and you try to copy the whole thing, you'll break the requiremnt
+		 * that all exec memory accesses need to be four byte aligned, resulting in a load store error when using memcopy.
+		 */
+
+		unsigned long real_size = modulo_smooth(size);
+		my_pointer = heap_caps_malloc(real_size, MALLOC_CAP_EXEC);
+		return real_size;
+	}
+	unsigned long get_valid_heap_memory(int arg_size, void *my_pointer)
+	{
+		/* this function is designed to get piece of heap memory with the correct size and alignment for running functions
+		 * These pieces of memory need to have 4 byte alignment, and sizes need to be a multiple of four. If they're not and you try to copy the whole thing, you'll break the requiremnt
+		 * that all exec memory accesses need to be four byte aligned, resulting in a load store error when using memcopy.
+		 */
+		unsigned long real_size = modulo_smooth(arg_size);
+		my_pointer = heap_caps_malloc(real_size, MALLOC_CAP_EXEC);
+		return real_size;
+	}
 
 	int return_one(int input)
 	{
@@ -127,12 +148,13 @@ public:
 	{
 		int_int_fp_plain = int_int_fp_plain_pass;
 	}
-
-	void init_fp_copied_to_exec()
+	void init_fp_copied_to_exec();
+	/*
+	 void init_fp_copied_to_exec()
 	{
 		int_int_fp_copied_to_exec = func_load_with_void_ptr((void *)int_int_fp_plain, 200);
 	}
-
+	*/
 	void init_fp_copied_from_file()
 	{
 		void *function_contents = malloc(200);
@@ -144,7 +166,10 @@ public:
 		fclose(ptr);
 
 		void *contents_from_file = malloc(200);
-		void *exec_ram_function = heap_caps_malloc(200, MALLOC_CAP_EXEC);
+		size_t block_size;
+		void *exec_ram_function;
+		// get_valid_exec_memory(block_size, exec_ram_function); //
+		exec_ram_function = heap_caps_malloc(200, MALLOC_CAP_EXEC);
 		ptr = fopen("/spiffs/t2", "r");
 		fread(contents_from_file, 1, 200, ptr);
 		fclose(ptr);
@@ -152,27 +177,9 @@ public:
 		// funct_to_file(int_int_fp_plain, "/testheap", 200);
 		int_int_fp_copied_from_file = exec_ram_function;
 	}
-	void init_fp_copied_with_spiff_func(String file_name)
-	{
-		// Filling this in and exec_from_spiffs, and then thats going to be tested
-		void *function_contents = malloc(200);
-		memcpy(function_contents, (void *)int_int_fp_plain, 200);
+	void init_fp_copied_with_spiff_func(String file_name);
 
-		FILE *ptr;
-		ptr = fopen("/spiffs/t2", "wb");
-		fwrite(function_contents, 200, 1, ptr);
-		fclose(ptr);
-
-		int_int_fp_copied_from_file = exec_from_spiffs(file_name);
-	}
-
-	int init_memory_block()
-	{
-		int size = 1024;
-		exec_ram_memory_block = heap_caps_malloc(size, MALLOC_CAP_EXEC);
-		// If there's an error return 1, but that's not setup 
-		return 0;
-	}
+	int init_memory_block();
 
 	int fill_memory_block(String file_name)
 	{
@@ -206,24 +213,11 @@ public:
 		return 0;
 	}
 
-	int set_block_pointer_via_array(unsigned long allocated_array){
-		exec_ram_memory_block = allocated_array;
-		// return zero if no error
-		return 0; 
-	}
-
-	int getFileSize(String file_name)
+	int set_block_pointer_via_array(unsigned long allocated_array)
 	{
-		FILE *ptr;
-		ptr = fopen(file_name.c_str(), "r");
-		if (ptr == NULL)
-		{
-			return -1;
-		}
-		fseek(ptr, 0, SEEK_END);
-		int length_file = ftell(ptr);
-		fseek(ptr, 0, SEEK_SET);
-		fclose(ptr);
-		return length_file;
+		exec_ram_memory_block = (void *)allocated_array;
+		// return zero if no error
+		return 0;
 	}
+	int getFileSize(String file_name);
 };
