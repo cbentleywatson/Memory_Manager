@@ -127,15 +127,18 @@ void check_fp_loaded_from_file_with_memory_block_lib_transfer_random_files(void)
 	TEST_ASSERT_EQUAL_INT(checker, output);
 }
 // A global variable memory_block_array is created with an attribute placing it in an existing section sepcified in the linker script,
-// The array's address is then passed
+// The array's address is then passed.
+// This checks that the file actually loads the pointer in without errors and the
 
 void check_memory_block_based_pointer_load()
 {
 	// unsigned long memory_block_array[1024];
 	int output;
-	int checker = 3;
+	int checker = 0;
 	Memory_Manager mm;
 	mm.init_fp_plain(&return_one_this);
+	mm.init_memory_block();
+	output = mm.set_block_pointer_via_array(memory_block_array);
 	// "/spiffs/t2" is the name of the file that is saved in the testing set up in the init fucntion
 	int return_mm_block = mm.fill_memory_block("/spiffs/single_e");
 	if (return_mm_block == -1)
@@ -144,8 +147,7 @@ void check_memory_block_based_pointer_load()
 		// TEST_ASSERT_EQUAL_INT(checker, return_mm_block);
 	}
 
-	output = mm.set_block_pointer_via_array(memory_block_array);
-
+	// output = 3;
 	TEST_ASSERT_EQUAL_INT(checker, output);
 }
 
@@ -157,11 +159,11 @@ void check_fp_loaded_from_file_with_memory_block_created_via_array(void)
 	// "/spiffs/t2" is the name of the file that is saved in the testing set up in the init fucntion
 	mm.set_block_pointer_via_array(memory_block_array);
 	// mm.init_fp_copied_with_spiff_func()
-	mm.init_fp_copied_with_spiff_func("/spiffs/t2");
+	// mm.init_fp_copied_with_spiff_func("/spiffs/t2");
 
-	mm.fill_memory_block("/spiffs/t2");
-	// output = mm.fill_memory_block("/spiffs/tss2");
-	// output = mm.fill_memory_block("/single_e");
+	// mm.fill_memory_block("/spiffs/t2");
+	//  output = mm.fill_memory_block("/spiffs/tss2");
+	//  output = mm.fill_memory_block("/single_e");
 	output = mm.fill_memory_block("/spiffs/single_e");
 	//	output = mm.fill_memory_block("/spiffs/data/single_e");
 	int checker = 14;
@@ -186,10 +188,12 @@ void setup()
 	RUN_TEST(simple_file_load);
 	RUN_TEST(check_fp_loaded_from_file_with_memory_block_lib_transfer_no_crash);
 	RUN_TEST(check_fp_loaded_from_file_with_memory_block_lib_transfer_doesnt_load_nonexistant_file);
-	RUN_TEST(check_fp_loaded_from_file_with_memory_block_lib_transfer_random_files); /*
-	 RUN_TEST(check_memory_block_based_pointer_load); // This is the one that's failin
-	 RUN_TEST(check_fp_loaded_from_file_with_memory_block_created_via_array);
- */
+	RUN_TEST(check_fp_loaded_from_file_with_memory_block_lib_transfer_random_files); // Last Successful version
+	// Check that you can
+	RUN_TEST(check_memory_block_based_pointer_load); // This is the one that's failing
+
+	RUN_TEST(check_fp_loaded_from_file_with_memory_block_created_via_array); // this is also failing
+
 	UNITY_END();
 }
 
