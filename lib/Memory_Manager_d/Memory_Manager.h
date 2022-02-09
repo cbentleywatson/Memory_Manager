@@ -102,7 +102,7 @@ class Memory_Manager
 
 public:
 	int return_zero(int input);
-
+	// int return_zero(int input);
 	unsigned long get_valid_exec_memory(size_t size, void *my_pointer)
 	{
 		/* this function is designed to get piece of exec memory with the correct size and alignment for running functions
@@ -129,6 +129,7 @@ public:
 	{
 		return 1;
 	}
+
 	int return_fp_plain(int input)
 	{
 		return int_int_fp_plain(input);
@@ -189,6 +190,7 @@ public:
 		if (length <= 0)
 		{
 			// File No Found Errors
+			Serial.print("file_name:");
 			Serial.println("File Not Found!!!");
 			return -1;
 		}
