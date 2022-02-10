@@ -91,7 +91,7 @@ void *file_sec_to_heap(String file_name, size_t sec_offset, size_t offset_from_s
 
 // KEY: This one is designed to move things to external flash/ ram and execute from there
 
-// mv_ptr_external()
+// This one can be called from anywhere since it's useful
 int modulo_smooth(int n);
 class Memory_Manager
 {
@@ -104,6 +104,8 @@ class Memory_Manager
 public:
 	int return_zero(int input);
 	// int return_zero(int input);
+
+	// These two are unused right now
 	unsigned long get_valid_exec_memory(size_t size, void *my_pointer)
 	{
 		/* this function is designed to get piece of exec memory with the correct size and alignment for running functions
@@ -155,89 +157,14 @@ public:
 		int_int_fp_copied_to_exec = func_load_with_void_ptr((void *)int_int_fp_plain, 200);
 	}
 	*/
-	void init_fp_copied_from_file()
-	{
-		void *function_contents = malloc(200);
-		memcpy(function_contents, (void *)int_int_fp_plain, 200);
+	void init_fp_copied_from_file();
 
-		FILE *ptr;
-		ptr = fopen("/spiffs/t2", "wb");
-		fwrite(function_contents, 200, 1, ptr);
-		fclose(ptr);
-
-		void *contents_from_file = malloc(200);
-		size_t block_size;
-		void *exec_ram_function;
-		// get_valid_exec_memory(block_size, exec_ram_function); //
-		exec_ram_function = heap_caps_malloc(200, MALLOC_CAP_EXEC);
-		ptr = fopen("/spiffs/t2", "r");
-		fread(contents_from_file, 1, 200, ptr);
-		fclose(ptr);
-		memcpy(exec_ram_function, contents_from_file, 200);
-		// funct_to_file(int_int_fp_plain, "/testheap", 200);
-		int_int_fp_copied_from_file = exec_ram_function;
-	}
 	void init_fp_copied_with_spiff_func(String file_name);
 	// Takes a pointer and copies it into exec ram where it can be used.
 	void *func_load_with_void_ptr(void *source, int length_of_new_function);
 	int init_memory_block();
-	int print_file_info(String file_name)
-	{
-		int length = getFileSize(file_name); // This can probably go later, this is just a quck and
-		// int array_length = modulo_smooth(length);
-		if (length <= 0)
-		{
-			// File No Found Errors
 
-			Serial.print("file_name:");
-			Serial.println("File Not Found!!!");
-
-			return -1;
-		}
-		Serial.print("File Name: ");
-		Serial.println(file_name);
-		Serial.print("File Size: ");
-		Serial.println(length);
-		Serial.print("Array Length: ");
-		}
-
-	int fill_memory_block(String file_name)
-	{
-
-		// Get file contents onto the heap
-
-		int length = getFileSize(file_name); // This can probably go later, this is just a quck and
-		int array_length = modulo_smooth(length);
-		if (length <= 0)
-		{
-			// File No Found Errors
-			if (PRINT_DEBUG)
-			{
-				Serial.print("file_name:");
-				Serial.println("File Not Found!!!");
-			}
-			return -1;
-		}
-		if (PRINT_DEBUG)
-		{
-			Serial.print("File Name: ");
-			Serial.println(file_name);
-			Serial.print("File Size: ");
-			Serial.println(length);
-			// Serial.print("Array Length: ");
-			// Serial.println(array_length);
-		}
-		void *file_contents = NULL;
-		file_contents = file_to_heap_pure_fstructs(file_name);
-
-		// move the stuff from the heap onto the preallocated memory block area, free the heap memory
-		memcpy(exec_ram_memory_block, (void *)file_contents, array_length);
-		int_int_fp_copied_from_file = exec_ram_memory_block;
-		free(file_contents);
-		// Move the function point to to point to the block, return success or emit an error.
-
-		return 0;
-	}
+	int fill_memory_block(String file_name);
 
 	int set_block_pointer_via_array(unsigned long allocated_array)
 	{
@@ -246,4 +173,5 @@ public:
 		return 0;
 	}
 	int getFileSize(String file_name);
+	int print_file_info(String file_name);
 };

@@ -191,9 +191,9 @@ void setup()
 	RUN_TEST(check_fp_loaded_from_file_with_memory_block_lib_transfer_doesnt_load_nonexistant_file);
 	RUN_TEST(check_fp_loaded_from_file_with_memory_block_lib_transfer_random_files); // Last Successful version
 	// This one seems to basically be a test of whether or not the file system loads properly, but it could be a lot clear
-	//RUN_TEST(check_memory_block_based_pointer_load); // This is the one that's failing
+	// RUN_TEST(check_memory_block_based_pointer_load); // This is the one that's failing
 
-	RUN_TEST(check_fp_loaded_from_file_with_memory_block_created_via_array); // this is also failing
+	RUN_TEST(check_fp_loaded_from_file_with_memory_block_created_via_array);
 
 	UNITY_END();
 }
