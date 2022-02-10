@@ -1,3 +1,4 @@
+#include "config_MM.h"
 #include <Arduino.h>
 #include <string.h>
 #include "SPIFFS.h"
@@ -179,19 +180,17 @@ public:
 	void init_fp_copied_with_spiff_func(String file_name);
 
 	int init_memory_block();
-
-	int fill_memory_block(String file_name)
+	int print_file_info(String file_name)
 	{
-		//
-		// Get file contents onto the heap
-
 		int length = getFileSize(file_name); // This can probably go later, this is just a quck and
-		int array_length = modulo_smooth(length);
+		// int array_length = modulo_smooth(length);
 		if (length <= 0)
 		{
 			// File No Found Errors
+
 			Serial.print("file_name:");
 			Serial.println("File Not Found!!!");
+
 			return -1;
 		}
 		Serial.print("File Name: ");
@@ -199,8 +198,35 @@ public:
 		Serial.print("File Size: ");
 		Serial.println(length);
 		Serial.print("Array Length: ");
-		Serial.println(array_length);
+		
+	}
 
+	int fill_memory_block(String file_name)
+	{
+
+		// Get file contents onto the heap
+
+		int length = getFileSize(file_name); // This can probably go later, this is just a quck and
+		int array_length = modulo_smooth(length);
+		if (length <= 0)
+		{
+			// File No Found Errors
+			if (PRINT_DEBUG)
+			{
+				Serial.print("file_name:");
+				Serial.println("File Not Found!!!");
+			}
+			return -1;
+		}
+		if (PRINT_DEBUG)
+		{
+			Serial.print("File Name: ");
+			Serial.println(file_name);
+			Serial.print("File Size: ");
+			Serial.println(length);
+			// Serial.print("Array Length: ");
+			// Serial.println(array_length);
+		}
 		void *file_contents = NULL;
 		file_contents = file_to_heap_pure_fstructs(file_name);
 
