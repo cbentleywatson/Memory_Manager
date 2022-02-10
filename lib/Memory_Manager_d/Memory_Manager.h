@@ -178,7 +178,8 @@ public:
 		int_int_fp_copied_from_file = exec_ram_function;
 	}
 	void init_fp_copied_with_spiff_func(String file_name);
-
+	// Takes a pointer and copies it into exec ram where it can be used.
+	void *func_load_with_void_ptr(void *source, int length_of_new_function);
 	int init_memory_block();
 	int print_file_info(String file_name)
 	{
@@ -198,8 +199,7 @@ public:
 		Serial.print("File Size: ");
 		Serial.println(length);
 		Serial.print("Array Length: ");
-		
-	}
+		}
 
 	int fill_memory_block(String file_name)
 	{
