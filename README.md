@@ -15,7 +15,12 @@ Using external PSRAM also increases the maximum possible code memory; up to 4 MB
  
  The system is also designed to load the dynamic code sections as c++ objects. It's also possible to create wrapper functions on a memory manager object so that individual functions can be loaded into the system. 
  
- The system uses an extra script specified in platformioIO.ini file. This file 
+ The system uses an extra script specified in platformioIO.ini file. This file will be given a better name in the future, but right now it's just called extra_script.py.
+ 
+ You should modify the memory manager object file as little as possible because it's very easy to make changes to the memory functions that cause FreeRTOS core panics. These core panics are usually due to accessing exec memory with out 4 byte alignments. Memcopy can cause this easily and so can some single byte accesses. If the exec ram functions are called in the wrong place the system will load a 4 byte instruction that may not exist which also causes a core panic. Use the memory managers built in memory management functions to prevent this; they wrap up the details of proper memory accesses so that the memory can be accessed as safely as possible.
+ 
+ 
+ 
 
 
 
