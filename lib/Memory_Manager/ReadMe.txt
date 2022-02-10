@@ -5,3 +5,4 @@ Purpose:
 
 To Do:
 Rename func to void ptr to be more descripttive
+Deal with the functions not class based in the file_to_heap

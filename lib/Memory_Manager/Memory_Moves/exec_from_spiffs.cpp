@@ -1,5 +1,5 @@
 #include "../Memory_Manager.h"
-void *exec_from_spiffs(String file_name)
+void *Memory_Manager::exec_from_spiffs(String file_name)
 {
 	FILE *ptr;
 	/// const char* real_file_name = "/spiffs" + file_name;
