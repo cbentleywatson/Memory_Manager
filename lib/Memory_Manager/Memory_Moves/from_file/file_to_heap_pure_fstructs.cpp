@@ -5,25 +5,19 @@ void *Memory_Manager::file_to_heap_pure_fstructs(String file_name)
 	/// const char* real_file_name = "/spiffs" + file_name;
 	int length_file;
 	ptr = fopen(file_name.c_str(), "r");
+	if(ptr ==NULL){
+		return ptr;
+	}
 	fseek(ptr, 0, SEEK_END);
 	length_file = ftell(ptr);
 	fseek(ptr, 0, SEEK_SET);
-	int length_array = 0;
+	// length_file = getFileSize(ptr);
+	int size_of_allocated_memory = 0; // Be filled by reference in get_valid_heap_memory
 
-	// length_file = getFileSize(file_name);
-	// length_array = modulo_smooth(length_file);
-	void *heap_memory_input_ptr;
-	// length array is a reference with a change to fill
-	heap_memory_input_ptr = get_valid_heap_memory(length_file, length_array);
-	// heap_caps_malloc(length_array, MALLOC_CAP_DMA);
-
-	// length_array returned from func,
-	// heap_mem input filled by get valid heap
-	// void *heap_memory_input_ptr;
-	// length_array =
-	// get_valid_heap_memory(length_file, heap_memory_input_ptr);
-
-	fread(heap_memory_input_ptr, 1, length_array, ptr);
+	void *allocated_heap_memory;
+	//
+	allocated_heap_memory = get_valid_heap_memory(length_file, size_of_allocated_memory);
+	fread(allocated_heap_memory, 1, size_of_allocated_memory, ptr);
 	fclose(ptr);
-	return heap_memory_input_ptr;
+	return allocated_heap_memory;
 }
