@@ -94,21 +94,23 @@ class Memory_Manager
 	void *exec_ram_memory_block;
 
 public:
-	int modulo_smooth(int n);
+	// Functions that may be removed (or moved to testing?)
+	// exec_from spiffs is only referenced by it's own testing function;
+	void *exec_from_spiffs(String file_name);
+	// move the entire file to the heap; this hasn't been tested at all
+	void *file_to_heap(String file_name);
 	void *file_to_heap(String file_name, size_t offset, size_t length);
 	void *file_sec_to_heap(String file_name, size_t sec_offset, size_t offset_from_sec_start, size_t length);
-	// move the entire file to the heap; this hasn't been tested at all
-	void *file_to_heap(String file_name);																  
-	void *file_to_exec(String file_name, size_t offset, size_t length);									  
-	void *file_to_exec(String file_name, size_t sec_offset, size_t offset_from_sec_start, size_t length); 
-	void *exec_from_spiffs(String file_name);
-	int return_zero(int input);
+	void *file_to_exec(String file_name, size_t offset, size_t length);
+	void *file_to_exec(String file_name, size_t sec_offset, size_t offset_from_sec_start, size_t length);
 
 	// int return_zero(int input);
 
 	// These two are unused right now
 	unsigned long get_valid_exec_memory(size_t size, void *my_pointer);
-	unsigned long get_valid_heap_memory(int arg_size, void *my_pointer);
+	// int get_valid_heap_memory(int arg_size, void *my_pointer);
+	void *Memory_Manager::get_valid_heap_memory(int arg_size);
+	void *Memory_Manager::get_valid_heap_memory(int arg_size, int &b);
 	void *file_to_heap_pure_fstructs(String file_name);
 	int return_one(int input);
 
@@ -133,6 +135,19 @@ public:
 
 	int set_block_pointer_via_array(unsigned long allocated_array);
 
+	// File Manipulations
+	int modulo_smooth(int n);
 	int getFileSize(String file_name);
 	int print_file_info(String file_name);
+	// functions_for_testing
+	int return_zero(int input);
+	// 	init_methods
+
+	// Memory_Allocations
+
+	// Memory_Block_Manipulations
+
+	// Memory_Moves
+
+	// Old_Files
 };
