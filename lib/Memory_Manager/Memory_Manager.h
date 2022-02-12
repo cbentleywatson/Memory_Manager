@@ -111,7 +111,8 @@ public:
 	// int get_valid_heap_memory(int arg_size, void *my_pointer);
 	void *Memory_Manager::get_valid_heap_memory(int arg_size);
 	void *Memory_Manager::get_valid_heap_memory(int arg_size, int &b);
-	void *file_to_heap_pure_fstructs(String file_name); //This is the one that's going to be used for moving complete elf sections
+	void *file_to_heap_pure_fstructs(String file_name); // This is the one that's going to be used for moving complete elf sections
+	void *Memory_Manager::file_to_heap_pure_fstructs(String file_name, int &memory_size);
 	void *file_to_exec(String file_name); // This is for moving exec sections from  the file system like the file_to_heap_frstructs
 	int return_one(int input);
 
@@ -139,7 +140,7 @@ public:
 	// File Manipulations
 	int modulo_smooth(int n);
 	int getFileSize(String file_name);
-	
+
 	int print_file_info(String file_name);
 	// functions_for_testing
 	int return_zero(int input);

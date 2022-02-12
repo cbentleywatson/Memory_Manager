@@ -25,7 +25,7 @@ void *Memory_Manager::file_to_heap(String file_name, size_t offset, size_t lengt
   return (void *)temp_ptr;
 }
 
-// move the entire file to the heap
+// move the entire file to the heap; Currently file_to_heap_fstruct handles this
 void *Memory_Manager::file_to_heap(String file_name)
 {
   File file = SPIFFS.open(file_name, FILE_READ);
