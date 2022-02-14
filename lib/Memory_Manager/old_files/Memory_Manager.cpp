@@ -1,7 +1,6 @@
 
 #include "Memory_Manager.h"
 
-
 /*
 Memory_Manager::Memory_Manager()
 {
@@ -115,7 +114,7 @@ void swap (void* a, void* b){
   memcpy(long_to_void_ptr(b1), long_to_void_ptr(temp), 4 );
   return b1;
  }*/
-
+/*
 unsigned long swap(unsigned long a, unsigned long b)
 {
   unsigned long a1 = a;
@@ -127,6 +126,7 @@ unsigned long swap(unsigned long a, unsigned long b)
   memcpy(long_to_void_ptr(b1), long_to_void_ptr(temp), 4);
   return b1;
 }
+*/
 
 /*
   // Swap can move a function pointer around with no changes to function types and no casts at all

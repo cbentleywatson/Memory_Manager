@@ -3,7 +3,15 @@
 		"iostream": "cpp",
 		"*.tcc": "cpp",
 		"fstream": "cpp",
-		"string": "cpp"
+		"string": "cpp",
+		"array": "cpp",
+		"deque": "cpp",
+		"unordered_map": "cpp",
+		"unordered_set": "cpp",
+		"vector": "cpp",
+		"memory": "cpp",
+		"random": "cpp",
+		"initializer_list": "cpp"
 	},
 	"python.formatting.provider": "yapf"
 }
