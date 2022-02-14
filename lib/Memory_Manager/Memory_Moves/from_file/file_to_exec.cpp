@@ -28,11 +28,22 @@ void *Memory_Manager::file_to_exec(String file_name)
     length_file = ftell(ptr);
     fseek(ptr, 0, SEEK_SET);
     // length_file = getFileSize(ptr);
-    int size_of_allocated_memory = 0; // Be filled by reference in get_valid_heap_memory
-    void *allocated_heap_memory;
-    //
-    allocated_heap_memory = get_valid_exec_memory(length_file, size_of_allocated_memory);
-    fread(allocated_heap_memory, 1, size_of_allocated_memory, ptr);
-    fclose(ptr);
-    return allocated_heap_memory;
+
+    // CURRENT WORK:
+    /*
+   int size_of_allocated_memory = 0; // Be filled by reference in get_valid_heap_memory
+   void *allocated_heap_memory = file_to_heap_pure_fstructs(file_name, size_of_allocated_memory);
+   //
+   allocated_exec_memory = get_valid_exec_memory(length_file, size_of_allocated_memory);
+
+   return allocated_heap_memory;
+*/
 }
+
+/* Febrauary 13, final memory move to exec
+void *Memory_Manager::file_to_exec(String file_name, int &memory_size){
+    ?? void * exec_mem = file_to_heap_pure_fstructs(file_name, memory_size);
+    return exec_meme;
+}
+
+*/

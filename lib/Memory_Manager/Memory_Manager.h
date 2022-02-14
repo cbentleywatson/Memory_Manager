@@ -85,6 +85,7 @@ void *mv_to_address(void *initial_function_ptr, unsigned long address, int lengt
 
 // This one can be called from anywhere since it's useful
 
+
 class Memory_Manager
 {
 	int default_val = 1;
@@ -94,6 +95,7 @@ class Memory_Manager
 	void *exec_ram_memory_block;
 
 public:
+	static int getFileSize(String file_name);
 	// Functions that may be removed (or moved to testing?)
 	// exec_from spiffs is only referenced by it's own testing function;
 	void *exec_from_spiffs(String file_name);
@@ -103,6 +105,7 @@ public:
 	void *file_sec_to_heap(String file_name, size_t sec_offset, size_t offset_from_sec_start, size_t length);
 	void *file_to_exec(String file_name, size_t offset, size_t length);
 	void *file_to_exec(String file_name, size_t sec_offset, size_t offset_from_sec_start, size_t length);
+	// section Memory_Manager::create_section(String file_name, int section_type);
 
 	// int return_zero(int input);
 
@@ -139,7 +142,6 @@ public:
 
 	// File Manipulations
 	int modulo_smooth(int n);
-	int getFileSize(String file_name);
 
 	int print_file_info(String file_name);
 	// functions_for_testing
