@@ -2,7 +2,7 @@
 #include <Arduino.h>
 #include <string.h>
 #include "SPIFFS.h"
-
+#include "Sections/Sections.h"
 // Probably need an additional header for common function type defs. i.e. int foo(void), int bar(int a, int b) and so on
 //
 //#include "esp-elf.h"
@@ -84,7 +84,6 @@ void *mv_to_address(void *initial_function_ptr, unsigned long address, int lengt
 // KEY: This one is designed to move things to external flash/ ram and execute from there
 
 // This one can be called from anywhere since it's useful
-
 
 class Memory_Manager
 {
