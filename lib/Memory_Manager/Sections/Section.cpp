@@ -1,6 +1,4 @@
 #include "Sections.h"
-#define EXEC_INTERNAL 0
-#define HEAP_INTERNAL 1
 
 void *Section::get_valid_memory(size_t arg_size, int type)
 {
@@ -32,7 +30,21 @@ Section::Section(String file_name, int type)
 	long file_size = getFileSize_long(file_name);
 	// Do checking etc.
 	size = modulo_smooth((size_t)file_size);
-	memory_area = get_valid_memory(size, type);
+	void *temp_store = heap_caps_malloc(size, MALLOC_CAP_DMA);
+	int mem_size = size;
+	load_from_file(file_name, mem_size, temp_store);
+	if (type != HEAP_INTERNAL)
+	{
+		memory_area = get_valid_memory(size, type);
+		// void *load_from_file(String file_name, int &size);
+		block_wise_memcopy(memory_area, temp_store, size);
+		heap_caps_free(temp_store);
+	}
+	else
+	{
+		memory_area = temp_store;
+	}
+
 	// do more checks...
 	parent_file = file_name;
 	section_type = type;
@@ -46,26 +58,49 @@ Section::~Section()
 		heap_caps_free(memory_area);
 	}
 }
-
-/*
-	int real_size = modulo_smooth(arg_size); //  make the size valid if it isn't
-	void *my_pointer = heap_caps_malloc(real_size, MALLOC_CAP_DMA);
-	// switch (type)
-	size_allocated_array = real_size;
-	return my_pointer;
-}
-
-Section::Section(String file_name, int type)
+size_t Section::block_wise_memcopy(void *dest, void *source, size_t source_size)
 {
-	memory_area = nullptr;
-	section_type = 0;
-	size = 0;
-	parent_file = "";
+	size_t remainder = source_size;
+	size_t cur_address = 0;
+	size_t word_size = 4;
+	size_t num_words = 256;
+	size_t temp_block_size = word_size * num_words;
+	void *temp_store = heap_caps_malloc(temp_block_size, MALLOC_CAP_DMA);
+	while (remainder > temp_block_size)
+	{
+		memcpy(dest + cur_address, source + cur_address, temp_block_size);
+		cur_address = cur_address + temp_block_size;
+		remainder = remainder - temp_block_size;
+	}
+	if (remainder > 0)
+	{
+		memcpy(dest + cur_address, source + cur_address, remainder);
+		cur_address = cur_address + remainder;
+	}
+	heap_caps_free(temp_store);
+	return cur_address;
 }
-void *Section::get_valid_heap_memory(int arg_size, int &size_allocated_array);
-// constructors
-//  unsigned long VMA;
-//  unsigned long LMA;
-// Get Valid h
+void *Section::load_from_file(String file_name, int &memory_size, void *to_fill)
+{
+	FILE *ptr;
+	/// const char* real_file_name = "/spiffs" + file_name;
+	int length_file;
+	ptr = fopen(file_name.c_str(), "r");
+	if (ptr == NULL)
+	{
+		return ptr;
+	}
+	fseek(ptr, 0, SEEK_END);
+	length_file = ftell(ptr);
+	fseek(ptr, 0, SEEK_SET);
+	// length_file = getFileSize(ptr);
+	// int size_of_allocated_memory = 0; // Be filled by reference in get_valid_heap_memory
+
+	// void *allocated_heap_memory;
+	//  heap_caps_malloc(real_size, MALLOC_CAP_DMA);
+	// allocated_heap_memory = get_valid_heap_memory(length_file, size_of_allocated_memory);
+	fread(to_fill, 1, memory_size, ptr);
+	fclose(ptr);
+	// memory_size = size_of_allocated_memory;
+	return to_fill;
 }
-*/

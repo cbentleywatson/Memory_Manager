@@ -1,6 +1,6 @@
 #include <Memory_Manager.h>
-
 #include <unity.h>
+
 int return_one_this(int input)
 {
 	return 1;
@@ -152,7 +152,8 @@ void check_memory_block_based_pointer_load()
 	TEST_ASSERT_EQUAL_INT(checker, output);
 }
 */
-void check_fp_loaded_from_file_with_memory_block_created_via_array(void)
+
+void create_section(void)
 {
 	int output;
 	Memory_Manager mm;
@@ -172,6 +173,37 @@ void check_fp_loaded_from_file_with_memory_block_created_via_array(void)
 	TEST_ASSERT_EQUAL_INT(checker, output);
 }
 
+/// Section Tests: BEGIN
+
+void test_section_creation(void)
+{
+	int output;
+	Memory_Manager mm;
+	mm.init_fp_plain(&return_one_this);
+	// "/spiffs/t2" is the name of the file that is saved in the testing set up in the init fucntion
+	mm.load_obj_section("/spiffs/single_e")
+		// in original
+		// mm.set_block_pointer_via_array(memory_block_array);
+
+		// mm.init_fp_copied_with_spiff_func()
+
+		// int origi
+		// mm.init_fp_copied_with_spiff_func("/spiffs/t2");
+
+		// mm.fill_memory_block("/spiffs/t2");
+		//  output = mm.fill_memory_block("/spiffs/tss2");
+		//  output = mm.fill_memory_block("/single_e");
+		// output = mm.fill_memory_block("/spiffs/single_e");
+		//	output = mm.fill_memory_block("/spiffs/data/single_e");
+		int checker = 14;
+	//output = mm.return_fp_copied_from_file(checker);
+	// mm.load_section(checker);
+	
+	TEST_ASSERT_EQUAL_INT(checker, output);
+}
+
+// Section tests END
+
 void setup()
 {
 	delay(2500);
@@ -180,6 +212,10 @@ void setup()
 	SPIFFS.begin(false); //
 
 	UNITY_BEGIN();
+	Serial.println("Object Section Tests:");
+	RUN_TEST(test_section_creation);
+
+	Serial.println("\n\n Function Pointer Tests:");
 	RUN_TEST(check_default);
 	RUN_TEST(check_fp_plain);
 	RUN_TEST(check_fp_copied_to_exec);
@@ -193,7 +229,7 @@ void setup()
 	// This one seems to basically be a test of whether or not the file system loads properly, but it could be a lot clear
 	// RUN_TEST(check_memory_block_based_pointer_load); // This is the one that's failing
 
-	RUN_TEST(check_fp_loaded_from_file_with_memory_block_created_via_array);
+	RUN_TEST(create_section);
 
 	UNITY_END();
 }
