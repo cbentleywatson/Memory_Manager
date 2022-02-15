@@ -20,6 +20,23 @@ void test_section_creation(void)
 	TEST_ASSERT_EQUAL_INT(checker, output);
 }
 
+void test_file_copy(void)
+{
+	// these will be the same as the args in memory manager
+	String file_name = "/spiffs/single_e";
+	int type = HEAP_INTERNAL;
+	// Variable for  test
+	int checker = 14;
+	int output;
+	// Logic Similar to memory manager
+	Section sec1 = Section(file_name, EXEC_INTERNAL);
+	fpointer = sec1.memory_area;
+
+	output = fpointer(checker);
+	// mm.load_section(checker);
+	TEST_ASSERT_EQUAL_INT(checker, output);
+}
+
 void setup()
 {
 	delay(2500);
