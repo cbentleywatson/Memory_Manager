@@ -47,6 +47,9 @@ void setup()
 	UNITY_BEGIN();
 
 	RUN_TEST(test_section_creation);
+	// section from a memory section
+	// section from a file section
+	// File pointer from block
 	UNITY_END();
 }
 

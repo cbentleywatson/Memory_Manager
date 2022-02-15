@@ -5,6 +5,7 @@
 #define EXEC_INTERNAL 0
 #define HEAP_INTERNAL 1
 #define BLOCK_SECTION 3
+#define FILE_SECTION  4
 class Section
 {
 public:

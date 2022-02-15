@@ -32,12 +32,22 @@ Section::Section(String file_name, int type)
 	if (type == BLOCK_SECTION)
 	{
 		is_valid = false;
+		size = 0;
 		return;
 	}
 
 	long file_size = getFileSize_long(file_name);
 	// Do checking etc.
 	size = modulo_smooth((size_t)file_size);
+	if (type = FILE_SECTION)
+	{
+		// no memory needs to be allocated if the section is a file.
+		// Since the size is a division of 4 this way, I think its
+		// safe to just let the size be the modulo 4 and assume that thd
+		// other section definitions will fall in line properly.
+		is_valid = true;
+		return;
+	}
 	// void *temp_store = heap_caps_malloc(size, MALLOC_CAP_DMA);
 	// int mem_size = size;
 	// load_from_file(file_name, mem_size, temp_store);
