@@ -21,10 +21,44 @@ void *Section::get_valid_memory(size_t arg_size, int type)
 	}
 	return my_pointer;
 }
+// Section set block, then you can run
+/* The only time the memory manager should be loading memory is if the block was preallocated.
+static Section  Section::load_main_block_section(void *location, size_t this_block_size)
+{
+	Section temp Section("", BLOCK_SECTION);
+	memory_area = location;
+	size = this_block_size;
+}
+*/
+// The only time you can initialize a section from an array is when you're setting up the main execblock
+
+// The only time you can directly change the memory address of a section is when you have multiple preallocated blocks.
+Section::change_main_block(void *array, size_t array_size)
+{
+	if (section_type == MAIN_EXEC_BLOCK)
+	{
+		memory_area = array;
+		size = array_size;
+		is_valid = false;
+	}
+}
+// Create a section of a different type from an existing section
+//  Section::Section(Section parent, int type);
+//  or Section::create_child_copy(int_type){ // copy the file section over to the correct memory type }
+Section::fill_main_block(void *target)
+{
+	// void *target = main_block_section->memory_area;
+	if ((section_type == EXEC_INTERNAL) || (section_type == HEAP_INTERNAL))
+	{
+		block_wise_memcopy(target, memory_area, size);
+	}
+}
+// get main block pointer
 Section::Section(String file_name, int type)
 { /*
    * You can use the initializer to ensure that everything is valid to prevent the
    * the creation of dangerous undefined sections
+   * You can't create a section with an invalid filename if you're making an executable or data section
    */
 
 	parent_file = file_name;
@@ -33,6 +67,16 @@ Section::Section(String file_name, int type)
 	{
 		is_valid = false;
 		size = 0;
+		return;
+	}
+	if (type == MAIN_EXEC_BLOCK)
+	{
+		// main_block_section = this;
+		parent_file = "";
+		//	memory_area = array;
+		//	size = array_size;
+		section_type = type;
+		is_valid = false;
 		return;
 	}
 
