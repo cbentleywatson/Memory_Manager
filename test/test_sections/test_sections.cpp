@@ -12,9 +12,9 @@ void test_section_creation(void)
 	int checker = 14;
 	int output;
 	// Logic Similar to memory manager
-	Section sec1 = Section(file_name,EXEC_INTERNAL);
+	Section sec1 = Section(file_name, EXEC_INTERNAL);
 	fpointer = sec1.memory_area;
-	
+
 	output = fpointer(checker);
 	// mm.load_section(checker);
 	TEST_ASSERT_EQUAL_INT(checker, output);
@@ -43,7 +43,7 @@ void setup()
 	Serial.begin(9600);
 	bool begin(bool formatOnFail = false, const char *basePath = "/spiffs", uint8_t maxOpenFiles = 10);
 	SPIFFS.begin(false); //	bool begin(bool formatOnFail = false, const char *basePath = "/spiffs", uint8_t maxOpenFiles = 10);
-	SPIFFS.begin(false); //
+	// SPIFFS.begin(false); //
 	UNITY_BEGIN();
 
 	RUN_TEST(test_section_creation);

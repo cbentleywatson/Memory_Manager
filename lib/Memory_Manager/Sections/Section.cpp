@@ -39,7 +39,7 @@ Section::Section(String file_name, int type)
 	long file_size = getFileSize_long(file_name);
 	// Do checking etc.
 	size = modulo_smooth((size_t)file_size);
-	if (type = FILE_SECTION)
+	if (type == FILE_SECTION)
 	{
 		// no memory needs to be allocated if the section is a file.
 		// Since the size is a division of 4 this way, I think its
