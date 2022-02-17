@@ -21,15 +21,28 @@ public:
 	bool is_valid;
 	// Methods:
 	// void set_this_main();
+	// public static Section * create_file_section(String file_name);
+	// public static Section * create_exec_block(unsigned char preallocated_array[], size_t len)
+
+	// Section(String file_name);
+	// Section( unsigned char preallocated_array[], size_t len)
+	// int fill_with(Section &donor);
+	// Section(Section &donor, int type);
+
+	// Section(String file_name, int &error); // creates a file section
+	// Section( unsigned char preallocated_array[], size_t len, int &error) // used for creating layover block sections
+	// int fill_with(Section &donor, int &error); // move a section into the memory block
+	// Section(Section &donor, int type, int &error);
+	// fill_function_pointer(void * fp, int &error); // fill a function pointer of any type
 	size_t block_wise_memcopy(void *dest, void *source, size_t source_size);
 	size_t Section::block_wise_file_copy(void *dest, String file_name, size_t source_size);
 	Section(String file_name, int type);
-	// The one below is designed to set up an exec block,
-	// Until a main exec block is initialized it isn't safe to use.
-	Section::change_main_block(unsigned long allocated_array, size_t array_size);
-	Section::fill_main_block(void *target);
-
 	void *get_valid_memory(size_t arg_size, int type);
 	~Section();
+
 	void *load_from_file(String file_name, int &memory_size, void *to_fill);
+	Section::Section(unsigned long arr[], size_t my_size);						  //
+	Section(void *, size_t size);												  //
+	Section::change_main_block(unsigned long allocated_array, size_t array_size); // Also to be deleted
+	Section::fill_main_block(void *target);										  // to be deleted ASAP
 };

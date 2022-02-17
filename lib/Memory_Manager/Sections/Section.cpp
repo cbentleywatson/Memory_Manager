@@ -45,7 +45,6 @@ Section::change_main_block(unsigned long allocated_array, size_t array_size)
 	if (section_type == MAIN_EXEC_BLOCK)
 	{
 
-		
 		is_valid = false;
 		return 0;
 	}
@@ -66,6 +65,14 @@ Section::fill_main_block(void *target)
 	}
 	*/
 }
+Section::Section(unsigned long arr[], size_t my_size)
+{
+	section_type = MAIN_EXEC_BLOCK;
+	memory_area = arr;
+	size = my_size;
+	is_valid = false;
+	parent_file = "";
+}
 // get main block pointer
 Section::Section(String file_name, int type)
 { /*
@@ -78,8 +85,10 @@ Section::Section(String file_name, int type)
 	section_type = type;
 	if (type == BLOCK_SECTION)
 	{
+		memory_area = get_valid_memory(512, EXEC_INTERNAL);
 		is_valid = false;
-		size = 0;
+		size = 512;
+		parent_file = "";
 		return;
 	}
 	if (type == MAIN_EXEC_BLOCK)

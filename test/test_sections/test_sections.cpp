@@ -49,28 +49,28 @@ void test_change_mainblock(void)
 {
 	// these will be the same as the args in memory manager
 	String file_name = "/spiffs/single_e";
-	int type = HEAP_INTERNAL;
 	// Variable for  test
 	int checker = 14;
 	int output;
-	// Logic Similar to memory manager
 	Section sec1 = Section(file_name, EXEC_INTERNAL);
-	fpointer = sec1.memory_area;
-
-	Section main_block = Section("", MAIN_EXEC_BLOCK);
-	// Line below fails
-
-	// main_block.change_main_block(memory_block_array, 1024);
-	main_block.memory_area = memory_block_array; // replacement with direct change to array
-
-	//void *main_block_target = main_block.memory_area;
-	sec1.fill_main_block(memory_block_array);
-main_block()
-	// fpointer = main_block.memory_area;
-	fpointer = main_block.memory_area;
-	output = fpointer(checker);
-	// mm.load_section(checker);
+	Section empty_section = Section("", BLOCK_SECTION); // a 512 byte empty executable section.
+	// empty_section.fill_with(sec1);
+	// fpointer = empty_section.memory_area;
+	// output = fpointer(checker);
 	TEST_ASSERT_EQUAL_INT(checker, output);
+}
+void test_array_load(void)
+{
+	// these will be the same as the args in memory manager
+	String file_name = "/spiffs/single_e";
+	// Variable for  test
+	int checker = 14;
+	int output;
+	Section sec1 = Section(file_name, EXEC_INTERNAL);
+	// Section main_block = Section(array, array_size);
+	// main_block.fill_with(sec1);
+	// fpointer = main_block.memory_area;
+	// output = fpointer(checker);
 }
 
 void setup()
@@ -85,10 +85,10 @@ void setup()
 	RUN_TEST(test_section_creation);
 	RUN_TEST(test_simple_fill_main_on_mainblock);
 
-	//RUN_TEST(test_change_mainblock);
-	//   section from a memory section
-	//   section from a file section
-	//   File pointer from block
+	RUN_TEST(test_change_mainblock);
+	//     section from a memory section
+	//     section from a file section
+	//     File pointer from block
 	UNITY_END();
 }
 
