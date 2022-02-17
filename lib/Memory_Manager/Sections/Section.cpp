@@ -1,5 +1,10 @@
 #include "Sections.h"
-
+/*
+Section::set_this_main()
+{
+	main_block_section = this;
+}
+*/
 void *Section::get_valid_memory(size_t arg_size, int type)
 {
 	/* this function is designed to get piece of heap memory with the correct size and alignment for running functions
@@ -33,14 +38,18 @@ static Section  Section::load_main_block_section(void *location, size_t this_blo
 // The only time you can initialize a section from an array is when you're setting up the main execblock
 
 // The only time you can directly change the memory address of a section is when you have multiple preallocated blocks.
-Section::change_main_block(void *array, size_t array_size)
+Section::change_main_block(unsigned long allocated_array, size_t array_size)
 {
+	memory_area = allocated_array;
+	size = array_size;
 	if (section_type == MAIN_EXEC_BLOCK)
 	{
-		memory_area = array;
-		size = array_size;
+
+		
 		is_valid = false;
+		return 0;
 	}
+	return -1;
 }
 // Create a section of a different type from an existing section
 //  Section::Section(Section parent, int type);
@@ -48,10 +57,14 @@ Section::change_main_block(void *array, size_t array_size)
 Section::fill_main_block(void *target)
 {
 	// void *target = main_block_section->memory_area;
+	//  memcpy(target, memory_area, size);
+	block_wise_memcopy(target, memory_area, size);
+	/*
 	if ((section_type == EXEC_INTERNAL) || (section_type == HEAP_INTERNAL))
 	{
-		block_wise_memcopy(target, memory_area, size);
+
 	}
+	*/
 }
 // get main block pointer
 Section::Section(String file_name, int type)
@@ -73,9 +86,11 @@ Section::Section(String file_name, int type)
 	{
 		// main_block_section = this;
 		parent_file = "";
-		//	memory_area = array;
-		//	size = array_size;
-		section_type = type;
+		// this needs to be freed after reassignement
+		memory_area = get_valid_memory(4, EXEC_INTERNAL);
+		size = 0;
+		// memory_area;
+		section_type = MAIN_EXEC_BLOCK;
 		is_valid = false;
 		return;
 	}
