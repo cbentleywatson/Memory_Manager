@@ -54,7 +54,7 @@ Section::Section(String file_name, int &error)
 Section::Section(unsigned char preallocated_array[], size_t len, int &error)
 {
 	section_type = MAIN_EXEC_BLOCK;
-	memory_area = &preallocated_array;
+	memory_area = preallocated_array;
 	size = len;
 
 	void *voidcon = &preallocated_array;
@@ -67,6 +67,7 @@ Section::Section(unsigned char preallocated_array[], size_t len, int &error)
 	parent_file = "";
 	if (has_valid_memory)
 	{
+		Serial.println("Invalid Memory");
 		error = NO_ERROR;
 	}
 	else
@@ -173,7 +174,8 @@ Section::Section(String file_name, int type)
 		is_valid = false;
 		return;
 	}
-	if (type == FILE_SECTION){
+	if (type == FILE_SECTION)
+	{
 		memory_area = nullptr;
 		section_type = FILE_SECTION;
 		parent_file = file_name;

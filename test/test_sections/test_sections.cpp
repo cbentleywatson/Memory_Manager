@@ -73,9 +73,10 @@ void test_array_load(void)
 	int output = -1;
 	int error_check;
 	Section sec1 = Section(file_name, EXEC_INTERNAL);
-	Section main_block = Section(plain_array, sizeof(plain_array), error_check);
+	unsigned char *test_arr = (unsigned char *)heap_caps_malloc(512, MALLOC_CAP_EXEC);
+	Section main_block = Section(test_arr, 512, error_check);
 
-	// Section main_block = Section(unsigned_char_block, sizeof(unsigned_char_block), error_check);
+	//Section main_block = Section(unsigned_char_block, 1024, error_check);
 	if (print_debug)
 	{
 		Serial.println("Begin fill_with()");
@@ -88,7 +89,7 @@ void test_array_load(void)
 		Serial.println("No Error Reported");
 		delay(1000); // Wait a second to flush the buffer in case the cpu is about to crash
 		fpointer = main_block.memory_area;
-		// output = fpointer(checker);
+		output = fpointer(checker);
 		break;
 	default:
 		Serial.print("Error: #");
@@ -151,7 +152,7 @@ void setup()
 
 	// Designed to demonstrate that a section can be filled via a reference to another section.
 	RUN_TEST(test_change_mainblock); // First check of fill with system.
-	// RUN_TEST(test_array_load); Doesn't currently work with the block section approach.
+	RUN_TEST(test_array_load);		 // Doesn't currently work with the block section approach.
 	// Desiged to demonstrate a file can be converted to a section and then run
 	RUN_TEST(test_file_section_load);
 	//     section from a memory section
