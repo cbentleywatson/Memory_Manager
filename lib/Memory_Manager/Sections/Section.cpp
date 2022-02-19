@@ -1,10 +1,80 @@
 #include "Sections.h"
-/*
-Section::set_this_main()
+
+int Section::fill_with(Section &donor)
 {
-	main_block_section = this;
+	int receiver_type = section_type;
+
+	// Deal with any memory sizing issues
+	int smaller_memory_size = (donor.size < size) ? donor.size : size;
+	int size_to_move = smaller_memory_size;
+
+	if (true)
+	{
+		Serial.print("moved size: ");
+		Serial.println(size_to_move);
+		if (size_to_move % 4 != 0)
+		{
+			Serial.println("Invalid modulo");
+		}
+	}
+
+	if (receiver_type == (EXEC_INTERNAL) || (receiver_type == BLOCK_SECTION) || (receiver_type == MAIN_EXEC_BLOCK))
+	{
+		int donor_type = donor.section_type;
+
+		if (donor_type == FILE_SECTION)
+		{
+			block_wise_file_copy(memory_area, donor.parent_file, size_to_move);
+			return 0;
+		}
+		else if (donor_type == EXEC_INTERNAL)
+		{
+			Serial.println("Directly above memcopy");
+			block_wise_memcopy(memory_area, donor.memory_area, size_to_move);
+			return 0;
+		}
+		else
+		{
+			return -1;
+		}
+	}
+}
+/*
+Section::Section(String file_name, int &error)
+{
+	memory_area = nullptr;
+	section_type = FILE_SECTION;
+	parent_file = file_name;
+	size = getFileSize_long(file_name); //
+	// Hopefully:
+	has_valid_content = true;
+	has_valid_memory = false;
 }
 */
+Section::Section(unsigned char preallocated_array[], size_t len, int &error)
+{
+	section_type = MAIN_EXEC_BLOCK;
+	memory_area = &preallocated_array;
+	size = len;
+
+	void *voidcon = &preallocated_array;
+	unsigned long num_address = (unsigned long)voidcon;
+
+	bool in_external_exec = (EXTERNAL_INS_START <= num_address) && (num_address <= EXTERNAL_INS_END);
+
+	has_valid_memory = (len % 4 == 0) && (num_address % 4 == 0);
+	has_valid_content = false;
+	parent_file = "";
+	if (has_valid_memory)
+	{
+		error = NO_ERROR;
+	}
+	else
+	{
+		error = DEFAULT_ERROR;
+	}
+}
+
 void *Section::get_valid_memory(size_t arg_size, int type)
 {
 	/* this function is designed to get piece of heap memory with the correct size and alignment for running functions
@@ -102,6 +172,15 @@ Section::Section(String file_name, int type)
 		section_type = MAIN_EXEC_BLOCK;
 		is_valid = false;
 		return;
+	}
+	if (type == FILE_SECTION){
+		memory_area = nullptr;
+		section_type = FILE_SECTION;
+		parent_file = file_name;
+		size = getFileSize_long(file_name); //
+		// Hopefully:
+		has_valid_content = true;
+		has_valid_memory = false;
 	}
 
 	long file_size = getFileSize_long(file_name);

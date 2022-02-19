@@ -9,6 +9,9 @@
 #define BLOCK_SECTION 3 // This is an empty section basically. Should not be called from memory manager as far as possible because it doesn't give
 #define FILE_SECTION 4
 #define MAIN_EXEC_BLOCK 5 // A section built on top of a preallocated array.
+#define NO_ERROR 0
+#define DEFAULT_ERROR -1
+#define print_debug true
 class Section
 {
 public:
@@ -19,6 +22,8 @@ public:
 	String parent_file;
 	// Section::
 	bool is_valid;
+	bool has_valid_content;
+	bool has_valid_memory;
 	// Methods:
 	// void set_this_main();
 	// public static Section * create_file_section(String file_name);
@@ -26,11 +31,11 @@ public:
 
 	// Section(String file_name);
 	// Section( unsigned char preallocated_array[], size_t len)
-	// int fill_with(Section &donor);
+	int fill_with(Section &donor);
 	// Section(Section &donor, int type);
 
-	// Section(String file_name, int &error); // creates a file section
-	// Section( unsigned char preallocated_array[], size_t len, int &error) // used for creating layover block sections
+	// Section(String file_name, int &error);								 // creates a file section
+	Section(unsigned char preallocated_array[], size_t len, int &error); // used for creating layover block sections
 	// int fill_with(Section &donor, int &error); // move a section into the memory block
 	// Section(Section &donor, int type, int &error);
 	// fill_function_pointer(void * fp, int &error); // fill a function pointer of any type
