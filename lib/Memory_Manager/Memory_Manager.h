@@ -1,7 +1,10 @@
+#pragma once
 #include "config_MM.h"
 #include <Arduino.h>
 #include <string.h>
 #include "SPIFFS.h"
+#include "Sections/Sections.h"
+
 
 // Probably need an additional header for common function type defs. i.e. int foo(void), int bar(int a, int b) and so on
 //
@@ -85,7 +88,6 @@ void *mv_to_address(void *initial_function_ptr, unsigned long address, int lengt
 
 // This one can be called from anywhere since it's useful
 
-
 class Memory_Manager
 {
 	int default_val = 1;
@@ -105,6 +107,7 @@ public:
 	void *file_sec_to_heap(String file_name, size_t sec_offset, size_t offset_from_sec_start, size_t length);
 	void *file_to_exec(String file_name, size_t offset, size_t length);
 	void *file_to_exec(String file_name, size_t sec_offset, size_t offset_from_sec_start, size_t length);
+	void load_section(String file_name, int type);
 	// section Memory_Manager::create_section(String file_name, int section_type);
 
 	// int return_zero(int input);
@@ -155,4 +158,9 @@ public:
 	// Memory_Moves
 
 	// Old_Files
+
+	// Section Functions:
+	void load_obj_section(String file_name, int type);
+
+
 };

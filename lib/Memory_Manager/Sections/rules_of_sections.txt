@@ -1,0 +1,25 @@
+1. Moveable lib files must contain valid exectuable instructions / data
+2. File Sections must always reference valid, existing files
+3. Sections allocated for memory blocks must always contain 4 bytes aligned sections
+4. Sections used for memory blocks must always have a length that is a multiple of four.
+5. When the memory block in section a is filled with the contents of section b, afterwards section a has memory attributes a and file attributes b.
+6. Section attributes related to validity cannot be modifified directly (memory data is consistent)
+7. It is not possible to copy a larger memory block into a smaller memory block.
+8. Pointer validity: only valid pointers to memory are returned
+    a) It is not possible to access memory pointers directly; all memory area accesses must go through validity check methods 
+	b) All memory validity checks must be consistent in format, all return void or all return null.
+9. Sections with invalid content cannot be saved as files.
+10. Only one section at a time can reference the same memory 
+11.  KEY: Only a section with valid memory attributes (size, alignment), file attributes ( content came from valid section), and type (memory region is exec) can be executed.
+12. No invalid sections created:  The only types of sections that can be created by the user directly are file sections and data block sections
+13. Sections always give error reports
+
+Questionable?
+13. You can't copy invalid contents into a new file;
+14. You can't copy 
+15.  Methods should "confirm" validity, not just accept is as a given.
+General Strategy:
+a) file_sections initialized, memory block section created from array, filled from file sections
+b) file sections initialized, RAM sections created from existing file sections
+
+ 
