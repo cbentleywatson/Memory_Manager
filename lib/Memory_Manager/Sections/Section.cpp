@@ -76,6 +76,31 @@ Section::Section(unsigned char preallocated_array[], size_t len, int &error)
 	}
 }
 
+Section::Section(unsigned long preallocated_array[], size_t len, int &error)
+{
+	section_type = MAIN_EXEC_BLOCK;
+	memory_area = preallocated_array;
+	size = len;
+
+	void *voidcon = &preallocated_array;
+	unsigned long num_address = (unsigned long)voidcon;
+
+	bool in_external_exec = (EXTERNAL_INS_START <= num_address) && (num_address <= EXTERNAL_INS_END);
+
+	has_valid_memory = (len % 4 == 0) && (num_address % 4 == 0);
+	has_valid_content = false;
+	parent_file = "";
+	if (has_valid_memory)
+	{
+		Serial.println("Invalid Memory");
+		error = NO_ERROR;
+	}
+	else
+	{
+		error = DEFAULT_ERROR;
+	}
+}
+
 void *Section::get_valid_memory(size_t arg_size, int type)
 {
 	/* this function is designed to get piece of heap memory with the correct size and alignment for running functions
@@ -139,11 +164,55 @@ Section::fill_main_block(void *target)
 Section::Section(unsigned long arr[], size_t my_size)
 {
 	section_type = MAIN_EXEC_BLOCK;
-	memory_area = arr;
+	unsigned long *p;
+	unsigned long balance[4] = {0, 1, 1, 2};
+
+	p = &balance[0];
+	// memory_area = (void *)arr; // Error is here
+	int a = 0;
+	int *c = &a;
+	void *t = (void *)p;
+	// void *
+	remove_me = p;
+	// this->memory_area = malloc(16);
+	// this->memory_area = (void *)remove_me;
+	memory_area = (void *)arr;
 	size = my_size;
 	is_valid = false;
 	parent_file = "";
 }
+
+Section::Section(void *e, size_t my_size)
+{
+	section_type = MAIN_EXEC_BLOCK;
+	unsigned long *p;
+	unsigned long balance[4] = {0, 1, 1, 2};
+
+	p = &balance[0];
+	// memory_area = (void *)arr; // Error is here
+	int a = 0;
+	int *c = &a;
+	void *t = (void *)p;
+	// void *
+	// remove_me = e;
+	t = malloc(16);
+	// t = remove_me;
+	memory_area = e;
+
+	size = my_size;
+	is_valid = false;
+	parent_file = "";
+}
+Section::set_ptr(void *a)
+{
+	memory_area = a;
+}
+Section::set_ptr(unsigned long a)
+{
+
+	//	this->memory_area = (void *)a;
+}
+
 // get main block pointer
 Section::Section(String file_name, int type)
 { /*
@@ -229,7 +298,7 @@ Section::Section(String file_name, int type)
 Section::~Section()
 {
 	// need to check if memory area is actually a nullptr;
-	if (memory_area != NULL)
+	if (memory_area != NULL && (section_type != MAIN_EXEC_BLOCK))
 	{
 		heap_caps_free(memory_area);
 	}
@@ -241,7 +310,7 @@ size_t Section::block_wise_memcopy(void *dest, void *source, size_t source_size)
 	size_t page_size = 256;
 	size_t num_pages = 4;
 	size_t temp_block_size = page_size * num_pages;
-	void *temp_store = heap_caps_malloc(temp_block_size, MALLOC_CAP_DMA);
+	void *temp_store = heap_caps_malloc(temp_block_size, MALLOC_CAP_32BIT);
 	while (remainder > temp_block_size)
 	{
 		memcpy(temp_store, source + cur_address, temp_block_size);

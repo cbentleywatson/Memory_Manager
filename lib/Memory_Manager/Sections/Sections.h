@@ -17,6 +17,7 @@ class Section
 public:
 	// static Section *main_block_section;
 	void *memory_area;
+	unsigned long *remove_me;
 	int section_type;
 	size_t size; // Heap caps malloc uses this so we should too
 	String parent_file;
@@ -24,6 +25,8 @@ public:
 	bool is_valid;
 	bool has_valid_content;
 	bool has_valid_memory;
+	set_ptr(void *a);
+	set_ptr(unsigned long a);
 	// Methods:
 	// void set_this_main();
 	// public static Section * create_file_section(String file_name);
@@ -36,6 +39,7 @@ public:
 
 	// Section(String file_name, int &error);								 // creates a file section
 	Section(unsigned char preallocated_array[], size_t len, int &error); // used for creating layover block sections
+	Section(unsigned long preallocated_array[], size_t len, int &error); // used for creating layover block sections
 	// int fill_with(Section &donor, int &error); // move a section into the memory block
 	// Section(Section &donor, int type, int &error);
 	// fill_function_pointer(void * fp, int &error); // fill a function pointer of any type
@@ -46,7 +50,7 @@ public:
 	~Section();
 
 	void *load_from_file(String file_name, int &memory_size, void *to_fill);
-	Section::Section(unsigned long arr[], size_t my_size);						  //
+	Section(unsigned long arr[], size_t my_size);								  //
 	Section(void *, size_t size);												  //
 	Section::change_main_block(unsigned long allocated_array, size_t array_size); // Also to be deleted
 	Section::fill_main_block(void *target);										  // to be deleted ASAP
