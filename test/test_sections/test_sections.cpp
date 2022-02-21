@@ -152,6 +152,7 @@ void test_block_based_load(void)
 	Section sec1 = Section(file_name, EXEC_INTERNAL);
 	// void *to_long = (void *)memory_block_array;
 	// unsigned char *test_arr = (unsigned char *)heap_caps_malloc(512, MALLOC_CAP_EXEC);
+	// Section main_block = Section(memory_block_array, 512, error_check);
 	Section main_block = Section(memory_block_array, 512);
 	void *a = &memory_block_array[0];
 	void *s = malloc(8);
@@ -219,6 +220,21 @@ void test_block_based_load(void)
 	TEST_ASSERT_EQUAL_INT(checker, output);
 }
 
+void test_external_exec(void)
+{
+	String file_name = "/spiffs/single_e";
+	// Variable for test
+	int checker = 14;
+	int output = -1;
+	int error_check;
+	Section sec1 = Section(file_name, EXEC_INTERNAL);
+	Section external = Section("", EXTERNAL_EXEC);
+	external.fill_with(sec1);
+	fpointer = external.memory_area;
+	output = fpointer(checker);
+	TEST_ASSERT_EQUAL_INT(checker, output);
+}
+
 void setup()
 {
 	delay(2500);
@@ -241,6 +257,7 @@ void setup()
 
 	// Final Test of block Stuff
 	RUN_TEST(test_block_based_load);
+	RUN_TEST(test_external_exec);
 	//     section from a memory section
 	//     section from a file section
 	//     File pointer from block

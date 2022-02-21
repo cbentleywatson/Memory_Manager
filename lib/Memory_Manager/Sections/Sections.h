@@ -9,6 +9,7 @@
 #define BLOCK_SECTION 3 // This is an empty section basically. Should not be called from memory manager as far as possible because it doesn't give
 #define FILE_SECTION 4
 #define MAIN_EXEC_BLOCK 5 // A section built on top of a preallocated array.
+#define EXTERNAL_EXEC 6
 #define NO_ERROR 0
 #define DEFAULT_ERROR -1
 #define print_debug true

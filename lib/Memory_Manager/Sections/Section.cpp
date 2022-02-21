@@ -231,16 +231,26 @@ Section::Section(String file_name, int type)
 		parent_file = "";
 		return;
 	}
-/*
-if(type== NEW_FILE){
-	memory_area = NULL;
-	parent_file = file_name;
-	size =0;
-	is_valid = false;
-	
 
-}
-*/
+	if (type == EXTERNAL_EXEC)
+	{
+		memory_area = heap_caps_malloc(512, MALLOC_CAP_SPIRAM || MALLOC_CAP_32BIT);
+		is_valid = false;
+		size = 512;
+		parent_file = "";
+		return;
+	}
+
+	/*
+	if(type== NEW_FILE){
+		memory_area = NULL;
+		parent_file = file_name;
+		size =0;
+		is_valid = false;
+
+
+	}
+	*/
 
 	if (type == MAIN_EXEC_BLOCK)
 	{
@@ -263,6 +273,7 @@ if(type== NEW_FILE){
 		// Hopefully:
 		has_valid_content = true;
 		has_valid_memory = false;
+		return;
 	}
 
 	long file_size = getFileSize_long(file_name);
