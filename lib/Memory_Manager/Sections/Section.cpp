@@ -231,6 +231,17 @@ Section::Section(String file_name, int type)
 		parent_file = "";
 		return;
 	}
+/*
+if(type== NEW_FILE){
+	memory_area = NULL;
+	parent_file = file_name;
+	size =0;
+	is_valid = false;
+	
+
+}
+*/
+
 	if (type == MAIN_EXEC_BLOCK)
 	{
 		// main_block_section = this;

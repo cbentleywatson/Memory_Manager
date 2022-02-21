@@ -205,6 +205,7 @@ void test_block_based_load(void)
 		// fpointer = prebuilt.memory_area;
 		// void *z = &memory_block_array;
 		main_block.fill_with(sec1);
+		Serial.println("Directly above fpointer set with main_block");
 		fpointer = main_block.memory_area;
 		// fpointer = sec1.memory_area;
 		output = fpointer(checker);
