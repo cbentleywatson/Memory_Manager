@@ -204,8 +204,9 @@ void test_block_based_load(void)
 		Serial.println("Copy finished");
 		// fpointer = prebuilt.memory_area;
 		// void *z = &memory_block_array;
-
-		fpointer = sec1.memory_area;
+		main_block.fill_with(sec1);
+		fpointer = main_block.memory_area;
+		// fpointer = sec1.memory_area;
 		output = fpointer(checker);
 		break;
 	default:
