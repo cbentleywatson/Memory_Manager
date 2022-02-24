@@ -558,3 +558,17 @@ MEMORY
   }
 
 ### Setting the memory to write to is extremely easy; Setting Load memory address and VMA for a Section would appear to place both in the same load address and the VMA 
+
+### Address of esp32.project.ld
+C:\Users\cbent\.platformio\packages\framework-espidf\components\esp32\ld
+
+### esptool.py:
+There's a "base firmware image class at line 2001. And it checks the total number of sections, doesn't like it if there are more than
+the default 16. It raises a fatal error in fact.
+
+at 2572, this function
+    def _read_sections(self, f, section_header_offs, section_header_count, shstrndx): 
+    would appear to remove sections without prog bits flag from the list of things to upload.
+
+### Getting Sections in Exec:
+    I specified that the section was NOLOAD, and that every section with a specific tag matching h

@@ -1,19 +1,49 @@
 
 #include <Memory_Manager.h>
 #include <unity.h>
+extern int _load_lib_start;
+extern unsigned int _larray[1];
 int (*fpointer)(int);
 #define MEMORY_BLOCK_SIZE 1024
-unsigned long small[2] __attribute__((section(".iram0.text")));
+static unsigned long small[2] __attribute__((section(".test.text"))) = {0, 0};
+unsigned long in_new_sec[16] __attribute__((section(".loadlib.text")));
 unsigned long normal[2];
 unsigned long memory_block_array[1024] __attribute__((section(".iram0.text")));
+unsigned long external_mem[256] __attribute__((section("extern_ram_segment")));
+
 unsigned char unsigned_char_block[1024] __attribute__((section(".iram0.text")));
 unsigned char plain_array[1024];
 void test_section_creation(void)
 {
-	// these will be the same as the args in memory manager
+	Serial.print("Load lib start: ");
+	// Serial.println(_load_lib_start);
+	//   these will be the same as the args in memory manager
 	String file_name = "/spiffs/single_e";
 	int type = HEAP_INTERNAL;
 	// Variable for  test
+	unsigned int *t = _larray;
+
+	unsigned int a = _larray[0];
+	unsigned int b = _larray[0];
+	unsigned int c = _larray[0];
+	//  unsigned long a = 0;
+	// a = *t;
+	delay(1000);
+	small[0] = 11;
+	Serial.print("a = ");
+	Serial.println(a, HEX);
+
+	Serial.print("b = ");
+	Serial.println(b, HEX);
+	Serial.print("c = ");
+	Serial.println(c, HEX);
+	Serial.print("Small[0] = ");
+	int q;
+
+	q = 1111;
+	delay(10000);
+	q = small[0];
+	Serial.println(small[0]);
 	int checker = 14;
 	int output;
 	// Logic Similar to memory manager

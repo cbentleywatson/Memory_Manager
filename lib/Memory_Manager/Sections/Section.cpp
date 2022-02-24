@@ -234,6 +234,7 @@ Section::Section(String file_name, int type)
 
 	if (type == EXTERNAL_EXEC)
 	{
+		Serial.println("Verifying allocation of external exec");
 		memory_area = heap_caps_malloc(512, MALLOC_CAP_SPIRAM || MALLOC_CAP_32BIT);
 		is_valid = false;
 		size = 512;
