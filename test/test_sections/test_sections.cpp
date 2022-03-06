@@ -1,11 +1,20 @@
 
 #include <Memory_Manager.h>
 #include <unity.h>
+#include "single.h"
 extern int _load_lib_start;
-extern unsigned int _larray[1];
+extern unsigned int _larray[3];
 int (*fpointer)(int);
 #define MEMORY_BLOCK_SIZE 1024
-static unsigned long small[2] __attribute__((section(".test.text"))) = {0, 0};
+unsigned long small[64] __attribute__((section(".test.text")));
+unsigned long small2[64] __attribute__((section(".test2.text")));
+unsigned long small3[64] __attribute__((section(".test3.text")));
+static unsigned long small4[4] __attribute__((section(".test4.text"))) = {1, 2, 3, 4};
+unsigned long small5[4] __attribute__((section(".test5.text"))) = {5, 6, 7, 8};
+unsigned long small6[4] __attribute__((section(".test6.text"))) = {5, 6, 7, 8};
+unsigned long small7[4] __attribute__((section(".test7.text"))) = {5, 6, 7, 8};
+unsigned long small8[4] __attribute__((section(".test8.text"))) = {5, 6, 7, 8};
+
 unsigned long in_new_sec[16] __attribute__((section(".loadlib.text")));
 unsigned long normal[2];
 unsigned long memory_block_array[1024] __attribute__((section(".iram0.text")));
@@ -23,13 +32,18 @@ void test_section_creation(void)
 	// Variable for  test
 	unsigned int *t = _larray;
 
+	Serial.print("Single_func output: ");
+	int j = single_func(37);
+	/*Serial.println(j);*/
 	unsigned int a = _larray[0];
-	unsigned int b = _larray[0];
-	unsigned int c = _larray[0];
+	unsigned int b = _larray[1];
+	unsigned int c = _larray[2];
 	//  unsigned long a = 0;
 	// a = *t;
-	delay(1000);
+	// delay(500);
 	small[0] = 11;
+	small2[0] = 12;
+	small3[0] = 13;
 	Serial.print("a = ");
 	Serial.println(a, HEX);
 
@@ -38,20 +52,59 @@ void test_section_creation(void)
 	Serial.print("c = ");
 	Serial.println(c, HEX);
 	Serial.print("Small[0] = ");
+
+	unsigned int double_place = 57;
+	Serial.print("double_place = ");
+	Serial.println(double_place);
+	small3[0] = 99;
+	Serial.print("small3[0] = ");
+	Serial.println(small3[0]);
+
+	small2[0] = double_place;
+	Serial.print("small2[0] assigned to double place and now equals : ");
+	Serial.println(small2[0]);
+	Serial.print("small3[0] becase : ");
+	Serial.println(small3[0]);
+
+	small2[1] = double_place;
+	small2[2] = double_place;
+	small4[0] = 11;
+	small4[1] = 12;
+	small4[2] = 13;
+	small4[3] = 14;
+	small5[0] = 12;
+	// small5[0] = 512;
+
+	Serial.print("small4[0] now equals ");
+	Serial.println(small4[0]);
+
+	Serial.print("small5[0] (previously 1)");
+	Serial.println(small5[0]);
+	small5[1] = 21;
+	small5[2] = 22;
+	small5[3] = 23;
+	// delay(1000);
+	// small6[0] = 1;
+
+	small7[0] = 2; // small6[0];
+	small6[1] = small7[0];
+
+	small8[1] = small7[0];
+	small7[2] = small8[1];
 	int q;
 
-	q = 1111;
-	delay(10000);
+	// q = 1111;
+	//  delay(1000);
 	q = small[0];
-	Serial.println(small[0]);
+	Serial.println(q);
 	int checker = 14;
 	int output;
 	// Logic Similar to memory manager
 	Section sec1 = Section(file_name, EXEC_INTERNAL);
 	fpointer = sec1.memory_area;
 
-	output = fpointer(checker);
-	// mm.load_section(checker);
+	// output = fpointer(checker);
+	//  mm.load_section(checker);
 	TEST_ASSERT_EQUAL_INT(checker, output);
 }
 

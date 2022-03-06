@@ -1,5 +1,7 @@
 
 #include <Arduino.h>
+#include "WiFiClient.h"
+
 extern int _load_lib_start;
 extern int _heap_end;
 void setup()

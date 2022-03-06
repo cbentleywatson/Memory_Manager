@@ -11,9 +11,16 @@ from symtable import symtable
 # Example of how to find time of last modification of a file:
 import sys, string, os
 from pathlib import Path, PurePath
+print("Current Board")
+print(env.Dump("BOARD"))
 
 # Each library that is to be moved into long term storage is going to be give a descriptor in the form of a dictionary.
 # Right now the onlu thing that matters is the name of the folder the library source code is located which will be used to hunt down the compiled object file
+
+
+#cur_board = env['board']
+
+
 
 board_folder_name = "firebeetle32"
 test_1_lib_data = {
@@ -118,7 +125,17 @@ rootdir = test_path
 print(rootdir)
 proj_root =os.getcwd()
 print("\n\n\n globdir")
+my_board = env.Dump("BOARD")
+correct_path = proj_root+ "/.pio/build/" + my_board.strip("'") +"/firmware.elf" 
 
+#for name in glob.glob(f'{proj_root}/.pio/build/*/firmware.elf'):
+print("SHOULD BE PRINTING: ")
+print(correct_path)
+print("GLOB nonsese:")
+for name in glob.glob(f'{correct_path}'):
+    print("THE ELF FILE!!!!!")
+    print(name)
+    #print ("cur_boar" +cur_board)
 # For each name in the lib dict
 
 
