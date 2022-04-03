@@ -5,7 +5,6 @@
 #include "SPIFFS.h"
 #include "Sections/Sections.h"
 
-
 // Probably need an additional header for common function type defs. i.e. int foo(void), int bar(int a, int b) and so on
 //
 //#include "esp-elf.h"
@@ -97,6 +96,15 @@ class Memory_Manager
 	void *exec_ram_memory_block;
 
 public:
+	/* load_function() would be used as something like a system call to load
+	 * functions. It can't require a memory manager object because then each library
+	 * that wanted to call the manager would need to instantiate one.
+	 */
+	// static int load_function(String name_of_function_file);
+	/* The memory manager's run_function() could be used to run whatever the last loaded
+	 * function was. If it's overloaded then passing in the structs will make the thing run
+	 * If you add in the file name you can combine loading and running in a single step
+	 */
 	static int getFileSize(String file_name);
 	// Functions that may be removed (or moved to testing?)
 	// exec_from spiffs is only referenced by it's own testing function;
@@ -161,6 +169,4 @@ public:
 
 	// Section Functions:
 	void load_obj_section(String file_name, int type);
-
-
 };

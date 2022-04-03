@@ -233,7 +233,7 @@ void setup()
 	// RUN_TEST(check_memory_block_based_pointer_load); // This is the one that's failing
 
 	RUN_TEST(create_section);
-
+	// would need : test for each type of function
 	UNITY_END();
 }
 
