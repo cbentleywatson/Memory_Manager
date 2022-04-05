@@ -8,6 +8,14 @@ unsigned long normal[2];
 unsigned long memory_block_array[1024] __attribute__((section(".iram0.text")));
 unsigned char unsigned_char_block[1024] __attribute__((section(".iram0.text")));
 unsigned char plain_array[1024];
+
+// demonstrates that a moved function can call hardware....
+int side_effect_test(void) __attribute__((section(".side_effect_test.text")));
+int side_effect_test(void)
+{
+	Serial.print("Hello World From Side Effect Test");
+}
+
 void test_section_creation(void)
 {
 	// these will be the same as the args in memory manager
