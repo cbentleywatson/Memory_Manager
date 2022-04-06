@@ -1,7 +1,17 @@
 
 #include "sort.h"
 // This was just for reference but it can also be tested if desired.
-
+int test(int a); //__attribute__((section("ext_ram_seg")));
+int test(int a)
+{
+	/*
+		while (true)
+		{
+			a = a + 1;
+		}
+	*/
+	return a + 1;
+}
 
 int selection_sort(int a[], int n)
 {
@@ -16,6 +26,7 @@ int selection_sort(int a[], int n)
 		a[i] = a[min];
 		a[min] = temp;
 	}
+	return 0;
 }
 // This is a demo function that will be run from RAM
 int buffer_formatted_selection_sort(void *input_buffer, int input_length, void *output_buffer, int output_length, void *arg_struct)

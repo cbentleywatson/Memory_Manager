@@ -1,9 +1,10 @@
 
 #include <Memory_Manager.h>
+#include "sort.h"
 #include <unity.h>
 int (*fpointer)(int);
 #define MEMORY_BLOCK_SIZE 1024
-unsigned long small[2] __attribute__((section(".iram0.text")));
+unsigned long small[2]; // __attribute__((section(".iram0.text")));
 unsigned long normal[2];
 unsigned long memory_block_array[1024] __attribute__((section(".iram0.text")));
 unsigned char unsigned_char_block[1024] __attribute__((section(".iram0.text")));
@@ -13,11 +14,38 @@ unsigned char plain_array[1024];
 int side_effect_test(void) __attribute__((section(".side_effect_test.text")));
 int side_effect_test(void)
 {
+	// int b = test(11);
+int	b = b + 11;
 	Serial.print("Hello World From Side Effect Test");
+	return b;
 }
 
+void test_sort_test(void)
+{
+	int a = 1;
+	int (*to_test)(int) = &test;
+	unsigned long address = (unsigned long)to_test;
+	int b = 1;
+	// test will add 1 to a
+	// b = test(a);
+
+	if ((address >= 0x3F800000) && (address < (0x40080000)))
+	{
+		b = 2;
+	}
+	else
+	{
+		b = 1;
+	}
+
+	TEST_ASSERT_EQUAL_INT(2, &test);
+}
 void test_section_creation(void)
 {
+	// call a function in sort
+	int b = test(11);
+	b = b + 11;
+
 	// these will be the same as the args in memory manager
 	String file_name = "/spiffs/single_e";
 	int type = HEAP_INTERNAL;
@@ -252,6 +280,7 @@ void setup()
 	//     section from a memory section
 	//     section from a file section
 	//     File pointer from block
+	RUN_TEST(test_sort_test);
 	UNITY_END();
 }
 
