@@ -15,7 +15,7 @@ int side_effect_test(void) __attribute__((section(".side_effect_test.text")));
 int side_effect_test(void)
 {
 	// int b = test(11);
-int	b = b + 11;
+	int b = b + 11;
 	Serial.print("Hello World From Side Effect Test");
 	return b;
 }
@@ -43,8 +43,8 @@ void test_sort_test(void)
 void test_section_creation(void)
 {
 	// call a function in sort
-	int b = test(11);
-	b = b + 11;
+	// int b = test(11);
+	// b = b + 11;
 
 	// these will be the same as the args in memory manager
 	String file_name = "/spiffs/single_e";
