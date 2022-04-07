@@ -12,6 +12,8 @@
 #define NO_ERROR 0
 #define DEFAULT_ERROR -1
 #define print_debug true
+void IRAM_ATTR safe_copy(void *dest, void *source, int length);
+
 class Section
 {
 public:

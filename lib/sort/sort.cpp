@@ -1,8 +1,8 @@
 
 #include "sort.h"
 // This was just for reference but it can also be tested if desired.
-int test(int a); //__attribute__((section("ext_ram_seg")));
-int test(int a)
+int IRAM_ATTR test(int a); //__attribute__((section("ext_ram_seg")));
+int IRAM_ATTR test(int a)
 {
 	/*
 		while (true)

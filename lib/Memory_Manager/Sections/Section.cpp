@@ -1,5 +1,19 @@
 #include "Sections.h"
 
+void IRAM_ATTR safe_copy(void *dest, void *source, int length)
+{
+	unsigned long *d;
+	unsigned long *s;
+	unsigned long temp;
+	d = dest;
+	s = source;
+	for (int i = 0; i < length; i++)
+	{
+		temp = s[i];
+		d[i] = temp;
+	}
+}
+
 int Section::fill_with(Section &donor)
 {
 	int receiver_type = section_type;
@@ -231,16 +245,16 @@ Section::Section(String file_name, int type)
 		parent_file = "";
 		return;
 	}
-/*
-if(type== NEW_FILE){
-	memory_area = NULL;
-	parent_file = file_name;
-	size =0;
-	is_valid = false;
-	
+	/*
+	if(type== NEW_FILE){
+		memory_area = NULL;
+		parent_file = file_name;
+		size =0;
+		is_valid = false;
 
-}
-*/
+
+	}
+	*/
 
 	if (type == MAIN_EXEC_BLOCK)
 	{
