@@ -141,7 +141,7 @@ test_file_section_load()
 	TEST_ASSERT_EQUAL_INT(checker, output);
 }
 
-void test_block_based_load(void)
+test_block_based_load()
 {
 	// these will be the same as the args in memory manager
 	String file_name = "/spiffs/single_e";
