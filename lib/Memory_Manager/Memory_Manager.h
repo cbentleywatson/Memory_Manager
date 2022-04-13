@@ -97,6 +97,7 @@ class Memory_Manager
 
 public:
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 	/* load_function() would be used as something like a system call to load
 	 * functions. It can't require a memory manager object because then each library
 	 * that wanted to call the manager would need to instantiate one.
@@ -106,6 +107,11 @@ public:
 	 * function was. If it's overloaded then passing in the structs will make the thing run
 	 * If you add in the file name you can combine loading and running in a single step
 	 */
+=======
+	/*
+		void default_flash_write(void *source_buffer, unsigned int length);
+	*/
+>>>>>>> Stashed changes
 =======
 	/*
 		void default_flash_write(void *source_buffer, unsigned int length);
