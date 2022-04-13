@@ -1,0 +1,37 @@
+#include "flash_control.h"
+/*
+static inline void IRAM_ATTR Cache_Flush(int cpu_no)
+{
+	extern void Cache_Flush_rom(int cpu_no);
+	DPORT_STALL_OTHER_CPU_START();
+	Cache_Flush_rom(cpu_no);
+	DPORT_STALL_OTHER_CPU_END();
+}
+*/
+void IRAM_ATTR set_pages(page_args)
+{
+
+	// esp_dport_access_stall_other_cpu_start
+	
+	spi_flash_disable_interrupts_caches_and_other_cpu();
+	DPORT_STALL_OTHER_CPU_START();
+	for (int i = 0; i < page_args.num_pages; i++)
+	{
+		DPORT_PR_FLASH_MMU_TABLE[page_args.first_page + i] = page_args.first_flash_address + SPI_FLASH_MMU_PAGE_SIZE * i;
+	}
+	DPORT_STALL_OTHER_CPU_END();
+	/*
+		// Something to do with  protecting spi ram. It's included in the normal mmap, I made a copy with a check on the
+		// whether or not it's included
+		// switch out the true if you don't want it to run
+		if (esp_get_revision() > 0 &&(page_args.has_spi_ram) && (true))
+		{
+			esp_spiram_writeback_cache();
+		}
+	*/
+	Cache_Flush(0);
+	Cache_Flush(1);
+
+	spi_flash_enable_interrupts_caches_and_other_cpu();
+	return;
+}

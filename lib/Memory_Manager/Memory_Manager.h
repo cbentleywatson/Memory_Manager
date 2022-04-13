@@ -4,8 +4,17 @@
 #include <string.h>
 #include "SPIFFS.h"
 #include "Sections/Sections.h"
+struct page_args
+{
+	unsigned int *page_table; // Pray this is right
+	int first_ram_page;
+	int first_flash_address;
+	int num_pages;
+	bool has_spi_ram;
+};
 
-
+void set_pages(page_args cur_page_args);
+void IRAM_ATTR my_set_pages(page_args cur_page_args);
 // Probably need an additional header for common function type defs. i.e. int foo(void), int bar(int a, int b) and so on
 //
 //#include "esp-elf.h"
@@ -97,6 +106,8 @@ class Memory_Manager
 	void *exec_ram_memory_block;
 
 public:
+	void default_flash_write(void *source_buffer, unsigned int length);
+
 	static int getFileSize(String file_name);
 	// Functions that may be removed (or moved to testing?)
 	// exec_from spiffs is only referenced by it's own testing function;
@@ -161,6 +172,4 @@ public:
 
 	// Section Functions:
 	void load_obj_section(String file_name, int type);
-
-
 };

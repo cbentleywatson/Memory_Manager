@@ -11,7 +11,17 @@
 		"vector": "cpp",
 		"memory": "cpp",
 		"random": "cpp",
-		"initializer_list": "cpp"
+		"initializer_list": "cpp",
+		"portmacro.h": "c",
+		"soc.h": "c",
+		"esp_attr.h": "c",
+		"esp_intr_alloc.h": "c",
+		"esp_spi_flash.h": "c",
+		"esp_log.h": "c",
+		"dport_reg.h": "c",
+		"semphr.h": "c",
+		"task.h": "c",
+		"freertos.h": "c"
 	},
 	"python.formatting.provider": "yapf"
 }

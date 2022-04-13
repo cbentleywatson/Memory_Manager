@@ -13,8 +13,7 @@
             "-shared",
             "-ffunction-sections",
             "-Wl,--gc-sections",
-            "-Wl,-flto",
-            "-fpermissive"
+            "-Wl,-flto"
         ],
         "CPPFLAGS": [
             "-fpermissive"

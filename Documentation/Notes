@@ -363,7 +363,16 @@ https://www.ibm.com/docs/en/zos/2.2.0?topic=file-example-relocating-addresses-wi
 Note the spi_flash
 rc from spi_flash_cache2phys(0x40800000) = 0x300000
 rc from spi_flash_phys2cache(0x300000, inst) = 0x40800000
+ 
+ ### !!!! Included from file dport_reg.h Additionally!
 
+- Mark the function that manipulates the MMU tables with IRAM_ATTR (and prevent it being inlined, if necessary)
+- Before writing to the MMU table call spi_flash_disable_interrupts_caches_and_other_cpu();
+- After writing to the MMU table call Cache_Flush(0); Cache_Flush(1); spi_flash_enable_interrupts_caches_and_other_cpu();
+- Try and do as little as possible while interrupts are disabled (ie don't call printf() or anything like that)
+
+ ### CPU Start -- Includes many powerful functions
+ https://github.com/pycom/esp-idf-2.0/blob/master/components/esp32/cpu_start.c
 
  ### Potential Complete Version Of the Project:
  https://github.com/embedded2014/elf-loader
@@ -561,3 +570,239 @@ MEMORY
 
 ### Getting More Memory From the Second Core
 https://hackaday.io/project/174521-bare-metal-second-core-on-esp32/log/182860-build-the-sdk-in-single-core-mode-and-launch-the-second-core-by-hand
+
+
+# ESP Paritions
+https://blog.espressif.com/how-to-use-custom-partition-tables-on-esp32-69c0f3fa89c8
+
+
+
+# A server built on an SD card for the ESP-32
+https://github.com/espressif/esp-idf/tree/8e3e65a47b7d9b5dc4f52eb56660a748fda1884e/examples/protocols/http_server/restful_server
+
+### Modern Flash Control on the ESP32 Explained:
+https://docs.espressif.com/projects/esp-idf/en/latest/esp32/api-reference/storage/spi_flash.html
+
+### Linker 
+May cause unused sections from my stuff to vanish -fdse
+
+# New Mem protection Tricks:
+https://faculty.cc.gatech.edu/~orso/papers/clause.doudalis.orso.prvulovic.pdf
+
+### Prebuilt Set MMU Functions:
+/**
+  * @brief Set Flash-Cache mmu mapping.
+  *        Please do not call this function in your SDK application.
+  *
+  * @param  int cpu_no : CPU number, 0 for PRO cpu, 1 for APP cpu.
+  *
+  * @param  int pod : process identifier. Range 0~7.
+  *
+  * @param  unsigned int vaddr : virtual address in CPU address space.
+  *                              Can be IRam0, IRam1, IRom0 and DRom0 memory address.
+  *                              Should be aligned by psize.
+  *
+  * @param  unsigned int paddr : physical address in Flash.
+  *                              Should be aligned by psize.
+  *
+  * @param  int psize : page size of flash, in kilobytes. Should be 64 here.
+  *
+  * @param  int num : pages to be set.
+  *
+  * @return unsigned int: error status
+  *                   0 : mmu set success
+  *                   1 : vaddr or paddr is not aligned
+  *                   2 : pid error
+  *                   3 : psize error
+  *                   4 : mmu table to be written is out of range
+  *                   5 : vaddr is out of range
+  */
+static inline unsigned int IRAM_ATTR cache_flash_mmu_set(int cpu_no, int pid, unsigned int vaddr, unsigned int paddr,  int psize, int num)
+{
+    extern unsigned int cache_flash_mmu_set_rom(int cpu_no, int pid, unsigned int vaddr, unsigned int paddr,  int psize, int num);
+
+    unsigned int ret;
+
+    DPORT_STALL_OTHER_CPU_START();
+    ret = cache_flash_mmu_set_rom(cpu_no, pid, vaddr, paddr, psize, num);
+    DPORT_STALL_OTHER_CPU_END();
+
+    return ret;
+}
+### Current VMA my Sections
+0x400D0018
+
+
+#define DPORT_APP_FLASH_MMU_TABLE ((volatile uint32_t*) 0x3FF12000)
+0x400D0018
+#### mmap
+
+esp_err_t IRAM_ATTR spi_flash_mmap(size_t src_addr, size_t size, spi_flash_mmap_memory_t memory,
+                         const void** out_ptr, spi_flash_mmap_handle_t* out_handle)
+{
+    esp_err_t ret;
+    if (src_addr & INVALID_PHY_PAGE) {
+        return ESP_ERR_INVALID_ARG;
+    }
+    if (src_addr + size > g_rom_flashchip.chip_size) {
+        return ESP_ERR_INVALID_ARG;
+    }
+    // region which should be mapped
+    int phys_page = src_addr / SPI_FLASH_MMU_PAGE_SIZE;
+    int page_count = (size + SPI_FLASH_MMU_PAGE_SIZE - 1) / SPI_FLASH_MMU_PAGE_SIZE;
+    // prepare a linear pages array to feed into spi_flash_mmap_pages
+    int *pages = heap_caps_malloc(sizeof(int)*page_count, MALLOC_CAP_INTERNAL);
+    if (pages == NULL) {
+        return ESP_ERR_NO_MEM;
+    }
+    for (int i = 0; i < page_count; i++) {
+        pages[i] = (phys_page+i);
+    }
+    ret = spi_flash_mmap_pages(pages, page_count, memory, out_ptr, out_handle);
+    free(pages);
+    return ret;
+}
+
+
+
+
+##### From Cache_sram_mmu.c
+
+
+unsigned int IRAM_ATTR cache_sram_mmu_set(int cpu_no, int pid, unsigned int vaddr, unsigned int paddr, int psize, int num)
+{
+    const spi_flash_guard_funcs_t *guard=spi_flash_guard_get();
+    if (!guard) {
+        //Still starting up; guards not available yet. Use ROM version of code.
+        return cache_sram_mmu_set_rom(cpu_no, pid, vaddr, paddr, psize, num);
+    }
+
+    unsigned int i,shift,mask_s;
+    unsigned int mmu_addr;
+    unsigned int mmu_table_val;
+    //address check
+    if( (ADDRESS_CHECK(vaddr,psize)) || (ADDRESS_CHECK(paddr,psize)) ){
+        return MMU_SET_ADDR_ALIGNED_ERROR;
+    }
+    //psize check
+    if(psize == 32) {
+        shift  = 15;
+        mask_s = 0;
+    } else if(psize == 16) {
+        shift  = 14;
+        mask_s = 1;
+    } else if(psize == 8) {
+        shift  = 13;
+        mask_s = 2;
+    } else if(psize == 4) {
+        shift  = 12;
+        mask_s = 3;
+    } else if(psize == 2) {
+        shift  = 11;
+        mask_s = 4;
+    } else {
+        return MMU_SET_PAGE_SIZE_ERROR;
+    }
+    //mmu value
+    mmu_table_val = paddr >> shift;
+    //mmu_addr
+    if(pid == 0 || pid == 1){
+        if(vaddr >= PRO_DRAM1_START_ADDR && vaddr < PRO_DRAM1_END_ADDR(psize)){
+            mmu_addr = 1152 + ((vaddr & (0x3FFFFF >> mask_s)) >> shift);
+        } else{
+            return MMU_SET_VADDR_OUT_RANGE;
+        }
+    } else {
+        if(vaddr >= PRO_DRAM1_START_ADDR && vaddr < PRO_DRAM1_END_ADDR(psize)){
+            mmu_addr = (1024 + (pid<<7)) + ((vaddr & (0x3FFFFF >> mask_s)) >> shift);
+        } else{
+            return MMU_SET_VADDR_OUT_RANGE;
+        }
+    }
+
+    //The MMU registers are implemented in such a way that lookups from the cache subsystem may collide with
+    //CPU access to the MMU registers. We use the flash guards to make sure the cache is disabled.
+    guard->start();
+
+    //mmu change
+    for ( i = 0; i < num; i++){
+        *(volatile unsigned int *)(CACHE_MMU_ADDRESS_BASE(cpu_no) + mmu_addr * 4) = mmu_table_val + i; //write table
+        mmu_addr++;
+    }
+
+    if(cpu_no == 0){
+        DPORT_REG_SET_FIELD(DPORT_PRO_CACHE_CTRL1_REG, DPORT_PRO_CMMU_SRAM_PAGE_MODE, mask_s);
+    } else {
+        DPORT_REG_SET_FIELD(DPORT_APP_CACHE_CTRL1_REG, DPORT_APP_CMMU_SRAM_PAGE_MODE, mask_s);
+    }
+
+    guard->end();
+
+    return 0;
+}
+
+#### Write to PSRAM Directly from spiram_psram.c
+
+
+#if CONFIG_SPIRAM_2T_MODE
+// use SPI user mode to write psram
+static void spi_user_psram_write(psram_spi_num_t spi_num, uint32_t address, uint32_t *data_buffer, uint32_t data_len)
+{
+    uint32_t addr = (PSRAM_QUAD_WRITE << 24) | (address & 0x7fffff);
+    psram_cmd_t ps_cmd;
+    ps_cmd.cmdBitLen = 0;
+    ps_cmd.cmd = 0;
+    ps_cmd.addr = &addr;
+    ps_cmd.addrBitLen = 4 * 8;
+    ps_cmd.txDataBitLen = 32 * 8;
+    ps_cmd.txData = NULL;
+    ps_cmd.rxDataBitLen = 0;
+    ps_cmd.rxData = NULL;
+    ps_cmd.dummyBitLen = 0;
+
+    for(uint32_t i=0; i<data_len; i+=32) {
+        psram_clear_spi_fifo(spi_num);
+        addr = (PSRAM_QUAD_WRITE << 24) | ((address & 0x7fffff) + i);
+        ps_cmd.txData = data_buffer + (i / 4);
+        psram_cmd_config(spi_num, &ps_cmd);
+        psram_cmd_recv_start(spi_num, ps_cmd.rxData, ps_cmd.rxDataBitLen / 8, PSRAM_CMD_QPI);
+    }
+    psram_cmd_end(spi_num);
+}
+
+// use SPI user mode to read psram
+static void spi_user_psram_read(psram_spi_num_t spi_num, uint32_t address, uint32_t *data_buffer, uint32_t data_len)
+{
+    uint32_t addr = (PSRAM_FAST_READ_QUAD << 24) | (address & 0x7fffff);
+    uint32_t dummy_bits = PSRAM_FAST_READ_QUAD_DUMMY + 1;
+    psram_cmd_t ps_cmd;
+    ps_cmd.cmdBitLen = 0;
+    ps_cmd.cmd = 0;
+    ps_cmd.addr = &addr;
+    ps_cmd.addrBitLen = 4 * 8;
+    ps_cmd.txDataBitLen = 0;
+    ps_cmd.txData = NULL;
+    ps_cmd.rxDataBitLen = 32 * 8;
+    ps_cmd.dummyBitLen = dummy_bits + extra_dummy;
+
+    for(uint32_t i=0; i<data_len; i+=32) {
+        psram_clear_spi_fifo(spi_num);
+        addr = (PSRAM_FAST_READ_QUAD << 24) | ((address & 0x7fffff) + i);
+        ps_cmd.rxData = data_buffer + (i / 4);
+        psram_cmd_config(spi_num, &ps_cmd);
+        psram_cmd_recv_start(spi_num, ps_cmd.rxData, ps_cmd.rxDataBitLen / 8, PSRAM_CMD_QPI);
+    }
+    psram_cmd_end(spi_num);
+}
+
+### Some commentary about memory in embedded systems
+https://www.dialog-semiconductor.com/sites/default/files/ai_memories_whitepaper.pdf
+
+### SOmething More Closely Tied to PSRAM Control:
+
+https://blog.pagefault-limited.co.uk/tag/piggyback
+
+### ESP Partition:
+    You need to use the esp partition label search to create a struct that can be used to create a partition object
+From there a write function can be used to fill the partition directly. 
+    The partition struct will also include the physical chip address required to carry out the mapping 

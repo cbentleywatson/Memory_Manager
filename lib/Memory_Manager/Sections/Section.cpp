@@ -1,4 +1,13 @@
 #include "Sections.h"
+void IRAM_ATTR safe_wait(int loops)
+{
+	int a = 11;
+	for (int i = 0; i < loops * 1000; i++)
+	{
+		a = a + (a * 11);
+	}
+	return a;
+}
 
 void IRAM_ATTR safe_copy(void *dest, void *source, int length)
 {
@@ -89,6 +98,13 @@ Section::Section(unsigned char preallocated_array[], size_t len, int &error)
 		error = DEFAULT_ERROR;
 	}
 }
+
+/*
+void Section::partition_write{
+	esp_err_t spi_flash_write(main_partition, cur_buffer, size);
+// something, something ma
+}
+*/
 
 Section::Section(unsigned long preallocated_array[], size_t len, int &error)
 {

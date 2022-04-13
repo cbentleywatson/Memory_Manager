@@ -2,7 +2,7 @@
 // PURPOSE: ENSURE THAT CALLING A SECTION NEVER LEADES TO A CORE PANIC!!!
 #include "../File_Manipulations/File_Tools.h"
 #include "ESP32_Memory_Regions.h"
-
+#include "esp_partition.h"
 #include <Arduino.h>
 #define EXEC_INTERNAL 0
 #define HEAP_INTERNAL 1
@@ -13,12 +13,43 @@
 #define DEFAULT_ERROR -1
 #define print_debug true
 void IRAM_ATTR safe_copy(void *dest, void *source, int length);
+void IRAM_ATTR safe_wait(int loops);
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 class Section
 {
 public:
+	/*
+	// Need to add these
+	int mmu_virtual_page;
+	int partition_flash_address;
+	int num_mmu_pages; // this is the length of the loop that will run.
+	unsigned int* mmu_table_location;
+	*/
+	/*
+	unsigned int * load_mmu_table()
+	*/
+
 	// static Section *main_block_section;
+	/*
+	void default_flash_to_virtual_map();
+
+	unsigned long *data_array_for_partition_fill;
+*/
 	void *memory_area;
+
 	unsigned long *remove_me;
 	int section_type;
 	size_t size; // Heap caps malloc uses this so we should too
@@ -27,6 +58,7 @@ public:
 	bool is_valid;
 	bool has_valid_content;
 	bool has_valid_memory;
+
 	set_ptr(void *a);
 	set_ptr(unsigned long a);
 	// Methods:
