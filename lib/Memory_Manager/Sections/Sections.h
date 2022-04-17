@@ -15,19 +15,6 @@
 void IRAM_ATTR safe_copy(void *dest, void *source, int length);
 void IRAM_ATTR safe_wait(int loops);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 class Section
 {
 public:
@@ -59,8 +46,8 @@ public:
 	bool has_valid_content;
 	bool has_valid_memory;
 
-	set_ptr(void *a);
-	set_ptr(unsigned long a);
+	void set_ptr(void *a);
+	void set_ptr(unsigned long a);
 	// Methods:
 	// void set_this_main();
 	// public static Section * create_file_section(String file_name);
@@ -78,14 +65,14 @@ public:
 	// Section(Section &donor, int type, int &error);
 	// fill_function_pointer(void * fp, int &error); // fill a function pointer of any type
 	size_t block_wise_memcopy(void *dest, void *source, size_t source_size);
-	size_t Section::block_wise_file_copy(void *dest, String file_name, size_t source_size);
+	size_t block_wise_file_copy(void *dest, String file_name, size_t source_size);
 	Section(String file_name, int type);
 	void *get_valid_memory(size_t arg_size, int type);
 	~Section();
 
 	void *load_from_file(String file_name, int &memory_size, void *to_fill);
-	Section(unsigned long arr[], size_t my_size);								  //
-	Section(void *, size_t size);												  //
-	Section::change_main_block(unsigned long allocated_array, size_t array_size); // Also to be deleted
-	Section::fill_main_block(void *target);										  // to be deleted ASAP
+	Section(unsigned long arr[], size_t my_size);							 //
+	Section(void *, size_t size);											 //
+	int change_main_block(unsigned long allocated_array, size_t array_size); // Also to be deleted
+	int fill_main_block(void *target);										 // to be deleted ASAP
 };

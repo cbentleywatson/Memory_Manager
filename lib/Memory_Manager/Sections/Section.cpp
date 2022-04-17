@@ -6,7 +6,7 @@ void IRAM_ATTR safe_wait(int loops)
 	{
 		a = a + (a * 11);
 	}
-	return a;
+	// return a;
 }
 
 void IRAM_ATTR safe_copy(void *dest, void *source, int length)
@@ -60,6 +60,11 @@ int Section::fill_with(Section &donor)
 		{
 			return -1;
 		}
+	}
+	else
+	{
+		// IDK if this is right -- I assume the thing should only copy the above and anything else should not
+		return -1;
 	}
 }
 /*
@@ -164,13 +169,12 @@ static Section  Section::load_main_block_section(void *location, size_t this_blo
 // The only time you can initialize a section from an array is when you're setting up the main execblock
 
 // The only time you can directly change the memory address of a section is when you have multiple preallocated blocks.
-Section::change_main_block(unsigned long allocated_array, size_t array_size)
+int Section::change_main_block(unsigned long allocated_array, size_t array_size)
 {
 	memory_area = allocated_array;
 	size = array_size;
 	if (section_type == MAIN_EXEC_BLOCK)
 	{
-
 		is_valid = false;
 		return 0;
 	}
@@ -179,11 +183,12 @@ Section::change_main_block(unsigned long allocated_array, size_t array_size)
 // Create a section of a different type from an existing section
 //  Section::Section(Section parent, int type);
 //  or Section::create_child_copy(int_type){ // copy the file section over to the correct memory type }
-Section::fill_main_block(void *target)
+int Section::fill_main_block(void *target)
 {
 	// void *target = main_block_section->memory_area;
 	//  memcpy(target, memory_area, size);
 	block_wise_memcopy(target, memory_area, size);
+	return 0;
 	/*
 	if ((section_type == EXEC_INTERNAL) || (section_type == HEAP_INTERNAL))
 	{
@@ -233,11 +238,11 @@ Section::Section(void *e, size_t my_size)
 	is_valid = false;
 	parent_file = "";
 }
-Section::set_ptr(void *a)
+void Section::set_ptr(void *a)
 {
 	memory_area = a;
 }
-Section::set_ptr(unsigned long a)
+void Section::set_ptr(unsigned long a)
 {
 
 	//	this->memory_area = (void *)a;

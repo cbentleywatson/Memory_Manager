@@ -12,8 +12,7 @@
             "-fpic",
             "-shared",
             "-ffunction-sections",
-            "-Wl,--gc-sections",
-            "-Wl,-flto"
+            "-Wl,--gc-sections"
         ],
         "CPPFLAGS": [
             "-fpermissive"

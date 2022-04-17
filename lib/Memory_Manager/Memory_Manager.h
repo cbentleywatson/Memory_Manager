@@ -106,7 +106,7 @@ class Memory_Manager
 	void *exec_ram_memory_block;
 
 public:
-	void default_flash_write(void *source_buffer, unsigned int length);
+	//void default_flash_write(void *source_buffer, unsigned int length);
 
 	static int getFileSize(String file_name);
 	// Functions that may be removed (or moved to testing?)
@@ -126,10 +126,10 @@ public:
 	// These two are unused right now
 	unsigned long get_valid_exec_memory(size_t size, void *my_pointer);
 	// int get_valid_heap_memory(int arg_size, void *my_pointer);
-	void *Memory_Manager::get_valid_heap_memory(int arg_size);
-	void *Memory_Manager::get_valid_heap_memory(int arg_size, int &b);
+	void *get_valid_heap_memory(int arg_size);
+	void *get_valid_heap_memory(int arg_size, int &b);
 	void *file_to_heap_pure_fstructs(String file_name); // This is the one that's going to be used for moving complete elf sections
-	void *Memory_Manager::file_to_heap_pure_fstructs(String file_name, int &memory_size);
+	void *file_to_heap_pure_fstructs(String file_name, int &memory_size);
 	void *file_to_exec(String file_name); // This is for moving exec sections from  the file system like the file_to_heap_frstructs
 	int return_one(int input);
 
