@@ -59,7 +59,7 @@ public:
 	// Section(Section &donor, int type);
 
 	// Section(String file_name, int &error);								 // creates a file section
-	Section(unsigned char preallocated_array[], size_t len, int &error); // used for creating layover block sections
+	//Section(unsigned char preallocated_array[], size_t len, int &error); // used for creating layover block sections
 	Section(unsigned long preallocated_array[], size_t len, int &error); // used for creating layover block sections
 	// int fill_with(Section &donor, int &error); // move a section into the memory block
 	// Section(Section &donor, int type, int &error);

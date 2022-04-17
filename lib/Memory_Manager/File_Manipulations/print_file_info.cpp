@@ -17,4 +17,5 @@ int Memory_Manager::print_file_info(String file_name)
 	Serial.print("File Size: ");
 	Serial.println(length);
 	Serial.print("Array Length: ");
+	return 0;
 }

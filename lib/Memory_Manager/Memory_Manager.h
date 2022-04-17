@@ -108,7 +108,7 @@ class Memory_Manager
 public:
 	//void default_flash_write(void *source_buffer, unsigned int length);
 
-	static int getFileSize(String file_name);
+	int getFileSize(String file_name);
 	// Functions that may be removed (or moved to testing?)
 	// exec_from spiffs is only referenced by it's own testing function;
 	void *exec_from_spiffs(String file_name);

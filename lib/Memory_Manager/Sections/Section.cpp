@@ -79,6 +79,7 @@ Section::Section(String file_name, int &error)
 	has_valid_memory = false;
 }
 */
+/*
 Section::Section(unsigned char preallocated_array[], size_t len, int &error)
 {
 	section_type = MAIN_EXEC_BLOCK;
@@ -103,7 +104,7 @@ Section::Section(unsigned char preallocated_array[], size_t len, int &error)
 		error = DEFAULT_ERROR;
 	}
 }
-
+*/
 /*
 void Section::partition_write{
 	esp_err_t spi_flash_write(main_partition, cur_buffer, size);
@@ -121,8 +122,12 @@ Section::Section(unsigned long preallocated_array[], size_t len, int &error)
 	unsigned long num_address = (unsigned long)voidcon;
 
 	bool in_external_exec = (EXTERNAL_INS_START <= num_address) && (num_address <= EXTERNAL_INS_END);
+	if (!in_external_exec)
+	{
+		error = DEFAULT_ERROR;
+	}
 
-	has_valid_memory = (len % 4 == 0) && (num_address % 4 == 0);
+	bool has_valid_memory = (len % 4 == 0) && (num_address % 4 == 0);
 	has_valid_content = false;
 	parent_file = "";
 	if (has_valid_memory)

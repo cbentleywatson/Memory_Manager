@@ -1,5 +1,5 @@
 #include "../Memory_Manager.h"
-static int Memory_Manager::getFileSize(String file_name)
+int Memory_Manager::getFileSize(String file_name)
 {
 	FILE *ptr;
 	ptr = fopen(file_name.c_str(), "r");
