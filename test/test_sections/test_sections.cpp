@@ -22,65 +22,6 @@ unsigned long external_mem[256] __attribute__((section("extern_ram_segment")));
 
 unsigned char unsigned_char_block[1024] __attribute__((section(".iram0.text")));
 unsigned char plain_array[1024];
-<<<<<<< Updated upstream
-=======
-
-void IRAM_ATTR copy(unsigned long dest[], unsigned long source[], int length);
-void IRAM_ATTR copy(unsigned long dest[], unsigned long source[], int length)
-{
-	// v quick test of ld script
-	// flash_array2[0] = 0;
-	// flash_array2[1] = 1;
-	int i = 0;
-	int temp;
-	while (i < length)
-	{
-		temp = source[i];
-		dest[i] = temp;
-		i++;
-	}
-}
-// demonstrates that a moved function can call hardware....
-int side_effect_test(void) __attribute__((section(".side_effect_test.text")));
-/*
-int test_flash_partion(void){
-
-
-}
-
-
-*/
-int side_effect_test(void)
-{
-	int b = 0;
-	// int b = test(11);
-
-	b = b + 11;
-	Serial.print("Hello World From Side Effect Test");
-	return b;
-}
-void test_sort_test(void)
-{
-	int a = 1;
-	int (*to_test)(int) = &test;
-	unsigned long address = (unsigned long)to_test;
-	int b = 1;
-	// test will add 1 to a
-	b = test(a);
-
-	if ((address >= 0x3F800000) && (address < (0x40080000)))
-	{
-		b = 2;
-	}
-	else
-	{
-		b = 1;
-	}
-
-	TEST_ASSERT_EQUAL_INT(2, b);
-}
-
->>>>>>> Stashed changes
 void test_section_creation(void)
 {
 	Serial.print("Load lib start: ");
