@@ -21,15 +21,15 @@ void setup()
 	RUN_TEST(default_test);
 	// Location of Block was found via the external check
 	RUN_TEST(block_address_found_via_linker_variable);
-
+	RUN_TEST(find_nvs_partition);
 	RUN_TEST(get_physical_address_of_pointer);
-	// find partition
-	// find physical address of a pointer
-	// copy into partition
-	// Map
+	//   find partition
+	//   find physical address of a pointer
+	//   copy into partition
+	//   Map
 	//
-	// Check that partition is available
-	// Check that
+	//   Check that partition is available
+	//   Check that
 	UNITY_END();
 }
 
