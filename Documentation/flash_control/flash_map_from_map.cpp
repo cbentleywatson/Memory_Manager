@@ -551,6 +551,9 @@ static bool IRAM_ATTR is_page_mapped_in_cache(uint32_t phys_page, const void **o
 }
 
 /* Validates if given flash address has corresponding cache mapping, if yes, flushes cache memories */
+
+/// MY ADDITION
+
 IRAM_ATTR bool spi_flash_check_and_flush_cache(size_t start_addr, size_t length)
 {
 	bool ret = false;
@@ -590,3 +593,43 @@ IRAM_ATTR bool spi_flash_check_and_flush_cache(size_t start_addr, size_t length)
 	return ret;
 }
 #endif //! CONFIG_SPI_FLASH_ROM_IMPL
+
+/**
+ * @brief Set Flash-Cache mmu mapping.
+ *        Please do not call this function in your SDK application.
+ *
+ * @param  int cpu_no : CPU number, 0 for PRO cpu, 1 for APP cpu.
+ *
+ * @param  int pod : process identifier. Range 0~7.
+ *
+ * @param  unsigned int vaddr : virtual address in CPU address space.
+ *                              Can be IRam0, IRam1, IRom0 and DRom0 memory address.
+ *                              Should be aligned by psize.
+ *
+ * @param  unsigned int paddr : physical address in Flash.
+ *                              Should be aligned by psize.
+ *
+ * @param  int psize : page size of flash, in kilobytes. Should be 64 here.
+ *
+ * @param  int num : pages to be set.
+ *
+ * @return unsigned int: error status
+ *                   0 : mmu set success
+ *                   1 : vaddr or paddr is not aligned
+ *                   2 : pid error
+ *                   3 : psize error
+ *                   4 : mmu table to be written is out of range
+ *                   5 : vaddr is out of range
+ */
+static inline unsigned int IRAM_ATTR cache_flash_mmu_set(int cpu_no, int pid, unsigned int vaddr, unsigned int paddr, int psize, int num)
+{
+	extern unsigned int cache_flash_mmu_set_rom(int cpu_no, int pid, unsigned int vaddr, unsigned int paddr, int psize, int num);
+
+	unsigned int ret;
+
+	DPORT_STALL_OTHER_CPU_START();
+	ret = cache_flash_mmu_set_rom(cpu_no, pid, vaddr, paddr, psize, num);
+	DPORT_STALL_OTHER_CPU_END();
+
+	return ret;
+}
