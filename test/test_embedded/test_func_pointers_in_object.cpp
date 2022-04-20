@@ -1,8 +1,20 @@
 #include <Memory_Manager.h>
 #include <unity.h>
+int return_two_this(int input);
 
+int return_two_this(int input)
+{
+	//	Serial.println("hello");
+
+	return 2;
+}
+
+static int (*in_flash)(int) = &return_two_this;
 int return_one_this(int input)
 {
+	//	Serial.println("hello");
+
+	in_flash(11);
 	return 1;
 }
 

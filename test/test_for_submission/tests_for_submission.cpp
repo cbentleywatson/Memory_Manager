@@ -26,18 +26,24 @@ int loadable_iram(void)
 int loadable_iram(void) __attribute__((section(".my_iram.text"))); // Calls the thing correctly but says the instruction is illegal
 // int loadable_iram(void) __attribute__((section(".my_flash_overlay.text")));
 int loadable_VADDR1(void) __attribute__((section(".my_post_flash_seg.text")));
+
 int loadable_VADDR1(void)
 {
 	return 0xFFF;
+}
+
+int copy_from(void)
+{
+	return 0xDDD;
 }
 
 void setup()
 {
 	// esp_spiram_init();
 	delay(2500);
-	loadable_VADDR1(); // This now points to VADDR2
+	// loadable_VADDR1(); // This now points to VADDR2
+	//    loadable_iram();
 	//  loadable_iram();
-	//   loadable_iram();
 	Serial.begin(9600);
 	bool begin(bool formatOnFail = false, const char *basePath = "/spiffs", uint8_t maxOpenFiles = 10);
 	SPIFFS.begin(false);
@@ -51,6 +57,12 @@ void setup()
 	RUN_TEST(get_physical_address_of_pointer);
 	RUN_TEST(map_physical_flash_to_virtual_address);
 	RUN_TEST(fill_flash_for_write);
+	RUN_TEST(fill_flash_with_ordinary_function);
+	RUN_TEST(fill_flash_from_file);
+	/*
+	// demo normal function
+	// demo loaded
+	*/
 
 	//   find partition
 	//   find physical address of a pointer

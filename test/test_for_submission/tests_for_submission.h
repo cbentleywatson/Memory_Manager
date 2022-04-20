@@ -12,7 +12,9 @@
 void default_test(void);
 extern int _block_text_start;
 extern int _my_flash_segment_start;
-extern void *pxCurrentTCB;
+
+
+	extern void *pxCurrentTCB;
 void block_address_found_via_linker_variable(void);
 
 void find_nvs_partition(void);
@@ -26,3 +28,11 @@ unsigned long real_get_physical_address_of_pointer(String code_partition_name);
 int real_map_physical_to_virtual_address(unsigned long VADDR, unsigned long PADDR, int num_pages);
 
 int real_fill_flash_for_write(String target_partition, unsigned int VADDR, void *buffer, int buffer_size);
+
+void fill_flash_with_ordinary_function(void);
+void fill_flash_from_file(void);
+
+int copy_from(void);
+
+// Functions to test with
+int return_11(void);
