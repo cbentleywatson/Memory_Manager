@@ -13,8 +13,7 @@ void default_test(void);
 extern int _block_text_start;
 extern int _my_flash_segment_start;
 
-
-	extern void *pxCurrentTCB;
+extern void *pxCurrentTCB;
 void block_address_found_via_linker_variable(void);
 
 void find_nvs_partition(void);
@@ -36,3 +35,8 @@ int copy_from(void);
 
 // Functions to test with
 int return_11(void);
+void test_run_moveable(void);
+
+void test_function_copied_to_exec(void);
+
+void test_function_copied_to_exec_from_file(void);

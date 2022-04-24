@@ -59,6 +59,10 @@ void setup()
 	RUN_TEST(fill_flash_for_write);
 	RUN_TEST(fill_flash_with_ordinary_function);
 	RUN_TEST(fill_flash_from_file);
+	RUN_TEST(test_run_moveable);
+	RUN_TEST(test_function_copied_to_exec);
+	RUN_TEST(test_function_copied_to_exec_from_file);
+
 	/*
 	// demo normal function
 	// demo loaded
