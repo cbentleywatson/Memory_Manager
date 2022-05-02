@@ -12,7 +12,7 @@
 void default_test(void);
 extern int _block_text_start;
 extern int _my_flash_segment_start;
-
+extern int _space_block_end;
 extern void *pxCurrentTCB;
 void block_address_found_via_linker_variable(void);
 
@@ -40,3 +40,7 @@ void test_run_moveable(void);
 void test_function_copied_to_exec(void);
 
 void test_function_copied_to_exec_from_file(void);
+// extern unsigned long flash_array[1024] __attribute__((section(".block.text")));
+void test_function_copied_to_exec_from_file(void);
+extern unsigned long flash_array[1024] __attribute__((section(".block.text")));
+extern unsigned long flash_array3[1024] __attribute__((section(".block2.text")));

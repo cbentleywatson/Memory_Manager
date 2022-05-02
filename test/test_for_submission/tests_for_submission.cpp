@@ -2,16 +2,18 @@
 #define MY_MEMORY_BLOCK_SIZE 1024;
 int (*fpointer)(int);
 
+// unsigned long flash_array2[1024] __attribute__((section(".block2.text")));
 unsigned long small[2]; // __attribute__((section(".iram0.text")));
 unsigned long normal[2];
 // unsigned long flash_array[1024] __attribute__((section(".block.text")));
 // unsigned long flash_array2[1024] __attribute__((section(".block2.text")));
-unsigned long memory_block_array[1024] __attribute__((section(".iram0.text")));
+// unsigned long memory_block_array[1024] __attribute__((section(".iram0.text")));
 // int loadable(void);
 
 int loadable(void) __attribute__((section(".block2.text")));
 int loadable(void)
 {
+
 	return 0xFFF;
 }
 // Worst error with the my_iram.txt

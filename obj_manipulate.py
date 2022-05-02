@@ -1,4 +1,4 @@
-import ("env")
+Import("env")
 # short library names may take up less space. There's a limit to the length of wpiff file names.
 from http.server import executable
 from logging import root
@@ -11,12 +11,6 @@ from symtable import symtable
 # Example of how to find time of last modification of a file:
 import sys, string, os
 from pathlib import Path, PurePath
-
-
-
-os.system("c:/users/cbent/.platformio/packages/toolchain-xtensa32/bin/../lib/gcc/xtensa-esp32-elf/5.2.0/../../../../xtensa-esp32-elf/bin/objdump.exe -x scratch_firmware.elf")
-
-
 
 # Each library that is to be moved into long term storage is going to be give a descriptor in the form of a dictionary.
 # Right now the onlu thing that matters is the name of the folder the library source code is located which will be used to hunt down the compiled object file
@@ -33,18 +27,109 @@ single_func_lib = {
 }
 
 # New stuuf 4/28 doesn't work well
-path_to_project_new= "C:/Users/cbent/senior_project/main_project/Memory_Manager"
-relative_path_to_binutils = "\Linker_Experiments\objcopy.exe"
-objcopy = path_to_project_new + relative_path_to_binutils
-remove_section =" --remove-section "
-file = path_to_project_new + "\.pio\build\lolin_d32_pro\firmware.elf "
-total = objcopy + remove_section+" .block2.text  " + file
-os.system(total)
+#path_to_project_new= "C:/Users/cbent/senior_project/main_project/Memory_Manager"
+#relative_path_to_binutils = "\Linker_Experiments\objcopy.exe"
+#objcopy = path_to_project_new + relative_path_to_binutils
+#remove_section =" --remove-section "
+#file = path_to_project_new + "\.pio\build\lolin_d32_pro\firmware.elf "
+#total = objcopy + remove_section+" .block2.text  " + file
+#os.system(total)
 
 libs_to_load = [ 
 	test_1_lib_data, simple_lib, single_func_lib
 ]
 # Next, you would look for the corresponding compiled library in .pio/build/firebeetle32
+
+
+
+
+"""
+
+def get_section(lib_path):
+	#/lib/gcc/xtensa-esp32-elf/5.2.0/../../../../xtensa-esp32-elf/bin/objdump.exe"
+    # Take a path to a library file and then process it until it's read to be sliced up for loading.
+	objdump_path =  "c:/users/cbent/.platformio/packages/toolchain-xtensa32/bin/../lib/gcc/xtensa-esp32-elf/5.2.0/../../../../xtensa-esp32-elf/bin/objdump.exe"
+
+    ld_path = "c:/users/cbent/.platformio/packages/toolchain-xtensa32/bin/../lib/gcc/xtensa-esp32-elf/5.2.0/../../../../xtensa-esp32-elf/bin/ld.exe"
+
+	objcopy_path =  "c:/users/cbent/.platformio/packages/toolchain-xtensa32/bin/../lib/gcc/xtensa-esp32-elf/5.2.0/../../../../xtensa-esp32-elf/bin/objcopy.exe"
+	print(ld_path)
+	print(objcopy_path)
+	print(objdump_path)
+	#
+	# this one is crucial  "toolchainBinDir": "C:/Users/cbent/.platformio/packages/toolchain-xtensa32/bin"
+
+# 	"prog_path": "C:\\Users\\cbent\\senior_project\\main_project\\Memory_Manager\\.pio\\build\\lolin_d32_pro\\firmware.elf",
+
+    # since the cleaned library replaces the
+	
+	#"executable": "c:/Users/cbent/senior_project/main_project/Memory_Manager/.pio/build/lolin_d32_pro/firmware.elf"
+    
+	temp_lib_path =  lib_path+ "_f"
+    total_command = ld_path + " -o "  +temp_lib_path +" -e " + entry_name + " "  + lib_path + " " + ld_options + " -T " + ld_script
+    print("Total Command: " + total_command ) 
+    os.system(total_command)
+    #os.system("mv " + temp_lib_path+ " " + lib )
+    return temp_lib_path
+
+"""
+
+"""
+# Python callback
+def on_upload(source, target, env):
+    print(source, target)
+    firmware_path = str(source[0])
+    # do something
+    env.Execute("executable arg1 arg2")
+def after_upload(source, target, env):
+    print("after_upload")
+    # this line is 
+    
+    os.system("cp absolute_library_path copy_lib_elf_to_this_location")
+    os.system("pio run --target uploadfs --environment firebeetle32")
+
+
+"executable": "c:/Users/cbent/senior_project/main_project/Memory_Manager/.pio/build/lolin_d32_pro/firmware.elf",
+
+
+
+"""
+"""
+Potential per amd post target
+# print(env.Dump())
+"name": "size", # this one calculated program size, so it must be one of the first steps in upload
+# Custom actions when building program/firmware
+#
+# this might be perfect 
+env.AddPreAction("buildprog", callback...)
+env.AddPostAction("buildprog", callback...)
+Data Source: https://docs.platformio.org/en/latest/scripting/actions.html
+
+For Main:
+# custom action for project's main.cpp
+env.AddPostAction("$BUILD_DIR/src/main.cpp.o", callback...)
+
+# Custom HEX from ELF
+env.AddPostAction(
+    "$BUILD_DIR/${PROGNAME}.elf",
+    env.VerboseAction(" ".join([
+        "$OBJCOPY", "-O", "ihex", "-R", ".eeprom",
+        "$BUILD_DIR/${PROGNAME}.elf", "$BUILD_DIR/${PROGNAME}.hex"
+    ]), "Building $BUILD_DIR/${PROGNAME}.hex")
+)
+"""
+
+"""
+List of all pio variables
+https://github.com/platformio/platformio-core/blob/develop/platformio/builder/main.py
+"""
+
+
+
+
+
+
+
 
 
 

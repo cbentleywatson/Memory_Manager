@@ -10,12 +10,9 @@
     "build": {
         "flags": [
             "-fpic",
-            "-fpic",
-            "-shared",
             "-ffunction-sections",
             "-Wl,-flto",
-            "-fpermissive",
-            ""
+            "-fpermissive"
         ],
         "unflags": [
             "-g3",
